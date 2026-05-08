@@ -1,0 +1,116 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:       #f4f1eb;
+  --primary:  #7d9e76;
+  --secondary:#c9968e;
+  --accent:   #c9b28a;
+  --dark:     #2e2e2e;
+  --dark-bg:  #1e2420;
+  --muted:    #7a7570;
+  --card:     #eae6de;
+  --border:   rgba(46,46,46,0.1);
+
+  --font-display: 'Playfair Display', serif;
+  --font-body:    'DM Sans', sans-serif;
+
+  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+html { scroll-behavior: auto; font-size: 16px; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--dark);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { text-decoration: none; color: inherit; }
+button { border: none; background: none; font-family: inherit; cursor: pointer; }
+img, video { max-width: 100%; display: block; }
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 99px; }
+
+/* ── Utility ── */
+.eyebrow {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--primary);
+  margin-bottom: 0.75rem;
+}
+
+/* ── Buttons ── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.95rem 2.2rem;
+  border-radius: 99px;
+  border: 1.5px solid transparent;
+  cursor: pointer;
+  transition: transform 0.2s var(--ease-expo), box-shadow 0.2s;
+  white-space: nowrap;
+}
+.btn:hover { transform: scale(1.04); }
+.btn:active { transform: scale(0.97); }
+
+.btn-sage {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+.btn-sage:hover {
+  box-shadow: 0 0 24px rgba(125,158,118,0.4);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--dark);
+  border-color: var(--border);
+}
+.btn-outline:hover {
+  border-color: var(--dark);
+}
+
+.btn-dark {
+  background: var(--dark-bg);
+  color: white;
+  border-color: var(--dark-bg);
+}
+
+/* ── Clip reveal helper ── */
+.clip-wrap { overflow: hidden; }
+
+/* ── Section spacing ── */
+.section-pad { padding: 6rem 3rem; }
+
+@media (max-width: 700px) {
+  .section-pad { padding: 4rem 1.5rem; }
+}
+
+/* ── Hero mobile card hiding ── */
+.hero-book-card { display: none; }
+@media (min-width: 900px) {
+  .hero-book-card { display: block; }
+}
+
+/* ── Nav mobile ── */
+.nav-hamburger { display: flex !important; }
+.nav-desktop-links { display: none !important; }
+@media (min-width: 900px) {
+  .nav-hamburger { display: none !important; }
+  .nav-desktop-links { display: flex !important; }
+}
