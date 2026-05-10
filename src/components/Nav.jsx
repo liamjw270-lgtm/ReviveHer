@@ -58,8 +58,8 @@ export default function Nav() {
         background: scrolled ? 'rgba(244,241,235,0.96)' : 'rgba(244,241,235,0.8)',
         backdropFilter: 'blur(16px)',
         WebkitBackdropFilter: 'blur(16px)',
-        borderBottom: scrolled ? '1px solid rgba(46,46,46,0.08)' : '1px solid transparent',
-        transition: 'background 0.3s, border-color 0.3s',
+        boxShadow: scrolled ? '0 1px 0 rgba(46,46,46,0.08)' : 'none',
+        transition: 'background 0.3s, box-shadow 0.3s',
         willChange: 'transform',
       }}>
         {/* Logo */}

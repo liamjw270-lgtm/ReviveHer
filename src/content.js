@@ -97,67 +97,16 @@ export const content = {
 
   testimonials: [
     {
-      quote:
-        "I finally understand why I was feeling so off. Within two weeks of following the guide I was sleeping better and the anxiety had settled considerably.",
-      author: "Sarah M.",
-      meta: "47 · Toronto, ON",
-      stars: 5,
+      quote: "I've tried everything over the past two years and nothing stuck. This guide was the first thing that actually made sense for where I'm at. I feel like myself again.",
     },
     {
-      quote:
-        "I thought the mood swings and brain fog were just something I had to push through. This completely changed my perspective and gave me real, simple tools.",
-      author: "Linda K.",
-      meta: "44 · Vancouver, BC",
-      stars: 5,
+      quote: "The stress section alone was worth it. I didn't realise how much my nervous system was driving everything else. Two weeks in and I'm sleeping through the night for the first time in months.",
     },
     {
-      quote:
-        "No fluff, no extreme plans. Just honest, calming guidance that actually makes sense for where I am right now. I wish I'd found this two years ago.",
-      author: "Diane R.",
-      meta: "49 · Calgary, AB",
-      stars: 5,
+      quote: "Finally something that doesn't treat you like you just need to eat less and push harder. This is written by someone who actually gets it.",
     },
     {
-      quote:
-        "The section on nervous system support alone was worth everything. I finally understand why I felt so wired and exhausted at the same time — and what to do about it.",
-      author: "Joanne T.",
-      meta: "46 · Melbourne, AU",
-      stars: 5,
-    },
-    {
-      quote:
-        "I was so confused by everything I was reading online. This guide is calm, clear and actually written for women like me. It felt like someone finally got it.",
-      author: "Margaret H.",
-      meta: "43 · Edinburgh, UK",
-      stars: 5,
-    },
-    {
-      quote:
-        "I was sceptical — I'd tried so many things. But the approach here felt different. Gentle, realistic, and it actually worked. My sleep improved within days.",
-      author: "Patricia O.",
-      meta: "50 · Auckland, NZ",
-      stars: 5,
-    },
-    {
-      quote:
-        "My doctor kept telling me everything was normal. This guide helped me understand that I could actively support my body — not just wait it out.",
-      author: "Helen S.",
-      meta: "45 · Chicago, IL",
-      stars: 5,
-    },
-    {
-      quote:
-        "I bought it late one night when I couldn't sleep. Read it in one sitting. Bought copies for my two sisters the next morning. It's that good.",
-      author: "Carol B.",
-      meta: "48 · Bristol, UK",
-      stars: 5,
-    },
-    {
-      quote:
-        "After months of feeling invisible in the healthcare system, this guide gave me a clear path. I feel more in control of my body at 47 than I did at 35.",
-      author: "Rosemary F.",
-      meta: "47 · Cape Town, SA",
-      stars: 5,
+      quote: "I sent this to my sister and my mum. We're all at different stages but it's helped all three of us. Honestly can't recommend it enough.",
     },
   ],
 

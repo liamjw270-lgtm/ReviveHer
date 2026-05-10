@@ -209,15 +209,11 @@ export default function BuyPage() {
             </h2>
           </FadeIn>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1.25rem' }}>
-            {content.testimonials.slice(0, 6).map((t, i) => (
+            {content.testimonials.map((t, i) => (
               <FadeIn key={i} delay={i * 0.08}>
                 <div style={{ background: 'var(--card)', borderRadius: '1.25rem', padding: '1.75rem', border: '1px solid var(--border)', height: '100%', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                  <div style={{ color: 'var(--secondary)', letterSpacing: '0.1em' }}>{'★'.repeat(t.stars)}</div>
-                  <p style={{ fontSize: '0.92rem', lineHeight: 1.7, color: 'var(--dark)', fontWeight: 300, fontStyle: 'italic', flex: 1 }}>"{t.quote}"</p>
-                  <div>
-                    <div style={{ fontWeight: 600, fontSize: '0.85rem', color: 'var(--dark)' }}>{t.author}</div>
-                    <div style={{ fontSize: '0.75rem', color: 'var(--muted)' }}>{t.meta}</div>
-                  </div>
+                  <div style={{ fontFamily: 'var(--font-display)', fontSize: '3rem', lineHeight: 0.8, color: i % 2 === 0 ? 'var(--primary)' : 'var(--secondary)', opacity: 0.3, userSelect: 'none' }}>"</div>
+                  <p style={{ fontSize: '0.92rem', lineHeight: 1.7, color: 'var(--dark)', fontWeight: 300, fontStyle: 'italic', flex: 1 }}>{t.quote}</p>
                 </div>
               </FadeIn>
             ))}
