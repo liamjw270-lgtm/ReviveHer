@@ -61,6 +61,7 @@ export default function Nav() {
         boxShadow: scrolled ? '0 1px 0 rgba(46,46,46,0.08)' : 'none',
         transition: 'background 0.3s, box-shadow 0.3s',
         willChange: 'transform',
+        overflow:   'hidden',
       }}>
         {/* Logo */}
         <Link to="/" style={{
