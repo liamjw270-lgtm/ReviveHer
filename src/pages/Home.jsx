@@ -22,7 +22,7 @@ export default function Home() {
         minHeight:          320,
         backgroundImage:    'url(/lifestyle-1.jpg)',
         backgroundSize:     'cover',
-        backgroundPosition: 'center 40%',
+        backgroundPosition: 'center 60%',
         position:           'relative',
         overflow:           'hidden',
       }}>
