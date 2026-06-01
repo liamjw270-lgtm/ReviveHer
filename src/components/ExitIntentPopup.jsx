@@ -1,117 +1,155 @@
 import { useEffect, useRef, useState } from 'react'
 
-const SESSION_KEY = 'reviveher-exit-popup-shown'
+const KEY_WELCOME = 'reviveher-welcome-shown'
+const KEY_EXIT    = 'reviveher-exit-shown'
 
 export default function ExitIntentPopup() {
-  const [popupVisible, setPopupVisible] = useState(false)
-  const [animOut,      setAnimOut]      = useState(false)
-  const [tabVisible,   setTabVisible]   = useState(false)
-  const [showDismiss,  setShowDismiss]  = useState(false)  // delayed "no thanks"
+  // which popup is open: null | 'welcome' | 'exit'
+  const [open,        setOpen]        = useState(null)
+  const [animOut,     setAnimOut]     = useState(false)
+  const [tabVisible,  setTabVisible]  = useState(false)
+  const [showDismiss, setShowDismiss] = useState(false)
 
-  const scriptInjected = useRef(false)
-  const triggered      = useRef(false)
-  const dismissTimer   = useRef(null)
+  const scriptInjected = useRef({ welcome: false, exit: false })
+  const welcomeTriggered = useRef(false)
+  const exitTriggered    = useRef(false)
+  const dismissTimer     = useRef(null)
 
-  // ── Open popup ────────────────────────────────────────────
-  const openPopup = () => {
-    if (popupVisible) return
-    triggered.current = true
-    setTabVisible(false)
+  // ── Open a popup ─────────────────────────────────────────
+  const openPopup = (type) => {
+    if (open) return
+    setOpen(type)
     setShowDismiss(false)
-    setPopupVisible(true)
-    // "No thanks" appears 3 seconds after popup opens
     dismissTimer.current = setTimeout(() => setShowDismiss(true), 3000)
   }
 
-  // ── Auto-trigger (once per session) ──────────────────────
-  const autoTrigger = () => {
-    if (triggered.current) return
-    if (sessionStorage.getItem(SESSION_KEY)) return
-    openPopup()
-  }
-
-  // ── Dismiss popup ─────────────────────────────────────────
-  const dismiss = () => {
+  // ── Dismiss ───────────────────────────────────────────────
+  const dismiss = (type) => {
     clearTimeout(dismissTimer.current)
-    sessionStorage.setItem(SESSION_KEY, '1')
+    if (type === 'welcome') sessionStorage.setItem(KEY_WELCOME, '1')
+    if (type === 'exit')    sessionStorage.setItem(KEY_EXIT, '1')
     setAnimOut(true)
-    setTimeout(() => {
-      setPopupVisible(false)
-      setAnimOut(false)
-      setShowDismiss(false)
-    }, 320)
+    setTimeout(() => { setOpen(null); setAnimOut(false); setShowDismiss(false) }, 320)
   }
 
-  // ── Inject Kit script when popup first opens ──────────────
-  useEffect(() => {
-    if (!popupVisible || scriptInjected.current) return
-    scriptInjected.current = true
-    const container = document.getElementById('kit-popup-embed')
+  // ── Inject Kit script into a container (once per popup) ──
+  const injectKit = (containerId, key) => {
+    if (scriptInjected.current[key]) return
+    scriptInjected.current[key] = true
+    const container = document.getElementById(containerId)
     if (!container) return
     const script = document.createElement('script')
     script.async = true
     script.setAttribute('data-uid', 'c7d19d862b')
     script.src = 'https://reviveher.kit.com/c7d19d862b/index.js'
     container.appendChild(script)
-  }, [popupVisible])
+  }
 
-  // ── Attach triggers on mount ──────────────────────────────
   useEffect(() => {
-    const alreadySeen = sessionStorage.getItem(SESSION_KEY)
+    if (open === 'welcome') injectKit('kit-embed-welcome', 'welcome')
+    if (open === 'exit')    injectKit('kit-embed-exit',    'exit')
+  }, [open])
 
-    // Show tab after 1.5s (always, even if seen before)
+  // ── Attach auto-triggers on mount ────────────────────────
+  useEffect(() => {
+    // Tab always appears after 1.5s
     const tabTimer = setTimeout(() => setTabVisible(true), 1500)
 
-    if (!alreadySeen) {
-      // Auto-show popup after 5s on page load
-      const loadTimer = setTimeout(autoTrigger, 5000)
-
-      // Exit intent — mouse within 20px of top edge
-      const onMouseMove = (e) => { if (e.clientY < 20) autoTrigger() }
-      document.addEventListener('mousemove', onMouseMove)
-
-      return () => {
-        clearTimeout(loadTimer)
-        clearTimeout(tabTimer)
-        document.removeEventListener('mousemove', onMouseMove)
-      }
+    // Welcome popup: auto after 5s (once per session)
+    let loadTimer
+    if (!sessionStorage.getItem(KEY_WELCOME)) {
+      loadTimer = setTimeout(() => {
+        if (welcomeTriggered.current) return
+        welcomeTriggered.current = true
+        openPopup('welcome')
+      }, 5000)
     }
 
-    return () => clearTimeout(tabTimer)
+    // Exit intent: mouse within 20px of top (once per session)
+    const onMouseMove = (e) => {
+      if (e.clientY < 20 && !exitTriggered.current && !sessionStorage.getItem(KEY_EXIT)) {
+        exitTriggered.current = true
+        openPopup('exit')
+      }
+    }
+    document.addEventListener('mousemove', onMouseMove)
+
+    return () => {
+      clearTimeout(tabTimer)
+      clearTimeout(loadTimer)
+      document.removeEventListener('mousemove', onMouseMove)
+    }
   }, [])
 
   return (
     <>
       <style>{`
-        @keyframes epOverlayIn  { from { opacity: 0 } to { opacity: 1 } }
-        @keyframes epOverlayOut { from { opacity: 1 } to { opacity: 0 } }
-        @keyframes epCardIn     { from { opacity: 0; transform: translateY(28px) scale(0.97) } to { opacity: 1; transform: translateY(0) scale(1) } }
-        @keyframes epCardOut    { from { opacity: 1; transform: translateY(0) scale(1) } to { opacity: 0; transform: translateY(16px) scale(0.97) } }
-        @keyframes epTabIn      { from { opacity: 0; transform: translateY(-50%) rotate(180deg) translateX(40px) } to { opacity: 1; transform: translateY(-50%) rotate(180deg) translateX(0) } }
-        @keyframes epDismissIn  { from { opacity: 0; transform: translateY(6px) } to { opacity: 1; transform: translateY(0) } }
+        @keyframes epOverlayIn  { from { opacity:0 } to { opacity:1 } }
+        @keyframes epOverlayOut { from { opacity:1 } to { opacity:0 } }
+        @keyframes epCardIn     { from { opacity:0; transform:translateY(28px) scale(0.97) } to { opacity:1; transform:translateY(0) scale(1) } }
+        @keyframes epCardOut    { from { opacity:1; transform:translateY(0) scale(1) } to { opacity:0; transform:translateY(16px) scale(0.97) } }
+        @keyframes epTabIn      { from { opacity:0; transform:translateY(-50%) rotate(180deg) translateX(48px) } to { opacity:1; transform:translateY(-50%) rotate(180deg) translateX(0) } }
+        @keyframes epDismissIn  { from { opacity:0; transform:translateY(5px) } to { opacity:1; transform:translateY(0) } }
 
-        /* Kit form overrides inside popup */
-        #kit-popup-embed .formkit-form {
+        /* ── Kit form overrides — both popups ── */
+        .kit-popup-wrap .formkit-form {
           background: transparent !important;
           padding: 0 !important;
           border: none !important;
           box-shadow: none !important;
+          width: 100% !important;
         }
-        #kit-popup-embed .formkit-submit {
-          background: #7d9e76 !important;
-          border-radius: 99px !important;
+        /* Force form visible on mobile */
+        .kit-popup-wrap [data-sv-form],
+        .kit-popup-wrap .formkit-form,
+        .kit-popup-wrap form,
+        .kit-popup-wrap .formkit-fields,
+        .kit-popup-wrap .formkit-field,
+        .kit-popup-wrap .formkit-input,
+        .kit-popup-wrap input[type="email"],
+        .kit-popup-wrap .formkit-submit,
+        .kit-popup-wrap button[type="submit"] {
+          display: block !important;
+          visibility: visible !important;
+          opacity: 1 !important;
+          max-height: none !important;
+          overflow: visible !important;
         }
-        #kit-popup-embed input[type="email"] {
+        .kit-popup-wrap input[type="email"] {
+          width: 100% !important;
+          min-width: 0 !important;
           border-radius: 99px !important;
-          border: 1.5px solid rgba(46,46,46,0.15) !important;
+          border: 1.5px solid rgba(46,46,46,0.18) !important;
           background: white !important;
+          padding: 0.75rem 1.25rem !important;
+          font-size: 1rem !important;
+          box-sizing: border-box !important;
+          -webkit-appearance: none !important;
+          appearance: none !important;
+        }
+        .kit-popup-wrap .formkit-submit,
+        .kit-popup-wrap button[type="submit"] {
+          width: 100% !important;
+          background: #7d9e76 !important;
+          color: white !important;
+          border: none !important;
+          border-radius: 99px !important;
+          padding: 0.85rem 1.5rem !important;
+          font-size: 0.9rem !important;
+          font-weight: 600 !important;
+          cursor: pointer !important;
+          margin-top: 0.6rem !important;
+          -webkit-appearance: none !important;
         }
       `}</style>
 
-      {/* ── Sticky tab below nav ─────────────────────────── */}
-      {tabVisible && !popupVisible && (
+      {/* ── Side tab — always visible ─────────────────────── */}
+      {tabVisible && (
         <button
-          onClick={openPopup}
+          onClick={() => {
+            welcomeTriggered.current = true
+            openPopup('welcome')
+          }}
           style={{
             position:      'fixed',
             top:           '50%',
@@ -145,116 +183,163 @@ export default function ExitIntentPopup() {
         </button>
       )}
 
-      {/* ── Popup ───────────────────────────────────────── */}
-      {popupVisible && (
-        <div
-          onClick={dismiss}
-          style={{
-            position:       'fixed',
-            inset:          0,
-            background:     'rgba(30,36,32,0.72)',
-            backdropFilter: 'blur(4px)',
-            zIndex:         1000,
-            display:        'flex',
-            alignItems:     'center',
-            justifyContent: 'center',
-            padding:        '1.5rem',
-            animation:      animOut ? 'epOverlayOut 0.28s ease forwards' : 'epOverlayIn 0.28s ease forwards',
-          }}
-        >
-          {/* Card */}
-          <div
-            onClick={e => e.stopPropagation()}
-            style={{
-              background:   '#eae6de',
-              borderRadius: '1.75rem',
-              padding:      'clamp(2rem, 5vw, 3rem) clamp(1.75rem, 5vw, 3rem)',
-              maxWidth:     520,
-              width:        '100%',
-              boxShadow:    '0 32px 80px rgba(30,36,32,0.25)',
-              textAlign:    'center',
-              animation:    animOut ? 'epCardOut 0.28s ease forwards' : 'epCardIn 0.32s cubic-bezier(0.16,1,0.3,1) forwards',
-            }}
-          >
-            {/* Gift icon */}
-            <div style={{
-              width:          52,
-              height:         52,
-              borderRadius:   '50%',
-              background:     'rgba(125,158,118,0.15)',
-              display:        'flex',
-              alignItems:     'center',
-              justifyContent: 'center',
-              margin:         '0 auto 1.5rem',
-              fontSize:       '1.5rem',
-            }}>
-              🎁
-            </div>
+      {/* ── Welcome popup (tab + auto) ───────────────────── */}
+      {open === 'welcome' && (
+        <Overlay animOut={animOut} onClickOutside={() => dismiss('welcome')}>
+          <Card animOut={animOut}>
+            <IconCircle>🎁</IconCircle>
 
-            {/* Heading */}
-            <h2 style={{
-              fontFamily:    'var(--font-display)',
-              fontSize:      'clamp(1.6rem, 4vw, 2.1rem)',
-              fontWeight:    700,
-              color:         'var(--dark)',
-              letterSpacing: '-0.02em',
-              lineHeight:    1.2,
-              marginBottom:  '0.85rem',
-            }}>
+            <h2 style={headingStyle}>
+              Your free perimenopause guide
+            </h2>
+            <p style={subtextStyle}>
+              Get our free checklist:{' '}
+              <strong style={{ fontWeight: 500, color: 'var(--dark)' }}>
+                5 signs you're in perimenopause
+              </strong>{' '}
+              and what to do about each one. Straight to your inbox, free.
+            </p>
+
+            <div id="kit-embed-welcome" className="kit-popup-wrap" style={{ width: '100%' }} />
+
+            <DismissButton show={showDismiss} onClick={() => dismiss('welcome')} />
+          </Card>
+        </Overlay>
+      )}
+
+      {/* ── Exit-intent popup ────────────────────────────── */}
+      {open === 'exit' && (
+        <Overlay animOut={animOut} onClickOutside={() => dismiss('exit')}>
+          <Card animOut={animOut}>
+            <IconCircle>✋</IconCircle>
+
+            <h2 style={headingStyle}>
               Before you go — a free gift
             </h2>
-
-            {/* Subtext */}
-            <p style={{
-              fontFamily:   'var(--font-body)',
-              fontSize:     '0.95rem',
-              fontWeight:   300,
-              lineHeight:   1.75,
-              color:        'var(--muted)',
-              maxWidth:     400,
-              margin:       '0 auto 1.75rem',
-            }}>
-              Get our free checklist:{' '}
+            <p style={subtextStyle}>
+              Don't leave empty-handed. Get our free checklist:{' '}
               <strong style={{ fontWeight: 500, color: 'var(--dark)' }}>
                 5 signs you're in perimenopause
               </strong>{' '}
               (and what to do about each one). Straight to your inbox.
             </p>
 
-            {/* Kit embed */}
-            <div id="kit-popup-embed" />
+            <div id="kit-embed-exit" className="kit-popup-wrap" style={{ width: '100%' }} />
 
-            {/* "No thanks" — delayed 3s */}
-            <div style={{
-              marginTop:  '1.25rem',
-              minHeight:  '1.5rem',
-            }}>
-              {showDismiss && (
-                <button
-                  onClick={dismiss}
-                  style={{
-                    background:          'none',
-                    border:              'none',
-                    cursor:              'pointer',
-                    fontSize:            '0.75rem',
-                    color:               'rgba(46,46,46,0.38)',
-                    fontFamily:          'var(--font-body)',
-                    textDecoration:      'underline',
-                    textUnderlineOffset: '3px',
-                    transition:          'color 0.2s',
-                    animation:           'epDismissIn 0.4s ease forwards',
-                  }}
-                  onMouseEnter={e => e.currentTarget.style.color = 'rgba(46,46,46,0.6)'}
-                  onMouseLeave={e => e.currentTarget.style.color = 'rgba(46,46,46,0.38)'}
-                >
-                  No thanks, I'd rather figure it out alone
-                </button>
-              )}
-            </div>
-
-          </div>
-        </div>
+            <DismissButton show={showDismiss} onClick={() => dismiss('exit')} />
+          </Card>
+        </Overlay>
       )}
     </>
   )
+}
+
+// ── Shared sub-components ─────────────────────────────────
+
+function Overlay({ animOut, onClickOutside, children }) {
+  return (
+    <div
+      onClick={onClickOutside}
+      style={{
+        position:       'fixed',
+        inset:          0,
+        background:     'rgba(30,36,32,0.72)',
+        backdropFilter: 'blur(4px)',
+        zIndex:         1000,
+        display:        'flex',
+        alignItems:     'center',
+        justifyContent: 'center',
+        padding:        '1.5rem',
+        animation:      animOut ? 'epOverlayOut 0.28s ease forwards' : 'epOverlayIn 0.28s ease forwards',
+      }}
+    >
+      {children}
+    </div>
+  )
+}
+
+function Card({ animOut, children }) {
+  return (
+    <div
+      onClick={e => e.stopPropagation()}
+      style={{
+        background:   '#eae6de',
+        borderRadius: '1.75rem',
+        padding:      'clamp(2rem, 5vw, 3rem) clamp(1.75rem, 5vw, 3rem)',
+        maxWidth:     520,
+        width:        '100%',
+        boxShadow:    '0 32px 80px rgba(30,36,32,0.25)',
+        textAlign:    'center',
+        animation:    animOut ? 'epCardOut 0.28s ease forwards' : 'epCardIn 0.32s cubic-bezier(0.16,1,0.3,1) forwards',
+      }}
+    >
+      {children}
+    </div>
+  )
+}
+
+function IconCircle({ children }) {
+  return (
+    <div style={{
+      width:          52,
+      height:         52,
+      borderRadius:   '50%',
+      background:     'rgba(125,158,118,0.15)',
+      display:        'flex',
+      alignItems:     'center',
+      justifyContent: 'center',
+      margin:         '0 auto 1.5rem',
+      fontSize:       '1.5rem',
+    }}>
+      {children}
+    </div>
+  )
+}
+
+function DismissButton({ show, onClick }) {
+  return (
+    <div style={{ marginTop: '1.25rem', minHeight: '1.5rem' }}>
+      {show && (
+        <button
+          onClick={onClick}
+          style={{
+            background:          'none',
+            border:              'none',
+            cursor:              'pointer',
+            fontSize:            '0.75rem',
+            color:               'rgba(46,46,46,0.38)',
+            fontFamily:          'var(--font-body)',
+            textDecoration:      'underline',
+            textUnderlineOffset: '3px',
+            transition:          'color 0.2s',
+            animation:           'epDismissIn 0.4s ease forwards',
+          }}
+          onMouseEnter={e => e.currentTarget.style.color = 'rgba(46,46,46,0.6)'}
+          onMouseLeave={e => e.currentTarget.style.color = 'rgba(46,46,46,0.38)'}
+        >
+          No thanks, I'd rather figure it out alone
+        </button>
+      )}
+    </div>
+  )
+}
+
+const headingStyle = {
+  fontFamily:    'var(--font-display)',
+  fontSize:      'clamp(1.6rem, 4vw, 2.1rem)',
+  fontWeight:    700,
+  color:         'var(--dark)',
+  letterSpacing: '-0.02em',
+  lineHeight:    1.2,
+  marginBottom:  '0.85rem',
+}
+
+const subtextStyle = {
+  fontFamily:   'var(--font-body)',
+  fontSize:     '0.95rem',
+  fontWeight:   300,
+  lineHeight:   1.75,
+  color:        'var(--muted)',
+  maxWidth:     400,
+  margin:       '0 auto 1.75rem',
 }
