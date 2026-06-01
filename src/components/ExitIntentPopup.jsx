@@ -35,18 +35,24 @@ export default function ExitIntentPopup() {
     // Tab always shows after 1s
     const tabTimer = setTimeout(() => setTabVisible(true), 1000)
 
-    // Welcome popup: 500ms after page load (once per session)
+    // Gate — exit intent and auto-show only fire after 15s on page
+    const readyAfter = 15000
+    let ready = false
+    const readyTimer = setTimeout(() => { ready = true }, readyAfter)
+
+    // Welcome popup: auto after 15s (once per session)
     let loadTimer
     if (!sessionStorage.getItem(KEY_WELCOME)) {
       loadTimer = setTimeout(() => {
         if (welcomeTriggered.current) return
         welcomeTriggered.current = true
         openPopup('welcome')
-      }, 500)
+      }, readyAfter)
     }
 
-    // Exit intent: mouse within 20px of top (once per session)
+    // Exit intent: mouse within 20px of top, but only after 15s (once per session)
     const onMouseMove = (e) => {
+      if (!ready) return
       if (e.clientY < 20 && !exitTriggered.current && !sessionStorage.getItem(KEY_EXIT)) {
         exitTriggered.current = true
         openPopup('exit')
@@ -56,6 +62,7 @@ export default function ExitIntentPopup() {
 
     return () => {
       clearTimeout(tabTimer)
+      clearTimeout(readyTimer)
       clearTimeout(loadTimer)
       document.removeEventListener('mousemove', onMouseMove)
     }
