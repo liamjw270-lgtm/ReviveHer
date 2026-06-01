@@ -87,7 +87,7 @@ export default function ExitIntentPopup() {
         @keyframes epOverlayOut { from { opacity: 1 } to { opacity: 0 } }
         @keyframes epCardIn     { from { opacity: 0; transform: translateY(28px) scale(0.97) } to { opacity: 1; transform: translateY(0) scale(1) } }
         @keyframes epCardOut    { from { opacity: 1; transform: translateY(0) scale(1) } to { opacity: 0; transform: translateY(16px) scale(0.97) } }
-        @keyframes epTabIn      { from { opacity: 0; transform: translateY(-8px) } to { opacity: 1; transform: translateY(0) } }
+        @keyframes epTabIn      { from { opacity: 0; transform: translateY(-50%) rotate(180deg) translateX(40px) } to { opacity: 1; transform: translateY(-50%) rotate(180deg) translateX(0) } }
         @keyframes epDismissIn  { from { opacity: 0; transform: translateY(6px) } to { opacity: 1; transform: translateY(0) } }
 
         /* Kit form overrides inside popup */
@@ -114,9 +114,9 @@ export default function ExitIntentPopup() {
           onClick={openPopup}
           style={{
             position:      'fixed',
-            top:           68,
-            left:          '50%',
-            transform:     'translateX(-50%)',
+            top:           '50%',
+            right:         0,
+            transform:     'translateY(-50%) rotate(180deg)',
             zIndex:        150,
             display:       'flex',
             alignItems:    'center',
@@ -124,22 +124,23 @@ export default function ExitIntentPopup() {
             background:    '#7d9e76',
             color:         'white',
             border:        'none',
-            borderRadius:  '0 0 2rem 2rem',
-            padding:       '0.5rem 1.4rem 0.6rem',
+            borderRadius:  '0 0 0.75rem 0.75rem',
+            padding:       '0.75rem 0.6rem',
             cursor:        'pointer',
             fontFamily:    'var(--font-body)',
-            fontSize:      '0.72rem',
+            fontSize:      '0.65rem',
             fontWeight:    600,
-            letterSpacing: '0.06em',
+            letterSpacing: '0.1em',
             textTransform: 'uppercase',
             whiteSpace:    'nowrap',
-            boxShadow:     '0 4px 18px rgba(125,158,118,0.35)',
+            writingMode:   'vertical-rl',
+            boxShadow:     '-4px 0 18px rgba(125,158,118,0.3)',
             animation:     'epTabIn 0.4s cubic-bezier(0.16,1,0.3,1) forwards',
           }}
           onMouseEnter={e => e.currentTarget.style.background = '#6a8e63'}
           onMouseLeave={e => e.currentTarget.style.background = '#7d9e76'}
         >
-          <span style={{ fontSize: '0.85rem' }}>🎁</span>
+          <span style={{ fontSize: '0.85rem', writingMode: 'horizontal-tb' }}>🎁</span>
           Get your free guide
         </button>
       )}
