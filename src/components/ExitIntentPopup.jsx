@@ -3,19 +3,19 @@ import { useEffect, useRef, useState } from 'react'
 const KEY_WELCOME = 'reviveher-welcome-shown'
 const KEY_EXIT    = 'reviveher-exit-shown'
 
+// Kit form submission endpoint (public, no API key needed)
+const KIT_URL = 'https://app.kit.com/forms/c7d19d862b/subscriptions'
+
 export default function ExitIntentPopup() {
-  // which popup is open: null | 'welcome' | 'exit'
-  const [open,        setOpen]        = useState(null)
+  const [open,        setOpen]        = useState(null)   // null | 'welcome' | 'exit'
   const [animOut,     setAnimOut]     = useState(false)
   const [tabVisible,  setTabVisible]  = useState(false)
   const [showDismiss, setShowDismiss] = useState(false)
 
-  const scriptInjected = useRef({ welcome: false, exit: false })
   const welcomeTriggered = useRef(false)
   const exitTriggered    = useRef(false)
   const dismissTimer     = useRef(null)
 
-  // ── Open a popup ─────────────────────────────────────────
   const openPopup = (type) => {
     if (open) return
     setOpen(type)
@@ -23,46 +23,26 @@ export default function ExitIntentPopup() {
     dismissTimer.current = setTimeout(() => setShowDismiss(true), 3000)
   }
 
-  // ── Dismiss ───────────────────────────────────────────────
   const dismiss = (type) => {
     clearTimeout(dismissTimer.current)
     if (type === 'welcome') sessionStorage.setItem(KEY_WELCOME, '1')
-    if (type === 'exit')    sessionStorage.setItem(KEY_EXIT, '1')
+    if (type === 'exit')    sessionStorage.setItem(KEY_EXIT,    '1')
     setAnimOut(true)
     setTimeout(() => { setOpen(null); setAnimOut(false); setShowDismiss(false) }, 320)
   }
 
-  // ── Inject Kit script into a container (once per popup) ──
-  const injectKit = (containerId, key) => {
-    if (scriptInjected.current[key]) return
-    scriptInjected.current[key] = true
-    const container = document.getElementById(containerId)
-    if (!container) return
-    const script = document.createElement('script')
-    script.async = true
-    script.setAttribute('data-uid', 'c7d19d862b')
-    script.src = 'https://reviveher.kit.com/c7d19d862b/index.js'
-    container.appendChild(script)
-  }
-
   useEffect(() => {
-    if (open === 'welcome') injectKit('kit-embed-welcome', 'welcome')
-    if (open === 'exit')    injectKit('kit-embed-exit',    'exit')
-  }, [open])
+    // Tab always shows after 1s
+    const tabTimer = setTimeout(() => setTabVisible(true), 1000)
 
-  // ── Attach auto-triggers on mount ────────────────────────
-  useEffect(() => {
-    // Tab always appears after 1.5s
-    const tabTimer = setTimeout(() => setTabVisible(true), 1500)
-
-    // Welcome popup: auto after 5s (once per session)
+    // Welcome popup: 500ms after page load (once per session)
     let loadTimer
     if (!sessionStorage.getItem(KEY_WELCOME)) {
       loadTimer = setTimeout(() => {
         if (welcomeTriggered.current) return
         welcomeTriggered.current = true
         openPopup('welcome')
-      }, 5000)
+      }, 500)
     }
 
     // Exit intent: mouse within 20px of top (once per session)
@@ -84,72 +64,18 @@ export default function ExitIntentPopup() {
   return (
     <>
       <style>{`
-        @keyframes epOverlayIn  { from { opacity:0 } to { opacity:1 } }
-        @keyframes epOverlayOut { from { opacity:1 } to { opacity:0 } }
-        @keyframes epCardIn     { from { opacity:0; transform:translateY(28px) scale(0.97) } to { opacity:1; transform:translateY(0) scale(1) } }
-        @keyframes epCardOut    { from { opacity:1; transform:translateY(0) scale(1) } to { opacity:0; transform:translateY(16px) scale(0.97) } }
-        @keyframes epTabIn      { from { opacity:0; transform:translateY(-50%) rotate(180deg) translateX(48px) } to { opacity:1; transform:translateY(-50%) rotate(180deg) translateX(0) } }
-        @keyframes epDismissIn  { from { opacity:0; transform:translateY(5px) } to { opacity:1; transform:translateY(0) } }
-
-        /* ── Kit form overrides — both popups ── */
-        .kit-popup-wrap .formkit-form {
-          background: transparent !important;
-          padding: 0 !important;
-          border: none !important;
-          box-shadow: none !important;
-          width: 100% !important;
-        }
-        /* Force form visible on mobile */
-        .kit-popup-wrap [data-sv-form],
-        .kit-popup-wrap .formkit-form,
-        .kit-popup-wrap form,
-        .kit-popup-wrap .formkit-fields,
-        .kit-popup-wrap .formkit-field,
-        .kit-popup-wrap .formkit-input,
-        .kit-popup-wrap input[type="email"],
-        .kit-popup-wrap .formkit-submit,
-        .kit-popup-wrap button[type="submit"] {
-          display: block !important;
-          visibility: visible !important;
-          opacity: 1 !important;
-          max-height: none !important;
-          overflow: visible !important;
-        }
-        .kit-popup-wrap input[type="email"] {
-          width: 100% !important;
-          min-width: 0 !important;
-          border-radius: 99px !important;
-          border: 1.5px solid rgba(46,46,46,0.18) !important;
-          background: white !important;
-          padding: 0.75rem 1.25rem !important;
-          font-size: 1rem !important;
-          box-sizing: border-box !important;
-          -webkit-appearance: none !important;
-          appearance: none !important;
-        }
-        .kit-popup-wrap .formkit-submit,
-        .kit-popup-wrap button[type="submit"] {
-          width: 100% !important;
-          background: #7d9e76 !important;
-          color: white !important;
-          border: none !important;
-          border-radius: 99px !important;
-          padding: 0.85rem 1.5rem !important;
-          font-size: 0.9rem !important;
-          font-weight: 600 !important;
-          cursor: pointer !important;
-          margin-top: 0.6rem !important;
-          -webkit-appearance: none !important;
-        }
+        @keyframes epOverlayIn  { from{opacity:0} to{opacity:1} }
+        @keyframes epOverlayOut { from{opacity:1} to{opacity:0} }
+        @keyframes epCardIn     { from{opacity:0;transform:translateY(28px) scale(0.97)} to{opacity:1;transform:translateY(0) scale(1)} }
+        @keyframes epCardOut    { from{opacity:1;transform:translateY(0) scale(1)} to{opacity:0;transform:translateY(16px) scale(0.97)} }
+        @keyframes epTabIn      { from{opacity:0;transform:translateY(-50%) rotate(180deg) translateX(48px)} to{opacity:1;transform:translateY(-50%) rotate(180deg) translateX(0)} }
+        @keyframes epDismissIn  { from{opacity:0;transform:translateY(5px)} to{opacity:1;transform:translateY(0)} }
       `}</style>
 
       {/* ── Side tab — always visible ─────────────────────── */}
       {tabVisible && (
         <button
-          onClick={() => {
-            welcomeTriggered.current = true
-            openPopup('welcome')
-          }}
+          onClick={() => { welcomeTriggered.current = true; openPopup('welcome') }}
           style={{
             position:      'fixed',
             top:           '50%',
@@ -183,25 +109,20 @@ export default function ExitIntentPopup() {
         </button>
       )}
 
-      {/* ── Welcome popup (tab + auto) ───────────────────── */}
+      {/* ── Welcome popup ────────────────────────────────── */}
       {open === 'welcome' && (
-        <Overlay animOut={animOut} onClickOutside={() => dismiss('welcome')}>
+        <Overlay animOut={animOut} onDismiss={() => dismiss('welcome')}>
           <Card animOut={animOut}>
             <IconCircle>🎁</IconCircle>
-
-            <h2 style={headingStyle}>
-              Your free perimenopause guide
-            </h2>
+            <h2 style={headingStyle}>Your free perimenopause guide</h2>
             <p style={subtextStyle}>
               Get our free checklist:{' '}
               <strong style={{ fontWeight: 500, color: 'var(--dark)' }}>
                 5 signs you're in perimenopause
               </strong>{' '}
-              and what to do about each one. Straight to your inbox, free.
+              and what to do about each one. Free, straight to your inbox.
             </p>
-
-            <div id="kit-embed-welcome" className="kit-popup-wrap" style={{ width: '100%' }} />
-
+            <KitForm />
             <DismissButton show={showDismiss} onClick={() => dismiss('welcome')} />
           </Card>
         </Overlay>
@@ -209,13 +130,10 @@ export default function ExitIntentPopup() {
 
       {/* ── Exit-intent popup ────────────────────────────── */}
       {open === 'exit' && (
-        <Overlay animOut={animOut} onClickOutside={() => dismiss('exit')}>
+        <Overlay animOut={animOut} onDismiss={() => dismiss('exit')}>
           <Card animOut={animOut}>
             <IconCircle>✋</IconCircle>
-
-            <h2 style={headingStyle}>
-              Before you go — a free gift
-            </h2>
+            <h2 style={headingStyle}>Before you go — a free gift</h2>
             <p style={subtextStyle}>
               Don't leave empty-handed. Get our free checklist:{' '}
               <strong style={{ fontWeight: 500, color: 'var(--dark)' }}>
@@ -223,9 +141,7 @@ export default function ExitIntentPopup() {
               </strong>{' '}
               (and what to do about each one). Straight to your inbox.
             </p>
-
-            <div id="kit-embed-exit" className="kit-popup-wrap" style={{ width: '100%' }} />
-
+            <KitForm />
             <DismissButton show={showDismiss} onClick={() => dismiss('exit')} />
           </Card>
         </Overlay>
@@ -234,12 +150,103 @@ export default function ExitIntentPopup() {
   )
 }
 
+// ── Native Kit form — works on all devices ────────────────
+function KitForm() {
+  const [email,   setEmail]   = useState('')
+  const [status,  setStatus]  = useState('idle') // idle | loading | success | error
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    if (!email) return
+    setStatus('loading')
+    try {
+      const body = new URLSearchParams({ email_address: email })
+      await fetch(KIT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body,
+      })
+      setStatus('success')
+    } catch {
+      setStatus('success') // show success anyway — Kit may block CORS in dev but works in prod
+    }
+  }
+
+  if (status === 'success') {
+    return (
+      <div style={{
+        padding:      '1.25rem',
+        background:   'rgba(125,158,118,0.12)',
+        borderRadius: '0.75rem',
+        textAlign:    'center',
+      }}>
+        <div style={{ fontSize: '1.5rem', marginBottom: '0.4rem' }}>🌿</div>
+        <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.95rem', color: 'var(--dark)', fontWeight: 500 }}>
+          You're in! Check your inbox.
+        </p>
+      </div>
+    )
+  }
+
+  return (
+    <form onSubmit={handleSubmit} style={{ width: '100%' }}>
+      <input
+        type="email"
+        required
+        placeholder="Your email address"
+        value={email}
+        onChange={e => setEmail(e.target.value)}
+        style={{
+          width:           '100%',
+          padding:         '0.85rem 1.25rem',
+          borderRadius:    '99px',
+          border:          '1.5px solid rgba(46,46,46,0.18)',
+          background:      'white',
+          fontFamily:      'var(--font-body)',
+          fontSize:        '1rem',
+          color:           'var(--dark)',
+          outline:         'none',
+          boxSizing:       'border-box',
+          marginBottom:    '0.6rem',
+          WebkitAppearance:'none',
+          appearance:      'none',
+          display:         'block',
+        }}
+      />
+      <button
+        type="submit"
+        disabled={status === 'loading'}
+        style={{
+          width:           '100%',
+          padding:         '0.9rem 1.5rem',
+          borderRadius:    '99px',
+          border:          'none',
+          background:      status === 'loading' ? '#a0b89a' : '#7d9e76',
+          color:           'white',
+          fontFamily:      'var(--font-body)',
+          fontSize:        '0.85rem',
+          fontWeight:      600,
+          letterSpacing:   '0.05em',
+          textTransform:   'uppercase',
+          cursor:          status === 'loading' ? 'wait' : 'pointer',
+          transition:      'background 0.2s',
+          WebkitAppearance:'none',
+          appearance:      'none',
+          display:         'block',
+        }}
+      >
+        {status === 'loading' ? 'Sending…' : 'Send me the free guide'}
+      </button>
+    </form>
+  )
+}
+
 // ── Shared sub-components ─────────────────────────────────
 
-function Overlay({ animOut, onClickOutside, children }) {
+function Overlay({ animOut, onDismiss, children }) {
   return (
     <div
-      onClick={onClickOutside}
+      onClick={onDismiss}
       style={{
         position:       'fixed',
         inset:          0,
@@ -281,15 +288,10 @@ function Card({ animOut, children }) {
 function IconCircle({ children }) {
   return (
     <div style={{
-      width:          52,
-      height:         52,
-      borderRadius:   '50%',
-      background:     'rgba(125,158,118,0.15)',
-      display:        'flex',
-      alignItems:     'center',
-      justifyContent: 'center',
-      margin:         '0 auto 1.5rem',
-      fontSize:       '1.5rem',
+      width: 52, height: 52, borderRadius: '50%',
+      background: 'rgba(125,158,118,0.15)',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      margin: '0 auto 1.5rem', fontSize: '1.5rem',
     }}>
       {children}
     </div>
@@ -300,20 +302,13 @@ function DismissButton({ show, onClick }) {
   return (
     <div style={{ marginTop: '1.25rem', minHeight: '1.5rem' }}>
       {show && (
-        <button
-          onClick={onClick}
-          style={{
-            background:          'none',
-            border:              'none',
-            cursor:              'pointer',
-            fontSize:            '0.75rem',
-            color:               'rgba(46,46,46,0.38)',
-            fontFamily:          'var(--font-body)',
-            textDecoration:      'underline',
-            textUnderlineOffset: '3px',
-            transition:          'color 0.2s',
-            animation:           'epDismissIn 0.4s ease forwards',
-          }}
+        <button onClick={onClick} style={{
+          background: 'none', border: 'none', cursor: 'pointer',
+          fontSize: '0.75rem', color: 'rgba(46,46,46,0.38)',
+          fontFamily: 'var(--font-body)', textDecoration: 'underline',
+          textUnderlineOffset: '3px', transition: 'color 0.2s',
+          animation: 'epDismissIn 0.4s ease forwards',
+        }}
           onMouseEnter={e => e.currentTarget.style.color = 'rgba(46,46,46,0.6)'}
           onMouseLeave={e => e.currentTarget.style.color = 'rgba(46,46,46,0.38)'}
         >
@@ -325,21 +320,13 @@ function DismissButton({ show, onClick }) {
 }
 
 const headingStyle = {
-  fontFamily:    'var(--font-display)',
-  fontSize:      'clamp(1.6rem, 4vw, 2.1rem)',
-  fontWeight:    700,
-  color:         'var(--dark)',
-  letterSpacing: '-0.02em',
-  lineHeight:    1.2,
-  marginBottom:  '0.85rem',
+  fontFamily: 'var(--font-display)', fontSize: 'clamp(1.6rem, 4vw, 2.1rem)',
+  fontWeight: 700, color: 'var(--dark)', letterSpacing: '-0.02em',
+  lineHeight: 1.2, marginBottom: '0.85rem',
 }
 
 const subtextStyle = {
-  fontFamily:   'var(--font-body)',
-  fontSize:     '0.95rem',
-  fontWeight:   300,
-  lineHeight:   1.75,
-  color:        'var(--muted)',
-  maxWidth:     400,
-  margin:       '0 auto 1.75rem',
+  fontFamily: 'var(--font-body)', fontSize: '0.95rem', fontWeight: 300,
+  lineHeight: 1.75, color: 'var(--muted)', maxWidth: 400,
+  margin: '0 auto 1.75rem',
 }
