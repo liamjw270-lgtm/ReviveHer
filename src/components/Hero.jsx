@@ -244,28 +244,45 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* Scroll indicator */}
-      <div style={{
-        position:   'absolute',
-        bottom:     '2rem',
-        left:       '50%',
-        transform:  'translateX(-50%)',
-        display:    'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        gap:        '0.5rem',
-        opacity:    0.4,
-      }}>
-        <span style={{ fontSize: '0.6rem', letterSpacing: '0.18em', textTransform: 'uppercase', color: 'var(--muted)' }}>Scroll</span>
-        <div style={{ width: 1, height: 36, background: 'var(--muted)', animation: 'scrollPulse 2s ease-in-out infinite' }} />
-      </div>
+      {/* Free guide banner — bottom of hero */}
+      <button
+        onClick={() => window.dispatchEvent(new CustomEvent('reviveher:open-popup'))}
+        style={{
+          position:      'absolute',
+          bottom:        0,
+          left:          0,
+          right:         0,
+          zIndex:        3,
+          display:       'flex',
+          alignItems:    'center',
+          justifyContent:'center',
+          gap:           '0.6rem',
+          background:    'rgba(125,158,118,0.12)',
+          borderTop:     '1px solid rgba(125,158,118,0.2)',
+          backdropFilter:'blur(8px)',
+          padding:       '0.75rem 1.5rem',
+          cursor:        'pointer',
+          border:        'none',
+          width:         '100%',
+          transition:    'background 0.2s',
+        }}
+        onMouseEnter={e => e.currentTarget.style.background = 'rgba(125,158,118,0.2)'}
+        onMouseLeave={e => e.currentTarget.style.background = 'rgba(125,158,118,0.12)'}
+      >
+        <span style={{ fontSize: '1rem' }}>🎁</span>
+        <span style={{
+          fontFamily:    'var(--font-body)',
+          fontSize:      '0.78rem',
+          fontWeight:    600,
+          letterSpacing: '0.08em',
+          textTransform: 'uppercase',
+          color:         'var(--primary)',
+        }}>
+          Get your free perimenopause guide
+        </span>
+        <span style={{ fontSize: '0.78rem', color: 'var(--primary)', opacity: 0.7 }}>→</span>
+      </button>
 
-      <style>{`
-        @keyframes scrollPulse {
-          0%, 100% { opacity: 0.3; transform: scaleY(1); }
-          50% { opacity: 1; transform: scaleY(0.6); }
-        }
-      `}</style>
     </section>
   )
 }

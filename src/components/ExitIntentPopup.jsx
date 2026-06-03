@@ -6,7 +6,6 @@ const KEY_EXIT    = 'reviveher-exit-shown'
 export default function ExitIntentPopup() {
   const [open,        setOpen]        = useState(null)   // null | 'welcome' | 'exit'
   const [animOut,     setAnimOut]     = useState(false)
-  const [tabVisible,  setTabVisible]  = useState(false)
   const [showDismiss, setShowDismiss] = useState(false)
 
   const welcomeTriggered = useRef(false)
@@ -45,10 +44,10 @@ export default function ExitIntentPopup() {
   }, [open])
 
   useEffect(() => {
-    const tabTimer = setTimeout(() => setTabVisible(true), 1000)
     let ready = false
     const readyTimer = setTimeout(() => { ready = true }, 15000)
 
+    // Auto-show after 15s (once per session)
     let loadTimer
     if (!sessionStorage.getItem(KEY_WELCOME)) {
       loadTimer = setTimeout(() => {
@@ -58,6 +57,7 @@ export default function ExitIntentPopup() {
       }, 15000)
     }
 
+    // Exit intent: mouse within 20px of top, only after 15s
     const onMouseMove = (e) => {
       if (!ready) return
       if (e.clientY < 20 && !exitTriggered.current && !sessionStorage.getItem(KEY_EXIT)) {
@@ -67,11 +67,18 @@ export default function ExitIntentPopup() {
     }
     document.addEventListener('mousemove', onMouseMove)
 
+    // Hero banner click → open welcome popup
+    const onBannerClick = () => {
+      welcomeTriggered.current = true
+      openPopup('welcome')
+    }
+    window.addEventListener('reviveher:open-popup', onBannerClick)
+
     return () => {
-      clearTimeout(tabTimer)
       clearTimeout(readyTimer)
       clearTimeout(loadTimer)
       document.removeEventListener('mousemove', onMouseMove)
+      window.removeEventListener('reviveher:open-popup', onBannerClick)
     }
   }, [])
 
@@ -82,7 +89,6 @@ export default function ExitIntentPopup() {
         @keyframes epOverlayOut { from{opacity:1} to{opacity:0} }
         @keyframes epCardIn  { from{opacity:0;transform:translateY(28px) scale(0.97)} to{opacity:1;transform:translateY(0) scale(1)} }
         @keyframes epCardOut { from{opacity:1;transform:translateY(0) scale(1)} to{opacity:0;transform:translateY(16px) scale(0.97)} }
-        @keyframes epTabIn   { from{opacity:0;transform:translateY(-50%) rotate(180deg) translateX(48px)} to{opacity:1;transform:translateY(-50%) rotate(180deg) translateX(0)} }
         @keyframes epDismissIn { from{opacity:0;transform:translateY(5px)} to{opacity:1;transform:translateY(0)} }
 
         /* Force Kit form visible and on-brand inside popup */
@@ -132,29 +138,6 @@ export default function ExitIntentPopup() {
         }
       `}</style>
 
-      {/* ── Side tab — always visible ─────────────────────── */}
-      {tabVisible && (
-        <button
-          onClick={() => { welcomeTriggered.current = true; openPopup('welcome') }}
-          style={{
-            position: 'fixed', top: '50%', right: 0,
-            transform: 'translateY(-50%) rotate(180deg)',
-            zIndex: 150, display: 'flex', alignItems: 'center', gap: '0.5rem',
-            background: '#7d9e76', color: 'white', border: 'none',
-            borderRadius: '0 0 0.75rem 0.75rem', padding: '0.75rem 0.6rem',
-            cursor: 'pointer', fontFamily: 'var(--font-body)', fontSize: '0.65rem',
-            fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase',
-            whiteSpace: 'nowrap', writingMode: 'vertical-rl',
-            boxShadow: '-4px 0 18px rgba(125,158,118,0.3)',
-            animation: 'epTabIn 0.4s cubic-bezier(0.16,1,0.3,1) forwards',
-          }}
-          onMouseEnter={e => e.currentTarget.style.background = '#6a8e63'}
-          onMouseLeave={e => e.currentTarget.style.background = '#7d9e76'}
-        >
-          <span style={{ fontSize: '0.85rem', writingMode: 'horizontal-tb' }}>🎁</span>
-          Get your free guide
-        </button>
-      )}
 
       {/* ── Popup — shown when open !== null ──────────────── */}
       {open && (

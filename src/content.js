@@ -11,7 +11,7 @@ export const content = {
     subtext:
       "Calm your nervous system. Sleep better. Feel like yourself again — a gentle, evidence-backed guide for every woman navigating peri-menopause.",
     cta: "Get the Guide",
-    ctaNote: "Instant digital download",
+    ctaNote: "$19.99 AUD · Instant digital download",
     productImage: "/book-3d.png",
     floatingImages: [null, null, null, null, null, null],
   },
