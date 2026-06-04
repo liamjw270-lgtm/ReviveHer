@@ -95,7 +95,7 @@ export default function BuyPage() {
             {/* Price block */}
             <div style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '1.25rem', padding: '1.75rem 2rem', marginBottom: '2rem' }}>
               <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.75rem', marginBottom: '0.5rem' }}>
-                <span style={{ fontSize: '3rem', fontWeight: 700, color: 'white', letterSpacing: '-0.04em' }}>$19.99</span>
+                <span style={{ fontSize: '3rem', fontWeight: 700, color: 'white', letterSpacing: '-0.04em' }}>$19.99 <span style={{ fontSize: '1.4rem', fontWeight: 500, opacity: 0.7 }}>AUD</span></span>
                 <span style={{ fontSize: '1.1rem', color: 'rgba(255,255,255,0.3)', textDecoration: 'line-through' }}>$112</span>
                 <span style={{ fontSize: '0.75rem', background: 'var(--secondary)', color: 'white', padding: '0.25rem 0.6rem', borderRadius: 999, fontWeight: 500 }}>82% OFF</span>
               </div>
@@ -103,7 +103,24 @@ export default function BuyPage() {
             </div>
 
             <ShopifyBuyButton />
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', justifyContent: 'center', marginTop: '0.75rem' }}>
+            {/* Guarantee line */}
+            <div style={{
+              display:        'flex',
+              alignItems:     'center',
+              justifyContent: 'center',
+              gap:            '0.5rem',
+              marginTop:      '0.9rem',
+              padding:        '0.65rem 1rem',
+              background:     'rgba(125,158,118,0.1)',
+              border:         '1px solid rgba(125,158,118,0.2)',
+              borderRadius:   '0.6rem',
+            }}>
+              <span style={{ fontSize: '1rem' }}>✓</span>
+              <span style={{ fontSize: '0.82rem', color: 'rgba(255,255,255,0.75)', fontWeight: 400 }}>
+                30-day money back guarantee — no questions asked
+              </span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', justifyContent: 'center', marginTop: '0.6rem' }}>
               <LockIcon />
               <span style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.3)' }}>Secure checkout · Instant access · Yours forever</span>
             </div>

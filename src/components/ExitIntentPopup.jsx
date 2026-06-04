@@ -11,8 +11,6 @@ export default function ExitIntentPopup() {
   const welcomeTriggered = useRef(false)
   const exitTriggered    = useRef(false)
   const dismissTimer     = useRef(null)
-  const kitInjected      = useRef(false)
-
   const openPopup = (type) => {
     if (open) return
     setOpen(type)
@@ -28,20 +26,6 @@ export default function ExitIntentPopup() {
     setTimeout(() => { setOpen(null); setAnimOut(false); setShowDismiss(false) }, 320)
   }
 
-  // Inject Kit script into the popup container the first time it opens.
-  // We inject into the container div (NOT document.head) — injecting into
-  // head causes Kit to show a global "discovery" widget instead of the form.
-  useEffect(() => {
-    if (!open || kitInjected.current) return
-    kitInjected.current = true
-    const container = document.getElementById('ep-kit-container')
-    if (!container) return
-    const script = document.createElement('script')
-    script.async = true
-    script.setAttribute('data-uid', 'c7d19d862b')
-    script.src = 'https://reviveher.kit.com/c7d19d862b/index.js'
-    container.appendChild(script)
-  }, [open])
 
   useEffect(() => {
     let ready = false
@@ -91,51 +75,42 @@ export default function ExitIntentPopup() {
         @keyframes epCardOut { from{opacity:1;transform:translateY(0) scale(1)} to{opacity:0;transform:translateY(16px) scale(0.97)} }
         @keyframes epDismissIn { from{opacity:0;transform:translateY(5px)} to{opacity:1;transform:translateY(0)} }
 
-        /* Force Kit form visible and on-brand inside popup */
-        #ep-kit-container [data-sv-form],
-        #ep-kit-container .formkit-form {
-          background: transparent !important;
-          border: none !important;
-          box-shadow: none !important;
-          padding: 0 !important;
-          width: 100% !important;
+        .ep-email-input {
+          display: block;
+          width: 100%;
+          padding: 0.85rem 1.25rem;
+          border-radius: 99px;
+          border: 1.5px solid rgba(46,46,46,0.18);
+          background: white;
+          font-family: var(--font-body);
+          font-size: 1rem;
+          color: #2e2e2e;
+          box-sizing: border-box;
+          -webkit-appearance: none;
+          margin-bottom: 0.6rem;
+          outline: none;
         }
-        #ep-kit-container .formkit-fields,
-        #ep-kit-container .formkit-column {
-          flex-direction: column !important;
-          width: 100% !important;
+        .ep-email-input:focus { border-color: #7d9e76; }
+        .ep-submit-btn {
+          display: block;
+          width: 100%;
+          padding: 0.9rem 1.5rem;
+          border-radius: 99px;
+          border: none;
+          background: #7d9e76;
+          color: white;
+          font-family: var(--font-body);
+          font-size: 0.85rem;
+          font-weight: 600;
+          letter-spacing: 0.05em;
+          text-transform: uppercase;
+          cursor: pointer;
+          box-sizing: border-box;
+          -webkit-appearance: none;
+          transition: background 0.2s;
         }
-        #ep-kit-container .formkit-field { width: 100% !important; margin-bottom: 0.6rem !important; }
-        #ep-kit-container input[type="email"],
-        #ep-kit-container .formkit-input {
-          display: block !important;
-          width: 100% !important;
-          padding: 0.85rem 1.25rem !important;
-          border-radius: 99px !important;
-          border: 1.5px solid rgba(46,46,46,0.18) !important;
-          background: white !important;
-          font-size: 1rem !important;
-          color: #2e2e2e !important;
-          box-sizing: border-box !important;
-          -webkit-appearance: none !important;
-        }
-        #ep-kit-container .formkit-submit,
-        #ep-kit-container button[type="submit"] {
-          display: block !important;
-          width: 100% !important;
-          padding: 0.9rem 1.5rem !important;
-          border-radius: 99px !important;
-          border: none !important;
-          background: #7d9e76 !important;
-          color: white !important;
-          font-size: 0.85rem !important;
-          font-weight: 600 !important;
-          letter-spacing: 0.05em !important;
-          text-transform: uppercase !important;
-          cursor: pointer !important;
-          box-sizing: border-box !important;
-          -webkit-appearance: none !important;
-        }
+        .ep-submit-btn:hover { background: #6a8e63; }
+        .ep-submit-btn:disabled { background: #a0b89a; cursor: wait; }
       `}</style>
 
 
@@ -203,8 +178,8 @@ export default function ExitIntentPopup() {
               }
             </p>
 
-            {/* Kit form — script is injected here on first open */}
-            <div id="ep-kit-container" />
+            {/* Native email form — always renders on all devices */}
+            <PopupEmailForm />
 
             {/* Delayed dismiss link */}
             <div style={{ marginTop: '1.25rem', minHeight: '1.5rem' }}>
@@ -230,5 +205,64 @@ export default function ExitIntentPopup() {
         </div>
       )}
     </>
+  )
+}
+
+// ── Native form — always renders, submits to Kit via no-cors fetch ──
+function PopupEmailForm() {
+  const [email,  setEmail]  = useState('')
+  const [status, setStatus] = useState('idle') // idle | loading | success
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    if (!email) return
+    setStatus('loading')
+    try {
+      // no-cors sends the request without reading the response (Kit doesn't
+      // need a response body — the subscription is recorded server-side)
+      await fetch('https://app.kit.com/forms/c7d19d862b/subscriptions', {
+        method:  'POST',
+        mode:    'no-cors',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body:    `email_address=${encodeURIComponent(email)}`,
+      })
+    } catch {}
+    setStatus('success')
+  }
+
+  if (status === 'success') {
+    return (
+      <div style={{
+        padding:      '1.25rem',
+        background:   'rgba(125,158,118,0.12)',
+        borderRadius: '0.75rem',
+        textAlign:    'center',
+      }}>
+        <div style={{ fontSize: '1.5rem', marginBottom: '0.4rem' }}>🌿</div>
+        <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.95rem', color: 'var(--dark)', fontWeight: 500, margin: 0 }}>
+          You're in! Check your inbox.
+        </p>
+      </div>
+    )
+  }
+
+  return (
+    <form onSubmit={handleSubmit} style={{ width: '100%' }}>
+      <input
+        type="email"
+        required
+        placeholder="Your email address"
+        value={email}
+        onChange={e => setEmail(e.target.value)}
+        className="ep-email-input"
+      />
+      <button
+        type="submit"
+        disabled={status === 'loading'}
+        className="ep-submit-btn"
+      >
+        {status === 'loading' ? 'Sending…' : 'Send me the free guide →'}
+      </button>
+    </form>
   )
 }

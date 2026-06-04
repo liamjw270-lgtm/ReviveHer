@@ -162,23 +162,34 @@ export default function Hero() {
           </p>
 
           {/* CTA row */}
-          <div ref={ctaRef} style={{
-            marginTop:  '2.5rem',
-            display:    'flex',
-            alignItems: 'center',
-            gap:        '1.5rem',
-            flexWrap:   'wrap',
-          }}>
-            <Link
-              to="/buy"
-              className="btn btn-sage"
-              style={{ fontSize: '0.82rem', padding: '1.1rem 2.5rem' }}
-            >
-              {content.hero.cta} →
-            </Link>
-            <span style={{ fontSize: '0.78rem', color: 'var(--muted)', letterSpacing: '0.03em' }}>
-              {content.hero.ctaNote}
-            </span>
+          <div ref={ctaRef} style={{ marginTop: '2.5rem' }}>
+            {/* Stars */}
+            <div style={{
+              fontSize:     '1.2rem',
+              letterSpacing:'0.1em',
+              marginBottom: '0.9rem',
+              color:        '#f4b942',
+            }}>
+              ⭐⭐⭐⭐⭐
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', flexWrap: 'wrap' }}>
+              <Link
+                to="/buy"
+                className="btn btn-sage"
+                style={{ fontSize: '0.82rem', padding: '1.1rem 2.5rem' }}
+              >
+                {content.hero.cta} →
+              </Link>
+              <span style={{
+                fontSize:   '1.05rem',
+                fontWeight: 500,
+                color:      'var(--dark)',
+                letterSpacing: '0.01em',
+              }}>
+                {content.hero.ctaNote}
+              </span>
+            </div>
           </div>
 
           {/* Trust badges */}
