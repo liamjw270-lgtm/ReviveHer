@@ -174,7 +174,6 @@ export default function Transformations() {
           border:          '1px solid var(--border)',
         }}>
           {[
-            { n: '12,000+', l: 'Women helped' },
             { n: '4.9★',    l: 'Average rating' },
             { n: '4 weeks', l: 'Gentle week-by-week reset' },
             { n: '100%',    l: 'Evidence-backed' },

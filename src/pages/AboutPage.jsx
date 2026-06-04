@@ -10,7 +10,6 @@ const values = [
 ]
 
 const milestones = [
-  { stat: '12,000+', label: 'Women supported worldwide' },
   { stat: '4.9★',    label: 'Average reader rating' },
   { stat: '4 weeks', label: 'Gentle week-by-week reset' },
   { stat: '100%',    label: 'Evidence-backed content' },

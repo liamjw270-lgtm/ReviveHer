@@ -200,7 +200,7 @@ export default function Hero() {
             gap:        '1.5rem',
             flexWrap:   'wrap',
           }}>
-            {['4.9★ Rating', '12,000+ Women', '30-Day Guarantee'].map(b => (
+            {['4.9★ Rating', '30-Day Guarantee'].map(b => (
               <div key={b} style={{
                 fontSize:      '0.72rem',
                 fontWeight:    500,
