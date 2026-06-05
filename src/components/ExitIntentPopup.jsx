@@ -6,7 +6,9 @@ const KEY_EXIT    = 'reviveher-exit-shown'
 // Kit form submission endpoint — this is what Kit's own embedded script
 // posts to when a user submits. Calling it directly means we have zero
 // dependency on Kit's JS rendering, which silently fails on mobile Safari.
-const KIT_FORM_URL = 'https://app.kit.com/forms/c7d19d862b/subscriptions'
+// 9508175 is the numeric form ID Kit uses internally (visible in data-sv-form
+// inside Kit's own embed script). c7d19d862b is only the script/embed UID.
+const KIT_FORM_URL = 'https://app.kit.com/forms/9508175/subscriptions'
 
 export default function ExitIntentPopup() {
   const [open,        setOpen]        = useState(null)  // null | 'welcome' | 'exit'
