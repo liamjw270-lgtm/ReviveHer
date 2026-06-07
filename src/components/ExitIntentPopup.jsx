@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { useLocation } from 'react-router-dom'
 
 const KEY_WELCOME = 'reviveher-welcome-shown'
 const KEY_EXIT    = 'reviveher-exit-shown'
@@ -11,6 +12,8 @@ const KEY_EXIT    = 'reviveher-exit-shown'
 const KIT_FORM_URL = 'https://app.kit.com/forms/9508175/subscriptions'
 
 export default function ExitIntentPopup() {
+  const { pathname } = useLocation()
+
   const [open,        setOpen]        = useState(null)  // null | 'welcome' | 'exit'
   const [visible,     setVisible]     = useState(false)
   const [showDismiss, setShowDismiss] = useState(false)
@@ -22,6 +25,10 @@ export default function ExitIntentPopup() {
   const welcomeTriggered = useRef(false)
   const exitTriggered    = useRef(false)
   const dismissTimer     = useRef(null)
+
+  // Don't show the popup on the buy page — the person is already
+  // ready to purchase and interrupting them hurts conversion.
+  const isBuyPage = pathname === '/buy'
 
   const openPopup = (type) => {
     if (open) return
@@ -62,6 +69,9 @@ export default function ExitIntentPopup() {
   }
 
   useEffect(() => {
+    // Never trigger on the buy page
+    if (isBuyPage) return
+
     let ready = false
     const readyTimer = setTimeout(() => { ready = true }, 15000)
 
@@ -109,7 +119,10 @@ export default function ExitIntentPopup() {
       window.removeEventListener('scroll', onScroll)
       window.removeEventListener('reviveher:open-popup', onBannerClick)
     }
-  }, [])
+  }, [isBuyPage])
+
+  // Render nothing on the buy page
+  if (isBuyPage) return null
 
   // Input / button shared styles (inline so they're device-independent)
   const inputStyle = {

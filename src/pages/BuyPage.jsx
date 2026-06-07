@@ -96,8 +96,6 @@ export default function BuyPage() {
             <div style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '1.25rem', padding: '1.75rem 2rem', marginBottom: '2rem' }}>
               <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.75rem', marginBottom: '0.5rem' }}>
                 <span style={{ fontSize: '3rem', fontWeight: 700, color: 'white', letterSpacing: '-0.04em' }}>$19.99 <span style={{ fontSize: '1.4rem', fontWeight: 500, opacity: 0.7 }}>AUD</span></span>
-                <span style={{ fontSize: '1.1rem', color: 'rgba(255,255,255,0.3)', textDecoration: 'line-through' }}>$112</span>
-                <span style={{ fontSize: '0.75rem', background: 'var(--secondary)', color: 'white', padding: '0.25rem 0.6rem', borderRadius: 999, fontWeight: 500 }}>82% OFF</span>
               </div>
               <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.82rem' }}>One-time payment · Instant download · All formats included</div>
             </div>
@@ -202,8 +200,8 @@ export default function BuyPage() {
           <FadeIn delay={0.3}>
             <div style={{ marginTop: '2rem', background: 'rgba(125,158,118,0.08)', border: '1px solid rgba(125,158,118,0.2)', borderRadius: '1rem', padding: '1.25rem 1.75rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
               <div>
-                <div style={{ color: 'white', fontWeight: 600, fontSize: '0.95rem' }}>Total value: <span style={{ textDecoration: 'line-through', color: 'rgba(255,255,255,0.4)' }}>$112</span></div>
-                <div style={{ color: 'var(--primary)', fontSize: '0.82rem' }}>You get everything for just $19.99 today</div>
+                <div style={{ color: 'white', fontWeight: 600, fontSize: '0.95rem' }}>Everything included for $19.99 AUD</div>
+                <div style={{ color: 'var(--primary)', fontSize: '0.82rem' }}>One-time payment · Instant digital download</div>
               </div>
               <a
                 href="#buy-now"
