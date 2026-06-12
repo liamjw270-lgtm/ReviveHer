@@ -4,6 +4,7 @@ import { useGSAP } from '@gsap/react'
 import gsap from '../lib/gsap'
 import { ScrollTrigger } from '../lib/gsap'
 import { content } from '../content'
+import TrustBadges from './TrustBadges'
 
 export default function Hero() {
   const heroRef    = useRef(null)
@@ -14,18 +15,19 @@ export default function Hero() {
   const ctaRef     = useRef(null)
   const imageRef   = useRef(null)
   const badgeRef   = useRef(null)
+  const trustRef   = useRef(null)
+  const mobileImgRef = useRef(null)
 
   useGSAP(() => {
     const lines = [line1Ref.current, line2Ref.current, line3Ref.current]
 
-    // Set initial state
-    gsap.set(lines,                    { y: '110%', opacity: 0 })
-    gsap.set([subRef.current, ctaRef.current, badgeRef.current], { opacity: 0, y: 20 })
-    gsap.set(imageRef.current,         { opacity: 0, x: 40, scale: 0.96 })
+    gsap.set(lines, { y: '110%', opacity: 0 })
+    gsap.set([subRef.current, ctaRef.current, badgeRef.current, trustRef.current], { opacity: 0, y: 20 })
+    gsap.set(imageRef.current, { opacity: 0, x: 40, scale: 0.96 })
+    gsap.set(mobileImgRef.current, { opacity: 0, y: 24, scale: 0.95 })
 
     const tl = gsap.timeline({ delay: 0.1 })
 
-    // Lines stagger up
     tl.to(lines, {
       y:        0,
       opacity:  1,
@@ -33,12 +35,14 @@ export default function Hero() {
       stagger:  0.1,
       ease:     'power3.out',
     })
-    .to(subRef.current, { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' }, '-=0.5')
-    .to(ctaRef.current, { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' }, '-=0.5')
+    .to(subRef.current,   { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' }, '-=0.5')
+    .to(mobileImgRef.current, { opacity: 1, y: 0, scale: 1, duration: 0.8, ease: 'power3.out' }, '-=0.5')
+    .to(ctaRef.current,   { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' }, '-=0.5')
+    .to(trustRef.current, { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' }, '-=0.5')
     .to(badgeRef.current, { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' }, '-=0.55')
     .to(imageRef.current, { opacity: 1, x: 0, scale: 1, duration: 1.1, ease: 'power3.out' }, '-=0.9')
 
-    // Subtle parallax on scroll
+    // Subtle parallax on scroll (desktop image)
     ScrollTrigger.create({
       trigger: heroRef.current,
       start:   'top top',
@@ -52,43 +56,48 @@ export default function Hero() {
 
   return (
     <section ref={heroRef} style={{
-      minHeight:      '100vh',
-      paddingTop:     68,
-      background:     'var(--bg)',
-      display:        'flex',
-      alignItems:     'center',
-      position:       'relative',
-      overflow:       'hidden',
+      minHeight:  '100svh',
+      paddingTop: 68,
+      background: 'var(--bg)',
+      display:    'flex',
+      alignItems: 'center',
+      position:   'relative',
+      overflow:   'hidden',
     }}>
+      <style>{`
+        .hero-mobile-book { display: flex; justify-content: center; margin-top: 2rem; }
+        @media (min-width: 900px) { .hero-mobile-book { display: none; } }
+      `}</style>
+
       {/* Sunrise background image — soft overlay */}
       <div style={{
-        position:   'absolute',
-        inset:      0,
-        backgroundImage: 'url(/sunrise.jpg)',
-        backgroundSize:  'cover',
+        position:           'absolute',
+        inset:              0,
+        backgroundImage:    'url(/sunrise.jpg)',
+        backgroundSize:     'cover',
         backgroundPosition: 'center 60%',
-        opacity:    0.13,
-        pointerEvents: 'none',
+        opacity:            0.13,
+        pointerEvents:      'none',
       }} />
       {/* Background texture */}
       <div style={{
-        position:   'absolute',
-        inset:      0,
+        position:        'absolute',
+        inset:           0,
         backgroundImage: 'radial-gradient(ellipse at 70% 50%, rgba(125,158,118,0.08) 0%, transparent 60%), radial-gradient(ellipse at 20% 80%, rgba(201,150,142,0.07) 0%, transparent 50%)',
-        pointerEvents: 'none',
+        pointerEvents:   'none',
       }} />
 
       <div style={{
-        maxWidth: 1200,
-        margin:   '0 auto',
-        padding:  '5rem 3rem',
-        width:    '100%',
-        display:  'grid',
+        maxWidth:            1200,
+        margin:              '0 auto',
+        padding:             'clamp(2.5rem, 6vw, 5rem) clamp(1.5rem, 5vw, 3rem) clamp(4.5rem, 8vw, 5rem)',
+        width:               '100%',
+        display:             'grid',
         gridTemplateColumns: '1fr auto',
-        gap:      '4rem',
-        alignItems: 'center',
-        position: 'relative',
-        zIndex:   2,
+        gap:                 '4rem',
+        alignItems:          'center',
+        position:            'relative',
+        zIndex:              2,
       }}>
         {/* Text column */}
         <div>
@@ -106,7 +115,7 @@ export default function Hero() {
             letterSpacing: '0.1em',
             textTransform: 'uppercase',
             color:         'var(--primary)',
-            marginBottom:  '1.75rem',
+            marginBottom:  '1.5rem',
           }}>
             <span style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--primary)', display: 'inline-block' }} />
             Evidence-Based · Women-First
@@ -118,7 +127,7 @@ export default function Hero() {
               <div style={{ overflow: 'hidden', paddingBottom: '0.05em' }}>
                 <span ref={line1Ref} style={{
                   display:    'block',
-                  fontSize:   'clamp(3.5rem, 7vw, 7.5rem)',
+                  fontSize:   'clamp(3rem, 10vw, 7.5rem)',
                   fontWeight: 700,
                   color:      'var(--dark)',
                 }}>
@@ -127,11 +136,11 @@ export default function Hero() {
               </div>
               <div style={{ overflow: 'hidden', paddingBottom: '0.05em' }}>
                 <span ref={line2Ref} style={{
-                  display:      'block',
-                  fontSize:     'clamp(3.5rem, 7vw, 7.5rem)',
-                  fontWeight:   400,
-                  fontStyle:    'italic',
-                  color:        'var(--primary)',
+                  display:    'block',
+                  fontSize:   'clamp(3rem, 10vw, 7.5rem)',
+                  fontWeight: 400,
+                  fontStyle:  'italic',
+                  color:      'var(--primary)',
                 }}>
                   {content.hero.headlineGhost}
                 </span>
@@ -139,7 +148,7 @@ export default function Hero() {
               <div style={{ overflow: 'hidden', paddingBottom: '0.05em' }}>
                 <span ref={line3Ref} style={{
                   display:    'block',
-                  fontSize:   'clamp(3.5rem, 7vw, 7.5rem)',
+                  fontSize:   'clamp(3rem, 10vw, 7.5rem)',
                   fontWeight: 700,
                   color:      'var(--dark)',
                 }}>
@@ -151,8 +160,8 @@ export default function Hero() {
 
           {/* Subtext */}
           <p ref={subRef} style={{
-            marginTop:  '1.75rem',
-            fontSize:   '1.05rem',
+            marginTop:  '1.5rem',
+            fontSize:   'clamp(0.98rem, 2.5vw, 1.05rem)',
             lineHeight: 1.75,
             fontWeight: 300,
             color:      'var(--muted)',
@@ -161,30 +170,48 @@ export default function Hero() {
             {content.hero.subtext}
           </p>
 
+          {/* Mobile book image — between subtext and CTA */}
+          <div className="hero-mobile-book" ref={mobileImgRef}>
+            {content.hero.productImage && (
+              <img
+                src={content.hero.productImage}
+                alt="The Peri-Menopause Reset by ReviveHer"
+                style={{
+                  width:   'min(58vw, 240px)',
+                  display: 'block',
+                  filter:  'drop-shadow(0 24px 40px rgba(46,46,46,0.25))',
+                }}
+              />
+            )}
+          </div>
+
           {/* CTA row */}
-          <div ref={ctaRef} style={{ marginTop: '2.5rem' }}>
-            {/* Stars */}
+          <div ref={ctaRef} style={{ marginTop: '2rem' }}>
+            {/* Stars + rating line */}
             <div style={{
-              fontSize:     '1.2rem',
-              letterSpacing:'0.1em',
-              marginBottom: '0.9rem',
-              color:        '#f4b942',
+              display:      'flex',
+              alignItems:   'center',
+              gap:          '0.6rem',
+              marginBottom: '1rem',
             }}>
-              ⭐⭐⭐⭐⭐
+              <span style={{ fontSize: '1.05rem', letterSpacing: '0.08em', color: '#f4b942' }}>★★★★★</span>
+              <span style={{ fontSize: '0.8rem', color: 'var(--muted)', fontWeight: 500 }}>
+                Loved by readers across Australia
+              </span>
             </div>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', flexWrap: 'wrap' }}>
               <Link
                 to="/buy"
                 className="btn btn-sage"
-                style={{ fontSize: '0.82rem', padding: '1.1rem 2.5rem' }}
+                style={{ fontSize: '0.85rem', padding: '1.15rem 2.6rem' }}
               >
                 {content.hero.cta} →
               </Link>
               <span style={{
-                fontSize:   '1.05rem',
-                fontWeight: 500,
-                color:      'var(--dark)',
+                fontSize:      '1rem',
+                fontWeight:    600,
+                color:         'var(--dark)',
                 letterSpacing: '0.01em',
               }}>
                 {content.hero.ctaNote}
@@ -193,26 +220,8 @@ export default function Hero() {
           </div>
 
           {/* Trust badges */}
-          <div style={{
-            marginTop:  '2.5rem',
-            display:    'flex',
-            alignItems: 'center',
-            gap:        '1.5rem',
-            flexWrap:   'wrap',
-          }}>
-            {['4.9★ Rating', '30-Day Guarantee'].map(b => (
-              <div key={b} style={{
-                fontSize:      '0.72rem',
-                fontWeight:    500,
-                color:         'var(--muted)',
-                letterSpacing: '0.02em',
-                display:       'flex',
-                alignItems:    'center',
-                gap:           '0.35rem',
-              }}>
-                <span style={{ color: 'var(--primary)' }}>✓</span> {b}
-              </div>
-            ))}
+          <div ref={trustRef} style={{ marginTop: '1.75rem' }}>
+            <TrustBadges style={{ justifyContent: 'flex-start' }} compact />
           </div>
         </div>
 
@@ -223,25 +232,25 @@ export default function Hero() {
               src={content.hero.productImage}
               alt="The Peri-Menopause Reset by ReviveHer"
               style={{
-                width:  420,
-                display:'block',
-                filter: 'drop-shadow(0 40px 60px rgba(46,46,46,0.22))',
+                width:   420,
+                display: 'block',
+                filter:  'drop-shadow(0 40px 60px rgba(46,46,46,0.22))',
               }}
             />
           ) : (
             <div style={{
-              width:        300,
-              aspectRatio:  '3/4',
-              borderRadius: '1.5rem',
-              background:   'linear-gradient(145deg, var(--card), rgba(125,158,118,0.15))',
-              border:       '1px solid var(--border)',
-              display:      'flex',
-              flexDirection:'column',
-              alignItems:   'center',
-              justifyContent: 'center',
-              gap:          '1rem',
-              padding:      '2rem',
-              boxShadow:    '0 32px 80px rgba(46,46,46,0.12)',
+              width:         300,
+              aspectRatio:   '3/4',
+              borderRadius:  '1.5rem',
+              background:    'linear-gradient(145deg, var(--card), rgba(125,158,118,0.15))',
+              border:        '1px solid var(--border)',
+              display:       'flex',
+              flexDirection: 'column',
+              alignItems:    'center',
+              justifyContent:'center',
+              gap:           '1rem',
+              padding:       '2rem',
+              boxShadow:     '0 32px 80px rgba(46,46,46,0.12)',
             }}>
               <div style={{ width: 64, height: 80, background: 'var(--primary)', borderRadius: '0.5rem', opacity: 0.3 }} />
               <div style={{ textAlign: 'center' }}>

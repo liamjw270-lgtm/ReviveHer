@@ -1,6 +1,7 @@
 import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { Link } from 'react-router-dom'
+import TrustBadges from '../components/TrustBadges'
 
 const problems = [
   { emoji: '😴', text: 'You\'re exhausted by midday despite sleeping through the night' },
@@ -68,7 +69,7 @@ const objections = [
   },
   {
     q: '"I\'m not sure it\'ll work for me."',
-    a: 'That\'s a completely valid feeling. Every woman\'s experience of peri-menopause is different — but the fundamentals of how your body responds to hormonal change are consistent. The guide is written to meet you exactly where you are, and many women notice a difference within the first week.',
+    a: 'That\'s a completely valid feeling — and it\'s exactly why there\'s a 30-day money back guarantee. If the guide isn\'t right for you, email us within 30 days and you\'ll get a full refund, no questions asked. There\'s genuinely nothing to lose.',
   },
   {
     q: '"Can\'t I just find this information online?"',
@@ -96,17 +97,17 @@ export default function WhyPage() {
     <main style={{ paddingTop: 68 }}>
 
       {/* ── Hero ── */}
-      <section style={{ background: 'var(--dark-bg)', padding: '6rem 3rem 5rem', position: 'relative', overflow: 'hidden' }}>
+      <section style={{ background: 'var(--dark-bg)', padding: 'clamp(3.5rem, 8vw, 6rem) clamp(1.5rem, 5vw, 3rem) clamp(3.5rem, 8vw, 5rem)', position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', fontSize: 'clamp(6rem,18vw,18rem)', fontWeight: 700, color: 'rgba(255,255,255,0.03)', whiteSpace: 'nowrap', pointerEvents: 'none', letterSpacing: '-0.04em', lineHeight: 1 }}>Why</div>
         <div style={{ maxWidth: 900, margin: '0 auto', position: 'relative', zIndex: 2 }}>
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}>
             <span style={{ fontSize: '0.7rem', fontWeight: 500, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--secondary)', display: 'block', marginBottom: '1rem' }}>Why ReviveHer</span>
-            <h1 style={{ fontSize: 'clamp(2.5rem, 6vw, 6rem)', fontWeight: 700, color: 'white', letterSpacing: '-0.04em', lineHeight: 0.95, marginBottom: '2rem' }}>
+            <h1 style={{ fontSize: 'clamp(2.3rem, 6vw, 6rem)', fontWeight: 700, color: 'white', letterSpacing: '-0.04em', lineHeight: 0.98, marginBottom: '2rem' }}>
               Because you deserve<br />
               <span style={{ color: 'rgba(255,255,255,0.2)' }}>answers, not</span><br />
               guesswork.
             </h1>
-            <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '1.1rem', lineHeight: 1.7, fontWeight: 300, maxWidth: 560 }}>
+            <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 'clamp(1rem, 2.5vw, 1.1rem)', lineHeight: 1.7, fontWeight: 300, maxWidth: 560 }}>
               If you've been told your symptoms are "just part of getting older" — this page is for you.
             </p>
           </motion.div>
@@ -114,10 +115,10 @@ export default function WhyPage() {
       </section>
 
       {/* ── Does this sound familiar? ── */}
-      <section style={{ background: 'var(--bg)', padding: '7rem 3rem' }}>
+      <section style={{ background: 'var(--bg)', padding: 'clamp(4.5rem, 9vw, 7rem) clamp(1.5rem, 5vw, 3rem)' }}>
         <div style={{ maxWidth: 860, margin: '0 auto' }}>
           <FadeIn>
-            <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
+            <div style={{ textAlign: 'center', marginBottom: 'clamp(2.75rem, 6vw, 4rem)' }}>
               <span className="eyebrow">Sound Familiar?</span>
               <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 700, letterSpacing: '-0.03em', color: 'var(--dark)', lineHeight: 1.1 }}>
                 You shouldn't have to<br />feel this way.
@@ -127,7 +128,7 @@ export default function WhyPage() {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1rem' }}>
             {problems.map((p, i) => (
               <FadeIn key={i} delay={i * 0.07}>
-                <div style={{ background: 'var(--card)', borderRadius: '1.25rem', padding: '1.5rem', border: '1px solid var(--border)', display: 'flex', alignItems: 'flex-start', gap: '1rem' }}>
+                <div style={{ background: 'var(--card)', borderRadius: '1.25rem', padding: '1.5rem', border: '1px solid var(--border)', display: 'flex', alignItems: 'flex-start', gap: '1rem', height: '100%' }}>
                   <span style={{ fontSize: '1.5rem', flexShrink: 0 }}>{p.emoji}</span>
                   <span style={{ color: 'var(--dark)', fontSize: '0.92rem', lineHeight: 1.55, fontWeight: 400 }}>{p.text}</span>
                 </div>
@@ -135,7 +136,7 @@ export default function WhyPage() {
             ))}
           </div>
           <FadeIn delay={0.3}>
-            <div style={{ marginTop: '3rem', background: 'linear-gradient(135deg, rgba(125,158,118,0.1), rgba(201,150,142,0.08))', border: '1px solid rgba(125,158,118,0.2)', borderRadius: '1.25rem', padding: '2rem', textAlign: 'center' }}>
+            <div style={{ marginTop: '3rem', background: 'linear-gradient(135deg, rgba(125,158,118,0.1), rgba(201,150,142,0.08))', border: '1px solid rgba(125,158,118,0.2)', borderRadius: '1.25rem', padding: 'clamp(1.5rem, 4vw, 2rem)', textAlign: 'center' }}>
               <p style={{ color: 'var(--dark)', fontSize: '1.05rem', lineHeight: 1.65, fontWeight: 400, margin: 0 }}>
                 These symptoms are real. They're common in peri-menopause. And — most importantly — <strong style={{ color: 'var(--primary)' }}>they're addressable.</strong> Not by pushing through, but by understanding what's happening in your body and giving it the right support.
               </p>
@@ -145,10 +146,18 @@ export default function WhyPage() {
       </section>
 
       {/* ── Without vs. With ── */}
-      <section style={{ background: 'var(--dark-bg)', padding: '7rem 3rem' }}>
+      <section style={{ background: 'var(--dark-bg)', padding: 'clamp(4.5rem, 9vw, 7rem) clamp(1.5rem, 5vw, 3rem)' }}>
+        <style>{`
+          .cmp-head { display: none; }
+          .cmp-row { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.1rem; }
+          @media (min-width: 720px) {
+            .cmp-head { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+            .cmp-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 0.75rem; }
+          }
+        `}</style>
         <div style={{ maxWidth: 860, margin: '0 auto' }}>
           <FadeIn>
-            <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
+            <div style={{ textAlign: 'center', marginBottom: 'clamp(2.75rem, 6vw, 4rem)' }}>
               <span style={{ fontSize: '0.7rem', fontWeight: 500, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--secondary)', display: 'block', marginBottom: '0.75rem' }}>The Difference</span>
               <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 700, letterSpacing: '-0.03em', color: 'white', lineHeight: 1.1 }}>
                 Life before & after<br />the Reset
@@ -156,7 +165,7 @@ export default function WhyPage() {
             </div>
           </FadeIn>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
+          <div className="cmp-head">
             <div style={{ background: 'rgba(255,255,255,0.04)', borderRadius: '0.75rem 0.75rem 0 0', padding: '0.85rem 1.25rem', textAlign: 'center' }}>
               <span style={{ fontSize: '0.72rem', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.35)' }}>Without the Reset</span>
             </div>
@@ -167,7 +176,7 @@ export default function WhyPage() {
 
           {comparisons.map((row, i) => (
             <FadeIn key={i} delay={i * 0.07}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '0.75rem' }}>
+              <div className="cmp-row">
                 <div style={{ background: 'rgba(255,255,255,0.03)', borderRadius: '0.75rem', padding: '1.1rem 1.25rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                   <span style={{ color: 'rgba(255,100,100,0.6)', fontSize: '0.9rem', flexShrink: 0 }}>✕</span>
                   <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.88rem', lineHeight: 1.5 }}>{row.without}</span>
@@ -183,10 +192,10 @@ export default function WhyPage() {
       </section>
 
       {/* ── Why this guide is different ── */}
-      <section style={{ background: 'var(--bg)', padding: '7rem 3rem' }}>
+      <section style={{ background: 'var(--bg)', padding: 'clamp(4.5rem, 9vw, 7rem) clamp(1.5rem, 5vw, 3rem)' }}>
         <div style={{ maxWidth: 860, margin: '0 auto' }}>
           <FadeIn>
-            <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
+            <div style={{ textAlign: 'center', marginBottom: 'clamp(2.75rem, 6vw, 4rem)' }}>
               <span className="eyebrow">Why Different</span>
               <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 700, letterSpacing: '-0.03em', color: 'var(--dark)', lineHeight: 1.1 }}>
                 Not another wellness book
@@ -196,7 +205,7 @@ export default function WhyPage() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
             {differentiators.map((d, i) => (
               <FadeIn key={i} delay={i * 0.08}>
-                <div style={{ background: 'var(--card)', borderRadius: '1.25rem', padding: '2rem', border: '1px solid var(--border)', display: 'flex', gap: '1.5rem', alignItems: 'flex-start', flexWrap: 'wrap' }}>
+                <div style={{ background: 'var(--card)', borderRadius: '1.25rem', padding: 'clamp(1.5rem, 4vw, 2rem)', border: '1px solid var(--border)', display: 'flex', gap: '1.5rem', alignItems: 'flex-start', flexWrap: 'wrap' }}>
                   <div style={{ fontSize: '2rem', flexShrink: 0 }}>{d.icon}</div>
                   <div style={{ flex: 1, minWidth: 220 }}>
                     <div style={{ fontWeight: 700, fontSize: '1.05rem', color: 'var(--dark)', marginBottom: '0.5rem' }}>{d.title}</div>
@@ -210,10 +219,10 @@ export default function WhyPage() {
       </section>
 
       {/* ── Objections ── */}
-      <section style={{ background: 'var(--card)', padding: '7rem 3rem', borderTop: '1px solid var(--border)' }}>
+      <section style={{ background: 'var(--card)', padding: 'clamp(4.5rem, 9vw, 7rem) clamp(1.5rem, 5vw, 3rem)', borderTop: '1px solid var(--border)' }}>
         <div style={{ maxWidth: 720, margin: '0 auto' }}>
           <FadeIn>
-            <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
+            <div style={{ textAlign: 'center', marginBottom: 'clamp(2.75rem, 6vw, 4rem)' }}>
               <span className="eyebrow">Honest Answers</span>
               <h2 style={{ fontSize: 'clamp(1.8rem, 3.5vw, 2.8rem)', fontWeight: 700, letterSpacing: '-0.03em', color: 'var(--dark)', lineHeight: 1.1 }}>
                 Still on the fence?
@@ -235,10 +244,11 @@ export default function WhyPage() {
       </section>
 
       {/* ── Final CTA ── */}
-      <section style={{ background: 'var(--dark-bg)', padding: '8rem 3rem', textAlign: 'center' }}>
+      <section style={{ background: 'var(--dark-bg)', padding: 'clamp(5rem, 10vw, 8rem) clamp(1.5rem, 5vw, 3rem)', textAlign: 'center' }}>
         <div style={{ maxWidth: 640, margin: '0 auto' }}>
           <FadeIn>
-            <h2 style={{ fontSize: 'clamp(2.2rem, 5vw, 4.5rem)', fontWeight: 700, color: 'white', letterSpacing: '-0.04em', lineHeight: 1, marginBottom: '1.5rem' }}>
+            <div style={{ fontSize: '1.05rem', letterSpacing: '0.08em', color: '#f4b942', marginBottom: '1rem' }}>★★★★★</div>
+            <h2 style={{ fontSize: 'clamp(2rem, 5vw, 4.5rem)', fontWeight: 700, color: 'white', letterSpacing: '-0.04em', lineHeight: 1.02, marginBottom: '1.5rem' }}>
               Ready to feel like yourself again?
             </h2>
             <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '1rem', lineHeight: 1.7, fontWeight: 300, marginBottom: '2.5rem' }}>
@@ -258,15 +268,13 @@ export default function WhyPage() {
                 <Link
                   to="/about"
                   className="btn btn-outline"
-                  style={{ fontSize: '0.85rem', padding: '1.1rem 2.5rem', textDecoration: 'none', display: 'inline-flex' }}
+                  style={{ fontSize: '0.85rem', padding: '1.1rem 2.5rem', textDecoration: 'none', display: 'inline-flex', color: 'white', borderColor: 'rgba(255,255,255,0.25)' }}
                 >
                   Learn About Us
                 </Link>
               </motion.div>
             </div>
-            <p style={{ marginTop: '1.5rem', color: 'rgba(255,255,255,0.25)', fontSize: '0.78rem' }}>
-              Instant access · All formats included · Yours forever
-            </p>
+            <TrustBadges dark compact style={{ marginTop: '1.75rem' }} />
           </FadeIn>
         </div>
       </section>

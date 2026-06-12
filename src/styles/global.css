@@ -51,6 +51,7 @@ img, video { max-width: 100%; display: block; }
 .btn {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
   font-family: var(--font-body);
   font-size: 0.78rem;
@@ -58,6 +59,7 @@ img, video { max-width: 100%; display: block; }
   letter-spacing: 0.06em;
   text-transform: uppercase;
   padding: 0.95rem 2.2rem;
+  min-height: 44px; /* touch target */
   border-radius: 99px;
   border: 1.5px solid transparent;
   cursor: pointer;
@@ -113,4 +115,13 @@ img, video { max-width: 100%; display: block; }
 @media (min-width: 900px) {
   .nav-hamburger { display: none !important; }
   .nav-desktop-links { display: flex !important; }
+}
+
+/* ── Motion preferences ── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

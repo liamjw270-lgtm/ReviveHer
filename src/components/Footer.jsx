@@ -1,14 +1,43 @@
 import { Link } from 'react-router-dom'
 import { content } from '../content'
 
+const TRUST = [
+  { icon: '🛡️', label: '30-Day Money Back Guarantee' },
+  { icon: '⚡', label: 'Instant PDF Download' },
+  { icon: '🔒', label: 'Secure Checkout' },
+  { icon: '📱', label: 'Read on Any Device' },
+]
+
 export default function Footer() {
   return (
     <footer style={{
-      background:  'var(--dark-bg)',
-      padding:     '4rem 3rem 2.5rem',
-      color:       'rgba(255,255,255,0.5)',
+      background: 'var(--dark-bg)',
+      padding:    'clamp(3rem, 6vw, 4rem) clamp(1.5rem, 5vw, 3rem) 2.5rem',
+      color:      'rgba(255,255,255,0.5)',
     }}>
       <div style={{ maxWidth: 980, margin: '0 auto' }}>
+
+        {/* Trust strip */}
+        <div style={{
+          display:        'flex',
+          alignItems:     'center',
+          justifyContent: 'center',
+          gap:            'clamp(1.25rem, 4vw, 2.5rem)',
+          flexWrap:       'wrap',
+          paddingBottom:  '2.25rem',
+          marginBottom:   '2.25rem',
+          borderBottom:   '1px solid rgba(255,255,255,0.08)',
+        }}>
+          {TRUST.map(t => (
+            <div key={t.label} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <span style={{ fontSize: '0.95rem' }}>{t.icon}</span>
+              <span style={{ fontSize: '0.74rem', fontWeight: 500, color: 'rgba(255,255,255,0.6)', letterSpacing: '0.02em' }}>
+                {t.label}
+              </span>
+            </div>
+          ))}
+        </div>
+
         {/* Top row */}
         <div style={{
           display:        'flex',
@@ -23,14 +52,14 @@ export default function Footer() {
           {/* Brand */}
           <div>
             <div style={{
-              fontFamily:    'var(--font-display)',
-              fontSize:      '1.2rem',
-              fontWeight:    700,
-              color:         'white',
-              marginBottom:  '0.6rem',
-              display:       'flex',
-              alignItems:    'center',
-              gap:           '0.4rem',
+              fontFamily:   'var(--font-display)',
+              fontSize:     '1.2rem',
+              fontWeight:   700,
+              color:        'white',
+              marginBottom: '0.6rem',
+              display:      'flex',
+              alignItems:   'center',
+              gap:          '0.4rem',
             }}>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
                 <path d="M12 2L13.5 8.5L20 7L15.5 11.5L20 17L13.5 15.5L12 22L10.5 15.5L4 17L8.5 11.5L4 7L10.5 8.5L12 2Z" fill="var(--primary)" />

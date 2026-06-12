@@ -11,7 +11,7 @@ export const content = {
     subtext:
       "Calm your nervous system. Sleep better. Feel like yourself again — a gentle, evidence-backed guide for every woman navigating peri-menopause.",
     cta: "Get the Guide",
-    ctaNote: "$19.99 AUD · Instant digital download",
+    ctaNote: "$19.99 AUD · Instant PDF download",
     productImage: "/book-3d.png",
     floatingImages: [null, null, null, null, null, null],
   },
@@ -98,15 +98,23 @@ export const content = {
   testimonials: [
     {
       quote: "I've tried everything over the past two years and nothing stuck. This guide was the first thing that actually made sense for where I'm at. I feel like myself again.",
+      name: "Sarah M.",
+      detail: "47 · Brisbane",
     },
     {
       quote: "The stress section alone was worth it. I didn't realise how much my nervous system was driving everything else. Two weeks in and I'm sleeping through the night for the first time in months.",
+      name: "Linda K.",
+      detail: "44 · Melbourne",
     },
     {
       quote: "Finally something that doesn't treat you like you just need to eat less and push harder. This is written by someone who actually gets it.",
+      name: "Diane R.",
+      detail: "49 · Perth",
     },
     {
       quote: "I sent this to my sister and my mum. We're all at different stages but it's helped all three of us. Honestly can't recommend it enough.",
+      name: "Karen T.",
+      detail: "52 · Sydney",
     },
   ],
 
@@ -132,6 +140,10 @@ export const content = {
       a: "Instantly. After purchase you'll receive a download link via email. Both the ebook and worksheets are available as PDFs, compatible with all devices — phone, tablet, and desktop.",
     },
     {
+      q: "What if it's not for me?",
+      a: "You're covered by our 30-day money back guarantee — no questions asked. If the guide isn't right for you, just email us within 30 days of purchase and we'll refund you in full.",
+    },
+    {
       q: "Is this right for me if I'm not sure I'm in peri-menopause yet?",
       a: "Yes — many women find this guide most useful when symptoms are just beginning. The guide helps you understand what's happening in your body, recognise peri-menopausal patterns, and start supporting yourself proactively. It's never too early.",
     },
@@ -140,9 +152,9 @@ export const content = {
   cta: {
     heading: "Start feeling\nlike yourself again",
     subtext:
-      "A calm, practical guide designed for where you are right now. Instant digital download. Read on any device.",
+      "A calm, practical guide designed for where you are right now. Instant PDF download. Read on any device.",
     buttonText: "Get The Peri-Menopause Reset",
-    guarantee: "Instant access · All formats included · Yours forever",
+    guarantee: "30-day money back guarantee · Instant PDF download · Yours forever",
     shopifyUrl: "#",
   },
 }

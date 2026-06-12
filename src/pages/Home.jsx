@@ -7,6 +7,7 @@ import Transformations from '../components/Transformations'
 import Testimonials    from '../components/Testimonials'
 import FAQ             from '../components/FAQ'
 import CTA             from '../components/CTA'
+import TrustBadges     from '../components/TrustBadges'
 
 export default function Home() {
   return (
@@ -16,13 +17,13 @@ export default function Home() {
 
       {/* ── Mid-page CTA ── */}
       <div style={{
-        background:   'var(--dark-bg)',
-        padding:      '4rem 2rem',
-        textAlign:    'center',
-        borderTop:    '1px solid rgba(255,255,255,0.06)',
+        background: 'var(--dark-bg)',
+        padding:    'clamp(3.5rem, 8vw, 4.5rem) clamp(1.5rem, 5vw, 2rem)',
+        textAlign:  'center',
+        borderTop:  '1px solid rgba(255,255,255,0.06)',
       }}>
         <div style={{ maxWidth: 560, margin: '0 auto' }}>
-          <div style={{ fontSize: '1.1rem', letterSpacing: '0.08em', color: '#f4b942', marginBottom: '0.75rem' }}>⭐⭐⭐⭐⭐</div>
+          <div style={{ fontSize: '1.1rem', letterSpacing: '0.08em', color: '#f4b942', marginBottom: '0.75rem' }}>★★★★★</div>
           <h2 style={{
             fontFamily:    'var(--font-display)',
             fontSize:      'clamp(1.6rem, 3.5vw, 2.4rem)',
@@ -50,9 +51,10 @@ export default function Home() {
           >
             Get the Guide →
           </Link>
-          <div style={{ marginTop: '0.85rem', fontSize: '0.88rem', color: 'rgba(255,255,255,0.35)', fontWeight: 300 }}>
-            $19.99 AUD · Instant digital download
+          <div style={{ marginTop: '0.9rem', fontSize: '0.92rem', color: 'rgba(255,255,255,0.55)', fontWeight: 400 }}>
+            $19.99 AUD · Instant PDF download
           </div>
+          <TrustBadges dark compact style={{ marginTop: '1.25rem' }} />
         </div>
       </div>
 
@@ -70,7 +72,6 @@ export default function Home() {
         position:           'relative',
         overflow:           'hidden',
       }}>
-        {/* Soft dark vignette so it blends with sections above/below */}
         <div style={{
           position:   'absolute',
           inset:      0,

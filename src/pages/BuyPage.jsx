@@ -1,8 +1,9 @@
-import { useRef } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { content } from '../content'
 import ShopifyBuyButton from '../components/ShopifyBuyButton'
+import TrustBadges from '../components/TrustBadges'
 
 const included = [
   { icon: '📖', title: 'Comprehensive Ebook', desc: 'A beautifully designed guide covering every aspect of peri-menopause — readable on any device.' },
@@ -24,6 +25,7 @@ const trustPoints = [
   'Instant access — download immediately after purchase',
   'Works on any device — phone, tablet, laptop or desktop',
   'Yours to keep forever — no subscriptions, no recurring charges',
+  '30-day money back guarantee — no questions asked',
 ]
 
 function FadeIn({ children, delay = 0, y = 20 }) {
@@ -41,16 +43,66 @@ function FadeIn({ children, delay = 0, y = 20 }) {
   )
 }
 
+/** Sticky bottom buy bar — mobile only, appears after scrolling past hero */
+function StickyBuyBar() {
+  const [show, setShow] = useState(false)
+  useEffect(() => {
+    const onScroll = () => setShow(window.scrollY > 560)
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
+  return (
+    <>
+      <style>{`
+        .buy-sticky-bar { display: flex; }
+        @media (min-width: 760px) { .buy-sticky-bar { display: none; } }
+      `}</style>
+      <div className="buy-sticky-bar" style={{
+        position:      'fixed',
+        bottom:        0,
+        left:          0,
+        right:         0,
+        zIndex:        150,
+        alignItems:    'center',
+        justifyContent:'space-between',
+        gap:           '1rem',
+        padding:       '0.8rem 1.25rem calc(0.8rem + env(safe-area-inset-bottom))',
+        background:    'rgba(30,36,32,0.97)',
+        backdropFilter:'blur(12px)',
+        borderTop:     '1px solid rgba(255,255,255,0.1)',
+        transform:     show ? 'translateY(0)' : 'translateY(110%)',
+        transition:    'transform 0.35s var(--ease-expo)',
+      }}>
+        <div>
+          <div style={{ color: 'white', fontWeight: 700, fontSize: '1.05rem', letterSpacing: '-0.02em' }}>
+            $19.99 <span style={{ fontSize: '0.7rem', fontWeight: 500, opacity: 0.6 }}>AUD</span>
+          </div>
+          <div style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.62rem' }}>Instant PDF · 30-day guarantee</div>
+        </div>
+        <a
+          href="#buy-now"
+          className="btn btn-sage"
+          style={{ fontSize: '0.74rem', padding: '0.85rem 1.6rem', textDecoration: 'none', flexShrink: 0 }}
+        >
+          Get the Guide
+        </a>
+      </div>
+    </>
+  )
+}
+
 export default function BuyPage() {
   return (
     <main style={{ paddingTop: 68 }}>
+      <StickyBuyBar />
 
       {/* ── Hero ── */}
-      <section id="buy-now" style={{ background: 'var(--dark-bg)', padding: '6rem 3rem 5rem', position: 'relative', overflow: 'hidden' }}>
+      <section id="buy-now" style={{ background: 'var(--dark-bg)', padding: 'clamp(3.5rem, 8vw, 6rem) clamp(1.5rem, 5vw, 3rem) clamp(3.5rem, 8vw, 5rem)', position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', fontSize: 'clamp(8rem,20vw,20rem)', fontWeight: 700, color: 'rgba(255,255,255,0.03)', whiteSpace: 'nowrap', pointerEvents: 'none', letterSpacing: '-0.04em', lineHeight: 1 }}>Reset</div>
-        <div style={{ maxWidth: 980, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '4rem', alignItems: 'center', position: 'relative', zIndex: 2 }}>
+        <div style={{ maxWidth: 980, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 'clamp(2.5rem, 6vw, 4rem)', alignItems: 'center', position: 'relative', zIndex: 2 }}>
 
-          {/* Book image — clean, no green box */}
+          {/* Book image */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             animate={{ opacity: 1, x: 0 }}
@@ -62,10 +114,10 @@ export default function BuyPage() {
                 src={content.hero.productImage}
                 alt="The Peri-Menopause Reset by ReviveHer"
                 style={{
-                  width:   '100%',
-                  maxWidth: 320,
-                  display: 'block',
-                  filter:  'drop-shadow(0 30px 50px rgba(0,0,0,0.45))',
+                  width:    '100%',
+                  maxWidth: 'min(60vw, 320px)',
+                  display:  'block',
+                  filter:   'drop-shadow(0 30px 50px rgba(0,0,0,0.45))',
                 }}
               />
             ) : (
@@ -85,22 +137,30 @@ export default function BuyPage() {
             transition={{ duration: 0.9, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
           >
             <span style={{ fontSize: '0.7rem', fontWeight: 500, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--secondary)', display: 'block', marginBottom: '0.75rem' }}>Digital Ebook + 4 Free Bonuses</span>
-            <h1 style={{ fontSize: 'clamp(2.2rem, 4vw, 3.5rem)', fontWeight: 700, color: 'white', letterSpacing: '-0.03em', lineHeight: 1.1, marginBottom: '1.25rem' }}>
+            <h1 style={{ fontSize: 'clamp(2rem, 4vw, 3.5rem)', fontWeight: 700, color: 'white', letterSpacing: '-0.03em', lineHeight: 1.1, marginBottom: '0.9rem' }}>
               The Peri-Menopause Reset
             </h1>
-            <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '1rem', lineHeight: 1.7, fontWeight: 300, marginBottom: '2rem' }}>
+
+            {/* Stars */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1.25rem' }}>
+              <span style={{ color: '#f4b942', fontSize: '1rem', letterSpacing: '0.08em' }}>★★★★★</span>
+              <span style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.78rem' }}>Rated 4.9 by readers</span>
+            </div>
+
+            <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.98rem', lineHeight: 1.7, fontWeight: 300, marginBottom: '1.75rem' }}>
               A calm, evidence-backed guide to understanding your body, reducing symptoms and feeling like yourself again — plus four practical bonuses included free.
             </p>
 
             {/* Price block */}
-            <div style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '1.25rem', padding: '1.75rem 2rem', marginBottom: '2rem' }}>
+            <div style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '1.25rem', padding: 'clamp(1.4rem, 4vw, 1.75rem) clamp(1.4rem, 4vw, 2rem)', marginBottom: '1.75rem' }}>
               <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.75rem', marginBottom: '0.5rem' }}>
-                <span style={{ fontSize: '3rem', fontWeight: 700, color: 'white', letterSpacing: '-0.04em' }}>$19.99 <span style={{ fontSize: '1.4rem', fontWeight: 500, opacity: 0.7 }}>AUD</span></span>
+                <span style={{ fontSize: 'clamp(2.4rem, 7vw, 3rem)', fontWeight: 700, color: 'white', letterSpacing: '-0.04em' }}>$19.99 <span style={{ fontSize: '1.3rem', fontWeight: 500, opacity: 0.7 }}>AUD</span></span>
               </div>
-              <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.82rem' }}>One-time payment · Instant download · All formats included</div>
+              <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.82rem' }}>One-time payment · Instant PDF download · All formats included</div>
             </div>
 
             <ShopifyBuyButton />
+
             {/* Guarantee line */}
             <div style={{
               display:        'flex',
@@ -108,19 +168,19 @@ export default function BuyPage() {
               justifyContent: 'center',
               gap:            '0.5rem',
               marginTop:      '0.9rem',
-              padding:        '0.65rem 1rem',
+              padding:        '0.7rem 1rem',
               background:     'rgba(125,158,118,0.1)',
               border:         '1px solid rgba(125,158,118,0.2)',
               borderRadius:   '0.6rem',
             }}>
-              <span style={{ fontSize: '1rem' }}>✓</span>
-              <span style={{ fontSize: '0.82rem', color: 'rgba(255,255,255,0.75)', fontWeight: 400 }}>
+              <span style={{ fontSize: '1rem' }}>🛡️</span>
+              <span style={{ fontSize: '0.84rem', color: 'rgba(255,255,255,0.8)', fontWeight: 500 }}>
                 30-day money back guarantee — no questions asked
               </span>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', justifyContent: 'center', marginTop: '0.6rem' }}>
-              <LockIcon />
-              <span style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.3)' }}>Secure checkout · Instant access · Yours forever</span>
+
+            <div style={{ marginTop: '0.9rem' }}>
+              <TrustBadges dark compact />
             </div>
 
             {/* Medical disclaimer */}
@@ -142,10 +202,10 @@ export default function BuyPage() {
       </section>
 
       {/* ── What's Included ── */}
-      <section style={{ background: 'var(--bg)', padding: '7rem 3rem' }}>
+      <section style={{ background: 'var(--bg)', padding: 'clamp(4.5rem, 9vw, 7rem) clamp(1.5rem, 5vw, 3rem)' }}>
         <div style={{ maxWidth: 980, margin: '0 auto' }}>
           <FadeIn>
-            <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
+            <div style={{ textAlign: 'center', marginBottom: 'clamp(2.75rem, 6vw, 4rem)' }}>
               <span className="eyebrow">Everything Inside</span>
               <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 700, letterSpacing: '-0.03em', color: 'var(--dark)', lineHeight: 1.1 }}>
                 One guide.<br />Everything you need.
@@ -167,10 +227,10 @@ export default function BuyPage() {
       </section>
 
       {/* ── Bonuses ── */}
-      <section style={{ background: 'var(--dark-bg)', padding: '7rem 3rem' }}>
+      <section style={{ background: 'var(--dark-bg)', padding: 'clamp(4.5rem, 9vw, 7rem) clamp(1.5rem, 5vw, 3rem)' }}>
         <div style={{ maxWidth: 820, margin: '0 auto' }}>
           <FadeIn>
-            <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
+            <div style={{ textAlign: 'center', marginBottom: 'clamp(2.75rem, 6vw, 4rem)' }}>
               <span style={{ fontSize: '0.7rem', fontWeight: 500, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--secondary)', display: 'block', marginBottom: '0.75rem' }}>Free With Your Purchase</span>
               <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 700, letterSpacing: '-0.03em', color: 'white', lineHeight: 1.1 }}>
                 Four bonuses,<br />zero extra cost
@@ -180,7 +240,7 @@ export default function BuyPage() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
             {bonuses.map((b, i) => (
               <FadeIn key={i} delay={i * 0.1}>
-                <div style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '1.25rem', padding: '1.75rem 2rem', display: 'flex', alignItems: 'center', gap: '2rem', flexWrap: 'wrap' }}>
+                <div style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '1.25rem', padding: 'clamp(1.4rem, 4vw, 1.75rem) clamp(1.4rem, 4vw, 2rem)', display: 'flex', alignItems: 'center', gap: 'clamp(1.25rem, 3vw, 2rem)', flexWrap: 'wrap' }}>
                   <div style={{ fontSize: '1.75rem', flexShrink: 0 }}>{b.icon}</div>
                   <div style={{ flex: 1, minWidth: 200 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.4rem' }}>
@@ -201,7 +261,7 @@ export default function BuyPage() {
             <div style={{ marginTop: '2rem', background: 'rgba(125,158,118,0.08)', border: '1px solid rgba(125,158,118,0.2)', borderRadius: '1rem', padding: '1.25rem 1.75rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
               <div>
                 <div style={{ color: 'white', fontWeight: 600, fontSize: '0.95rem' }}>Everything included for $19.99 AUD</div>
-                <div style={{ color: 'var(--primary)', fontSize: '0.82rem' }}>One-time payment · Instant digital download</div>
+                <div style={{ color: 'var(--primary)', fontSize: '0.82rem' }}>One-time payment · Instant PDF download</div>
               </div>
               <a
                 href="#buy-now"
@@ -216,7 +276,7 @@ export default function BuyPage() {
       </section>
 
       {/* ── Testimonials strip ── */}
-      <section style={{ background: 'var(--bg)', padding: '6rem 3rem' }}>
+      <section style={{ background: 'var(--bg)', padding: 'clamp(4.5rem, 9vw, 6rem) clamp(1.5rem, 5vw, 3rem)' }}>
         <div style={{ maxWidth: 980, margin: '0 auto' }}>
           <FadeIn>
             <h2 style={{ fontSize: 'clamp(1.8rem, 3.5vw, 2.8rem)', fontWeight: 700, letterSpacing: '-0.03em', textAlign: 'center', color: 'var(--dark)', marginBottom: '3rem', lineHeight: 1.1 }}>
@@ -235,12 +295,26 @@ export default function BuyPage() {
           }}>
             {content.testimonials.map((t, i) => (
               <FadeIn key={i} delay={i * 0.08}>
-                <div style={{ background: 'var(--card)', borderRadius: '1.25rem', padding: '1.75rem', border: '1px solid var(--border)', height: '100%', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                  {/* 5 gold stars */}
+                <div style={{ background: 'var(--card)', borderRadius: '1.25rem', padding: '1.75rem', border: '1px solid var(--border)', height: '100%', display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
                   <div style={{ color: '#f4b942', fontSize: '1rem', letterSpacing: '0.05em', lineHeight: 1 }}>
                     ★★★★★
                   </div>
-                  <p style={{ fontSize: '0.92rem', lineHeight: 1.7, color: 'var(--dark)', fontWeight: 300, fontStyle: 'italic', flex: 1 }}>&ldquo;{t.quote}&rdquo;</p>
+                  <p style={{ fontSize: '0.92rem', lineHeight: 1.7, color: 'var(--dark)', fontWeight: 300, fontStyle: 'italic', flex: 1, margin: 0 }}>&ldquo;{t.quote}&rdquo;</p>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.7rem', paddingTop: '0.4rem', borderTop: '1px solid var(--border)' }}>
+                    <div style={{
+                      width: 34, height: 34, borderRadius: '50%',
+                      background: i % 2 === 0 ? 'rgba(125,158,118,0.18)' : 'rgba(201,150,142,0.18)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '0.85rem',
+                      color: i % 2 === 0 ? 'var(--primary)' : 'var(--secondary)', flexShrink: 0,
+                    }}>
+                      {t.name.charAt(0)}
+                    </div>
+                    <div>
+                      <div style={{ fontWeight: 600, fontSize: '0.85rem', color: 'var(--dark)' }}>{t.name}</div>
+                      <div style={{ fontSize: '0.72rem', color: 'var(--muted)' }}>{t.detail} · Verified reader</div>
+                    </div>
+                  </div>
                 </div>
               </FadeIn>
             ))}
@@ -249,19 +323,19 @@ export default function BuyPage() {
       </section>
 
       {/* ── Trust strip ── */}
-      <section style={{ background: 'var(--card)', padding: '5rem 3rem', borderTop: '1px solid var(--border)' }}>
+      <section style={{ background: 'var(--card)', padding: 'clamp(4rem, 8vw, 5rem) clamp(1.5rem, 5vw, 3rem)', borderTop: '1px solid var(--border)' }}>
         <div style={{ maxWidth: 720, margin: '0 auto', textAlign: 'center' }}>
           <FadeIn>
             <div style={{ width: 72, height: 72, borderRadius: '50%', background: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 2rem' }}>
               <ShieldIcon />
             </div>
             <h2 style={{ fontSize: 'clamp(1.8rem, 3.5vw, 2.8rem)', fontWeight: 700, letterSpacing: '-0.03em', color: 'var(--dark)', lineHeight: 1.1, marginBottom: '1rem' }}>
-              Everything you need,<br />delivered instantly
+              Try it risk-free<br />for 30 days
             </h2>
             <p style={{ color: 'var(--muted)', fontSize: '1rem', lineHeight: 1.7, fontWeight: 300, marginBottom: '2rem' }}>
-              The moment you purchase, you'll receive immediate access to The Peri-Menopause Reset and all four bonuses — no waiting, no shipping, no fuss. Yours to keep and read on any device.
+              The moment you purchase, you'll receive immediate access to The Peri-Menopause Reset and all four bonuses. And if it's not right for you, just email us within 30 days for a full refund — no questions asked.
             </p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', textAlign: 'left', maxWidth: 400, margin: '0 auto 2.5rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', textAlign: 'left', maxWidth: 420, margin: '0 auto 2.5rem' }}>
               {trustPoints.map((p, i) => (
                 <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
                   <div style={{ width: 20, height: 20, borderRadius: '50%', background: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: '0.1rem' }}>
@@ -283,7 +357,7 @@ export default function BuyPage() {
       </section>
 
       {/* ── FAQ mini ── */}
-      <section style={{ background: 'var(--bg)', padding: '6rem 3rem' }}>
+      <section style={{ background: 'var(--bg)', padding: 'clamp(4rem, 8vw, 6rem) clamp(1.5rem, 5vw, 3rem) clamp(6rem, 10vw, 6rem)' }}>
         <div style={{ maxWidth: 680, margin: '0 auto', textAlign: 'center' }}>
           <FadeIn>
             <h2 style={{ fontSize: 'clamp(1.6rem, 3vw, 2.4rem)', fontWeight: 700, letterSpacing: '-0.03em', color: 'var(--dark)', marginBottom: '2.5rem' }}>Quick answers</h2>
@@ -307,15 +381,6 @@ export default function BuyPage() {
       </section>
 
     </main>
-  )
-}
-
-function LockIcon() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-      <rect x="5" y="11" width="14" height="10" rx="2" stroke="rgba(255,255,255,0.3)" strokeWidth="1.5"/>
-      <path d="M8 11V7a4 4 0 018 0v4" stroke="rgba(255,255,255,0.3)" strokeWidth="1.5" strokeLinecap="round"/>
-    </svg>
   )
 }
 

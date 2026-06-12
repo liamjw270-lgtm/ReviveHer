@@ -1,25 +1,13 @@
 /**
  * StackedCards — cinematic scroll section.
  *
- * WHAT HAPPENS
- * ─────────────────────────────────────────────────────────────────────────
- * 1. background.jpg sits behind everything as a full-cover atmospheric image.
+ * Desktop (≥768px): background colour-shift + pinned card stack that sweeps
+ * diagonally per card (GSAP ScrollTrigger scrub).
  *
- * 2. An overlay div starts as near-opaque warm cream (#f4f1eb) and
- *    transitions to soft charcoal (rgba 43,43,43,0.84) as the section
- *    scrolls into view — BEFORE the pin locks in.
- *    Effect: the page feels like it's slowly moving into a different mood.
- *
- * 3. Header text colour transitions dark → warm off-white in sync.
- *
- * 4. At 'top top' the section pins. During the pin each card rises from
- *    below-left and sweeps diagonally to centre while the previous card
- *    recedes upward-right — editorial, layered, premium.
- *
- * 5. The entire card stack has a gentle CSS float oscillation for depth.
- *
- * 6. All content comes from content.sticky.blocks (peri-menopause steps).
- * ─────────────────────────────────────────────────────────────────────────
+ * Mobile (<768px): the pin/scrub is skipped entirely — cards render as a
+ * simple vertical list with scroll-reveal. Pinned scrub animations are
+ * unreliable and janky on touch devices, and fixed-height absolute cards
+ * overflow on narrow screens.
  */
 
 import { useRef } from 'react'
@@ -28,11 +16,9 @@ import gsap from '../lib/gsap'
 import { ScrollTrigger } from '../lib/gsap'
 import { content } from '../content'
 
-// ─── Scroll & layout constants ───────────────────────────────────────────────
-const SCROLL_PER_CARD = 520   // px of scroll per card transition
-const CARD_HEIGHT     = 440   // px — height of the card stack area
+const SCROLL_PER_CARD = 520
+const CARD_HEIGHT     = 440
 
-// ─── Content — pulled directly from existing peri-menopause steps ─────────
 const CARDS = content.sticky.blocks.map((b, i) => ({
   number:  String(i + 1).padStart(2, '0'),
   eyebrow: b.eyebrow,
@@ -40,91 +26,91 @@ const CARDS = content.sticky.blocks.map((b, i) => ({
   body:    b.body,
 }))
 
-// Warm creams — contrast beautifully on the dark charcoal background
 const CARD_BG = ['#faf8f4', '#f5f2ec', '#ede9e0', '#e8e3d8']
 
 export default function StackedCards() {
   const sectionRef = useRef(null)
-  const overlayRef = useRef(null)   // colour-transition overlay
-  const headerRef  = useRef(null)   // header text group
-  const cardRefs   = useRef([])     // individual card elements
+  const overlayRef = useRef(null)
+  const headerRef  = useRef(null)
+  const cardRefs   = useRef([])
 
   useGSAP(() => {
-    const cards = cardRefs.current.filter(Boolean)
-    const n     = cards.length
-    if (n < 2) return
+    const mm = gsap.matchMedia()
 
-    // ── 1. OVERLAY: warm cream → soft charcoal ────────────────────────────
-    // Fires as the section enters the viewport, completes before the pin.
-    // Reveals the background image progressively as the mood darkens.
-    gsap.fromTo(
-      overlayRef.current,
-      { backgroundColor: 'rgba(244,241,235,0.97)' },
-      {
-        backgroundColor: 'rgba(43,43,43,0.84)',
-        ease: 'none',
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start:   'top 90%',    // begins when section top is 90% down the viewport
-          end:     'top 12%',    // completes just before pin locks
-          scrub:   1.8,          // slow, atmospheric lag
-        },
+    // ── Desktop: colour shift + pinned diagonal card sweep ──────────────
+    mm.add('(min-width: 768px)', () => {
+      const cards = cardRefs.current.filter(Boolean)
+      const n     = cards.length
+      if (n < 2) return
+
+      gsap.fromTo(
+        overlayRef.current,
+        { backgroundColor: 'rgba(244,241,235,0.97)' },
+        {
+          backgroundColor: 'rgba(43,43,43,0.84)',
+          ease: 'none',
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start:   'top 90%',
+            end:     'top 12%',
+            scrub:   1.8,
+          },
+        }
+      )
+
+      gsap.fromTo(
+        headerRef.current,
+        { color: '#2e2e2e' },
+        {
+          color: '#f5f0ea',
+          ease:  'none',
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start:   'top 90%',
+            end:     'top 12%',
+            scrub:   1.8,
+          },
+        }
+      )
+
+      gsap.set(cards.slice(1), { yPercent: 112, x: -24 })
+
+      const tl = gsap.timeline()
+      for (let i = 0; i < n - 1; i++) {
+        tl
+          .to(cards[i + 1], { yPercent: 0, x: 0, ease: 'none', duration: 1 })
+          .to(cards[i],     { scale: 0.92, y: -30, x: 24, ease: 'none', duration: 1 }, '<')
       }
-    )
 
-    // ── 2. HEADER TEXT: dark charcoal → warm off-white ───────────────────
-    // Inherits down to h2 and eyebrow span via color: inherit.
-    gsap.fromTo(
-      headerRef.current,
-      { color: '#2e2e2e' },
-      {
-        color: '#f5f0ea',
-        ease:  'none',
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start:   'top 90%',
-          end:     'top 12%',
-          scrub:   1.8,
-        },
-      }
-    )
-
-    // ── 3. CARD ANIMATION: diagonal slide up-left → centre ───────────────
-    // Cards start below and slightly left; sweep diagonally to the top.
-    // The previous card recedes upward-right for a layered editorial depth.
-    gsap.set(cards.slice(1), { yPercent: 112, x: -24 })
-
-    const tl = gsap.timeline()
-
-    for (let i = 0; i < n - 1; i++) {
-      tl
-        // Incoming card: rises from below-left, lands centre
-        .to(cards[i + 1], {
-          yPercent: 0,
-          x:        0,
-          ease:     'none',
-          duration: 1,
-        })
-        // Previous card: recedes — scales back, lifts slightly, drifts right
-        .to(cards[i], {
-          scale:    0.92,
-          y:        -30,
-          x:        24,
-          ease:     'none',
-          duration: 1,
-        }, '<')
-    }
-
-    // ── 4. PIN + SCRUB ────────────────────────────────────────────────────
-    ScrollTrigger.create({
-      trigger:       sectionRef.current,
-      start:         'top top',
-      end:           `+=${SCROLL_PER_CARD * (n - 1)}`,
-      pin:           true,
-      anticipatePin: 1,
-      scrub:         1.0,
-      animation:     tl,
+      ScrollTrigger.create({
+        trigger:       sectionRef.current,
+        start:         'top top',
+        end:           `+=${SCROLL_PER_CARD * (n - 1)}`,
+        pin:           true,
+        anticipatePin: 1,
+        scrub:         1.0,
+        animation:     tl,
+      })
     })
+
+    // ── Mobile: dark overlay static, cards reveal on scroll ─────────────
+    mm.add('(max-width: 767px)', () => {
+      gsap.set(overlayRef.current, { backgroundColor: 'rgba(43,43,43,0.84)' })
+      gsap.set(headerRef.current,  { color: '#f5f0ea' })
+
+      const cards = cardRefs.current.filter(Boolean)
+      cards.forEach(card => {
+        gsap.fromTo(card,
+          { opacity: 0, y: 32 },
+          {
+            opacity: 1, y: 0, duration: 0.7, ease: 'power3.out',
+            scrollTrigger: { trigger: card, start: 'top 85%', once: true },
+          }
+        )
+      })
+    })
+
+    return () => mm.revert()
   }, { scope: sectionRef })
 
   return (
@@ -133,11 +119,35 @@ export default function StackedCards() {
       style={{
         position:  'relative',
         minHeight: '100vh',
-        padding:   '7rem 3rem',
+        padding:   'clamp(4.5rem, 9vw, 7rem) clamp(1.5rem, 5vw, 3rem)',
         // No overflow:hidden — breaks GSAP pin
       }}
     >
-      {/* ── Background image ── always behind everything ── */}
+      <style>{`
+        /* Desktop: absolute stacked cards inside fixed-height stage */
+        .sc-stack {
+          position: relative;
+          height: ${CARD_HEIGHT}px;
+          max-width: 640px;
+          margin: 0 auto;
+        }
+        .sc-card {
+          position: absolute;
+          inset: 0;
+          padding: 2.75rem 3rem;
+        }
+        .sc-dots { display: flex; }
+
+        /* Mobile: plain vertical list */
+        @media (max-width: 767px) {
+          .sc-stack { height: auto; display: flex; flex-direction: column; gap: 1.1rem; }
+          .sc-card  { position: relative; inset: auto; padding: 1.75rem 1.5rem 2.25rem; }
+          .sc-dots  { display: none !important; }
+          .sc-rules { display: none !important; }
+        }
+      `}</style>
+
+      {/* Background image */}
       <div style={{
         position:           'absolute',
         inset:              0,
@@ -147,7 +157,7 @@ export default function StackedCards() {
         zIndex:             0,
       }} />
 
-      {/* ── Colour-transition overlay ── cream → charcoal ── */}
+      {/* Colour-transition overlay */}
       <div
         ref={overlayRef}
         style={{
@@ -158,10 +168,10 @@ export default function StackedCards() {
         }}
       />
 
-      {/* ── Content (sits above both layers) ── */}
+      {/* Content */}
       <div style={{ maxWidth: 760, margin: '0 auto', position: 'relative', zIndex: 2 }}>
 
-        {/* ── Section header — text colour driven by GSAP ── */}
+        {/* Header */}
         <div
           ref={headerRef}
           style={{ textAlign: 'center', marginBottom: '3.5rem', color: '#2e2e2e' }}
@@ -193,31 +203,21 @@ export default function StackedCards() {
           </h2>
         </div>
 
-        {/* ── Float wrapper — CSS oscillation on whole stack+dots ── */}
-        {/*   GSAP targets individual cardRefs (children), not this element,  */}
-        {/*   so there is no transform conflict.                               */}
+        {/* Float wrapper (desktop oscillation only — harmless on mobile) */}
         <div style={{ animation: 'cardFloat 4.5s ease-in-out infinite alternate' }}>
 
-          {/* ── Card stack ── */}
-          <div style={{
-            position: 'relative',
-            height:   CARD_HEIGHT,
-            maxWidth: 640,
-            margin:   '0 auto',
-          }}>
+          {/* Card stack */}
+          <div className="sc-stack">
             {CARDS.map((card, i) => (
               <div
                 key={i}
                 ref={el => { cardRefs.current[i] = el }}
+                className="sc-card"
                 style={{
-                  position:     'absolute',
-                  inset:        0,
                   background:   CARD_BG[i] ?? '#f4f1eb',
                   borderRadius: '1.5rem',
                   border:       '1px solid rgba(255,255,255,0.55)',
                   borderTop:    '3px solid var(--primary)',
-                  padding:      '2.75rem 3rem',
-                  // Deeper shadow — pops against charcoal background
                   boxShadow:    '0 24px 64px rgba(0,0,0,0.28), 0 6px 20px rgba(0,0,0,0.14)',
                   zIndex:       i + 1,
                   willChange:   'transform',
@@ -228,7 +228,7 @@ export default function StackedCards() {
                   display:        'flex',
                   alignItems:     'center',
                   justifyContent: 'space-between',
-                  marginBottom:   '1.75rem',
+                  marginBottom:   '1.5rem',
                 }}>
                   <span style={{
                     fontSize:      '0.65rem',
@@ -254,7 +254,7 @@ export default function StackedCards() {
                 {/* Title */}
                 <h3 style={{
                   fontFamily:    'var(--font-display)',
-                  fontSize:      'clamp(1.6rem, 3vw, 2.2rem)',
+                  fontSize:      'clamp(1.5rem, 3vw, 2.2rem)',
                   fontWeight:    700,
                   color:         'var(--dark)',
                   letterSpacing: '-0.02em',
@@ -264,7 +264,7 @@ export default function StackedCards() {
                   {card.title}
                 </h3>
 
-                {/* Body — peri-menopause step description */}
+                {/* Body */}
                 <p style={{
                   fontSize:   '0.95rem',
                   lineHeight: 1.75,
@@ -275,8 +275,8 @@ export default function StackedCards() {
                   {card.body}
                 </p>
 
-                {/* Decorative ruled lines at bottom of card */}
-                <div style={{
+                {/* Decorative ruled lines (desktop only) */}
+                <div className="sc-rules" style={{
                   position:      'absolute',
                   bottom:        '2rem',
                   left:          '3rem',
@@ -294,10 +294,9 @@ export default function StackedCards() {
             ))}
           </div>
 
-          {/* ── Progress dots — warm white on dark bg ── */}
-          <div style={{
+          {/* Progress dots — desktop only */}
+          <div className="sc-dots" style={{
             marginTop:      '2.5rem',
-            display:        'flex',
             alignItems:     'center',
             justifyContent: 'center',
             gap:            '0.6rem',
@@ -313,10 +312,9 @@ export default function StackedCards() {
             ))}
           </div>
 
-        </div>{/* end float wrapper */}
+        </div>
       </div>
 
-      {/* Floating keyframe — gentle 8px oscillation for depth */}
       <style>{`
         @keyframes cardFloat {
           from { transform: translateY(0px);  }

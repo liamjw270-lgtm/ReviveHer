@@ -1,6 +1,7 @@
 import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { Link } from 'react-router-dom'
+import TrustBadges from '../components/TrustBadges'
 
 const values = [
   { icon: '🔬', title: 'Evidence-Based', desc: 'Everything in The Peri-Menopause Reset is grounded in current research — no trends, no fads, no guesswork. Just guidance that actually works.' },
@@ -35,17 +36,17 @@ export default function AboutPage() {
     <main style={{ paddingTop: 68 }}>
 
       {/* ── Hero ── */}
-      <section style={{ background: 'var(--dark-bg)', padding: '6rem 3rem 5rem', position: 'relative', overflow: 'hidden' }}>
+      <section style={{ background: 'var(--dark-bg)', padding: 'clamp(3.5rem, 8vw, 6rem) clamp(1.5rem, 5vw, 3rem) clamp(3.5rem, 8vw, 5rem)', position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', fontSize: 'clamp(8rem,20vw,20rem)', fontWeight: 700, color: 'rgba(255,255,255,0.03)', whiteSpace: 'nowrap', pointerEvents: 'none', letterSpacing: '-0.04em', lineHeight: 1 }}>About</div>
         <div style={{ maxWidth: 900, margin: '0 auto', position: 'relative', zIndex: 2 }}>
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}>
             <span style={{ fontSize: '0.7rem', fontWeight: 500, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--secondary)', display: 'block', marginBottom: '1rem' }}>Who We Are</span>
-            <h1 style={{ fontSize: 'clamp(2.5rem, 6vw, 6rem)', fontWeight: 700, color: 'white', letterSpacing: '-0.04em', lineHeight: 0.95, marginBottom: '2rem' }}>
+            <h1 style={{ fontSize: 'clamp(2.3rem, 6vw, 6rem)', fontWeight: 700, color: 'white', letterSpacing: '-0.04em', lineHeight: 0.98, marginBottom: '2rem' }}>
               Built by women<br />
               <span style={{ color: 'rgba(255,255,255,0.2)' }}>who've been</span><br />
               there.
             </h1>
-            <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '1.1rem', lineHeight: 1.7, fontWeight: 300, maxWidth: 560 }}>
+            <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 'clamp(1rem, 2.5vw, 1.1rem)', lineHeight: 1.7, fontWeight: 300, maxWidth: 560 }}>
               ReviveHer was founded because we couldn't find a resource that was both scientifically grounded <em>and</em> genuinely compassionate about what women go through during peri-menopause.
             </p>
           </motion.div>
@@ -53,7 +54,7 @@ export default function AboutPage() {
       </section>
 
       {/* ── Stats row ── */}
-      <section style={{ background: 'var(--primary)', padding: '3.5rem 3rem' }}>
+      <section style={{ background: 'var(--primary)', padding: 'clamp(2.5rem, 6vw, 3.5rem) clamp(1.5rem, 5vw, 3rem)' }}>
         <div style={{ maxWidth: 980, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '2rem' }}>
           {milestones.map((m, i) => (
             <FadeIn key={i} delay={i * 0.08}>
@@ -67,10 +68,10 @@ export default function AboutPage() {
       </section>
 
       {/* ── Our story ── */}
-      <section style={{ background: 'var(--bg)', padding: '7rem 3rem' }}>
-        <div style={{ maxWidth: 980, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '4rem', alignItems: 'center' }}>
+      <section style={{ background: 'var(--bg)', padding: 'clamp(4.5rem, 9vw, 7rem) clamp(1.5rem, 5vw, 3rem)' }}>
+        <div style={{ maxWidth: 980, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 'clamp(2.5rem, 6vw, 4rem)', alignItems: 'center' }}>
 
-          {/* Lifestyle image — calm, atmospheric */}
+          {/* Lifestyle image */}
           <FadeIn>
             <div style={{
               width:        '100%',
@@ -129,10 +130,10 @@ export default function AboutPage() {
       </section>
 
       {/* ── Values ── */}
-      <section style={{ background: 'var(--card)', padding: '7rem 3rem', borderTop: '1px solid var(--border)' }}>
+      <section style={{ background: 'var(--card)', padding: 'clamp(4.5rem, 9vw, 7rem) clamp(1.5rem, 5vw, 3rem)', borderTop: '1px solid var(--border)' }}>
         <div style={{ maxWidth: 980, margin: '0 auto' }}>
           <FadeIn>
-            <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
+            <div style={{ textAlign: 'center', marginBottom: 'clamp(2.75rem, 6vw, 4rem)' }}>
               <span className="eyebrow">Our Values</span>
               <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 700, letterSpacing: '-0.03em', color: 'var(--dark)', lineHeight: 1.1 }}>
                 What we stand for
@@ -154,23 +155,24 @@ export default function AboutPage() {
       </section>
 
       {/* ── Mission statement ── */}
-      <section style={{ background: 'var(--dark-bg)', padding: '8rem 3rem', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+      <section style={{ background: 'var(--dark-bg)', padding: 'clamp(5rem, 10vw, 8rem) clamp(1.5rem, 5vw, 3rem)', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(circle at 60% 40%, rgba(125,158,118,0.07) 0%, transparent 60%), radial-gradient(circle at 30% 70%, rgba(201,150,142,0.05) 0%, transparent 60%)', pointerEvents: 'none' }} />
         <div style={{ maxWidth: 720, margin: '0 auto', position: 'relative', zIndex: 2 }}>
           <FadeIn>
             <span style={{ fontSize: '0.7rem', fontWeight: 500, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--secondary)', display: 'block', marginBottom: '1.5rem' }}>Our Mission</span>
-            <p style={{ fontSize: 'clamp(1.5rem, 3.5vw, 2.8rem)', fontWeight: 700, color: 'white', lineHeight: 1.3, letterSpacing: '-0.03em', marginBottom: '3rem' }}>
+            <p style={{ fontSize: 'clamp(1.4rem, 3.5vw, 2.8rem)', fontWeight: 700, color: 'white', lineHeight: 1.3, letterSpacing: '-0.03em', marginBottom: '3rem' }}>
               "To give every woman a calm, clear path through peri-menopause — so she can feel like herself again."
             </p>
-            <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}>
+            <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }} style={{ display: 'inline-block' }}>
               <Link
                 to="/buy"
                 className="btn btn-sage"
                 style={{ fontSize: '0.82rem', padding: '1rem 2.5rem', textDecoration: 'none', display: 'inline-flex' }}
               >
-                Get the Guide
+                Get the Guide — $19.99
               </Link>
             </motion.div>
+            <TrustBadges dark compact style={{ marginTop: '1.5rem' }} />
           </FadeIn>
         </div>
       </section>

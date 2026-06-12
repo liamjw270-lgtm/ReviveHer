@@ -126,7 +126,7 @@ export default function Nav() {
         zIndex:     199,
         background: 'rgba(244,241,235,0.98)',
         backdropFilter: 'blur(16px)',
-        borderBottom: '1px solid rgba(46,46,46,0.08)',
+        borderBottom: menuOpen ? '1px solid rgba(46,46,46,0.08)' : 'none',
         overflow:   'hidden',
         maxHeight:  menuOpen ? 400 : 0,
         transition: 'max-height 0.35s cubic-bezier(0.4,0,0.2,1)',
