@@ -11,18 +11,9 @@ export default function StickySection() {
   const [active, setActive] = useState(0)
 
   useGSAP(() => {
-    const mm = gsap.matchMedia()
-
-    // Desktop only — pin the image while steps scroll
-    mm.add('(min-width: 768px)', () => {
-      ScrollTrigger.create({
-        trigger:    sectionRef.current,
-        start:      'top top',
-        end:        `+=${blocks.length * 100}%`,
-        pin:        leftRef.current,
-        pinSpacing: false,
-      })
-    })
+    // The image column sticks via pure CSS `position: sticky` (see .sticky-left),
+    // which naturally releases at the section's bottom edge. No GSAP pin needed —
+    // pinning here previously over-extended and let the image drift past the section.
 
     // All viewports — track which block is active
     blocks.forEach((_, i) => {
@@ -34,8 +25,6 @@ export default function StickySection() {
         onEnterBack: () => setActive(i),
       })
     })
-
-    return () => mm.revert()
   }, { scope: sectionRef })
 
   return (

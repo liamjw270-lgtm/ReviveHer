@@ -1,13 +1,9 @@
 /**
  * StackedCards — cinematic scroll section.
  *
- * Desktop (≥768px): background colour-shift + pinned card stack that sweeps
- * diagonally per card (GSAP ScrollTrigger scrub).
- *
- * Mobile (<768px): the pin/scrub is skipped entirely — cards render as a
- * simple vertical list with scroll-reveal. Pinned scrub animations are
- * unreliable and janky on touch devices, and fixed-height absolute cards
- * overflow on narrow screens.
+ * All viewports: background colour-shift + pinned card stack that sweeps
+ * diagonally per card (GSAP ScrollTrigger scrub). The stage height and card
+ * padding adapt per breakpoint (see CSS) so nothing clips on a narrow phone.
  */
 
 import { useRef } from 'react'
@@ -17,7 +13,6 @@ import { ScrollTrigger } from '../lib/gsap'
 import { content } from '../content'
 
 const SCROLL_PER_CARD = 520
-const CARD_HEIGHT     = 440
 
 const CARDS = content.sticky.blocks.map((b, i) => ({
   number:  String(i + 1).padStart(2, '0'),
@@ -37,78 +32,75 @@ export default function StackedCards() {
   useGSAP(() => {
     const mm = gsap.matchMedia()
 
-    // ── Desktop: colour shift + pinned diagonal card sweep ──────────────
-    mm.add('(min-width: 768px)', () => {
-      const cards = cardRefs.current.filter(Boolean)
-      const n     = cards.length
-      if (n < 2) return
+    // ── All viewports: colour shift + pinned diagonal card sweep ────────
+    // Desktop pulls the cards left/right; mobile sweeps them up from the
+    // corner at a slight diagonal angle (still mostly vertical).
+    mm.add(
+      {
+        isDesktop: '(min-width: 768px)',
+        isMobile:  '(max-width: 767px)',
+      },
+      () => {
+        const cards = cardRefs.current.filter(Boolean)
+        const n     = cards.length
+        if (n < 2) return
 
-      gsap.fromTo(
-        overlayRef.current,
-        { backgroundColor: 'rgba(244,241,235,0.97)' },
-        {
-          backgroundColor: 'rgba(43,43,43,0.84)',
-          ease: 'none',
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start:   'top 90%',
-            end:     'top 12%',
-            scrub:   1.8,
-          },
-        }
-      )
-
-      gsap.fromTo(
-        headerRef.current,
-        { color: '#2e2e2e' },
-        {
-          color: '#f5f0ea',
-          ease:  'none',
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start:   'top 90%',
-            end:     'top 12%',
-            scrub:   1.8,
-          },
-        }
-      )
-
-      gsap.set(cards.slice(1), { yPercent: 112, x: -24 })
-
-      const tl = gsap.timeline()
-      for (let i = 0; i < n - 1; i++) {
-        tl
-          .to(cards[i + 1], { yPercent: 0, x: 0, ease: 'none', duration: 1 })
-          .to(cards[i],     { scale: 0.92, y: -30, x: 24, ease: 'none', duration: 1 }, '<')
-      }
-
-      ScrollTrigger.create({
-        trigger:       sectionRef.current,
-        start:         'top top',
-        end:           `+=${SCROLL_PER_CARD * (n - 1)}`,
-        pin:           true,
-        anticipatePin: 1,
-        scrub:         1.0,
-        animation:     tl,
-      })
-    })
-
-    // ── Mobile: dark overlay static, cards reveal on scroll ─────────────
-    mm.add('(max-width: 767px)', () => {
-      gsap.set(overlayRef.current, { backgroundColor: 'rgba(43,43,43,0.84)' })
-      gsap.set(headerRef.current,  { color: '#f5f0ea' })
-
-      const cards = cardRefs.current.filter(Boolean)
-      cards.forEach(card => {
-        gsap.fromTo(card,
-          { opacity: 0, y: 32 },
+        gsap.fromTo(
+          overlayRef.current,
+          { backgroundColor: 'rgba(244,241,235,0.97)' },
           {
-            opacity: 1, y: 0, duration: 0.7, ease: 'power3.out',
-            scrollTrigger: { trigger: card, start: 'top 85%', once: true },
+            backgroundColor: 'rgba(43,43,43,0.84)',
+            ease: 'none',
+            scrollTrigger: {
+              trigger: sectionRef.current,
+              start:   'top 90%',
+              end:     'top 12%',
+              scrub:   1.8,
+            },
           }
         )
-      })
-    })
+
+        gsap.fromTo(
+          headerRef.current,
+          { color: '#2e2e2e' },
+          {
+            color: '#f5f0ea',
+            ease:  'none',
+            scrollTrigger: {
+              trigger: sectionRef.current,
+              start:   'top 90%',
+              end:     'top 12%',
+              scrub:   1.8,
+            },
+          }
+        )
+
+        // Same movement on every viewport: a subtle horizontal offset + gentle
+        // tilt so each card swipes in from the bottom corner, then settles
+        // perfectly straight and readable.
+        const offX = 12
+        const rot  = 2.5
+
+        gsap.set(cards.slice(1), { yPercent: 112, x: -offX, rotateZ: -rot })
+
+        const tl = gsap.timeline()
+        for (let i = 0; i < n - 1; i++) {
+          tl
+            .to(cards[i + 1], { yPercent: 0, x: 0, rotateZ: 0, ease: 'none', duration: 1 })
+            .to(cards[i],     { scale: 0.92, y: -30, x: offX, rotateZ: rot, ease: 'none', duration: 1 }, '<')
+        }
+
+        ScrollTrigger.create({
+          trigger:       sectionRef.current,
+          start:         'top top',
+          end:           `+=${SCROLL_PER_CARD * (n - 1)}`,
+          pin:           true,
+          anticipatePin: 1,
+          scrub:         1.0,
+          animation:     tl,
+        })
+      }
+    )
 
     return () => mm.revert()
   }, { scope: sectionRef })
@@ -124,10 +116,10 @@ export default function StackedCards() {
       }}
     >
       <style>{`
-        /* Desktop: absolute stacked cards inside fixed-height stage */
+        /* Absolute stacked cards inside a fixed-height stage (all viewports) */
         .sc-stack {
           position: relative;
-          height: ${CARD_HEIGHT}px;
+          height: 440px;
           max-width: 640px;
           margin: 0 auto;
         }
@@ -138,11 +130,10 @@ export default function StackedCards() {
         }
         .sc-dots { display: flex; }
 
-        /* Mobile: plain vertical list */
+        /* Mobile: taller stage + tighter padding so longer text never clips */
         @media (max-width: 767px) {
-          .sc-stack { height: auto; display: flex; flex-direction: column; gap: 1.1rem; }
-          .sc-card  { position: relative; inset: auto; padding: 1.75rem 1.5rem 2.25rem; }
-          .sc-dots  { display: none !important; }
+          .sc-stack { height: 480px; }
+          .sc-card  { padding: 2rem 1.5rem; }
           .sc-rules { display: none !important; }
         }
       `}</style>

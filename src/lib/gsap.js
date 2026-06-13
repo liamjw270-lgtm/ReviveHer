@@ -26,6 +26,20 @@ ScrollTrigger.config({
   ignoreMobileResize: true, // prevents address-bar resize from re-calculating
 })
 
+// ── Recompute trigger positions after late layout shifts ─────────────────────
+// Web fonts and images (book art, lifestyle photos) finish loading *after*
+// ScrollTrigger first measures the page. On mobile especially this shifts every
+// section down, leaving scroll-reveal/scrub triggers (e.g. the Timeline line)
+// pinned to stale positions — so they appear already-finished or never fire.
+// Refreshing once everything has settled fixes it.
+if (typeof window !== 'undefined') {
+  const refresh = () => ScrollTrigger.refresh()
+  window.addEventListener('load', refresh)
+  if (document.fonts?.ready) document.fonts.ready.then(refresh)
+  // Catch any images that decode slightly later than the load event.
+  window.addEventListener('load', () => setTimeout(refresh, 300))
+}
+
 // Smooth scrub constant — low value = snappy, minimal post-scroll lag
 export const SCRUB = 0.5
 

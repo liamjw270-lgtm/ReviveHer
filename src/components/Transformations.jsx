@@ -5,6 +5,7 @@ import { useRef, useState, useEffect } from 'react'
 import { useGSAP } from '@gsap/react'
 import gsap from '../lib/gsap'
 import { content } from '../content'
+import { TiltCard } from './FX'
 
 function useCountUp(target, active, duration = 1400) {
   const [val, setVal] = useState(0)
@@ -58,6 +59,7 @@ function StatCard({ item, delay }) {
   }, { scope: cardRef })
 
   return (
+    <TiltCard max={6} style={{ height: '100%' }}>
     <div ref={cardRef} style={{
       background:   'var(--bg)',
       borderRadius: '1.5rem',
@@ -65,6 +67,7 @@ function StatCard({ item, delay }) {
       border:       '1px solid var(--border)',
       textAlign:    'center',
       boxShadow:    '0 4px 24px rgba(46,46,46,0.05)',
+      height:       '100%',
     }}>
       <div style={{
         fontFamily:    'var(--font-display)',
@@ -95,6 +98,7 @@ function StatCard({ item, delay }) {
         </div>
       </div>
     </div>
+    </TiltCard>
   )
 }
 
@@ -145,7 +149,7 @@ export default function Transformations() {
             maxWidth:   480,
             margin:     '1rem auto 0',
           }}>
-            Real women, real results — following the week-by-week guide.
+            Real women, real results — following the guide at their own pace.
           </p>
         </div>
 
@@ -175,7 +179,7 @@ export default function Transformations() {
         }}>
           {[
             { n: '4.9★',    l: 'Average rating' },
-            { n: '4 weeks', l: 'Gentle week-by-week reset' },
+            { n: 'Self-paced', l: 'A gentle, guided reset' },
             { n: '100%',    l: 'Evidence-backed' },
           ].map((s, i) => (
             <div key={i} style={{ textAlign: 'center' }}>

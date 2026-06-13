@@ -4,6 +4,7 @@ import { useGSAP } from '@gsap/react'
 import gsap from '../lib/gsap'
 import { content } from '../content'
 import TrustBadges from './TrustBadges'
+import { MagneticButton } from './FX'
 
 export default function CTA() {
   const sectionRef = useRef(null)
@@ -64,6 +65,7 @@ export default function CTA() {
               width:   'min(48vw, 220px)',
               display: 'block',
               filter:  'drop-shadow(0 30px 50px rgba(0,0,0,0.5))',
+              animation: 'bookFloat 5s ease-in-out infinite alternate',
             }}
           />
         </div>
@@ -93,13 +95,15 @@ export default function CTA() {
         </p>
 
         <div ref={btnRef} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.1rem' }}>
-          <Link
-            to="/buy"
-            className="btn btn-sage"
-            style={{ fontSize: '0.85rem', padding: '1.2rem 3rem' }}
-          >
-            {content.cta.buttonText}
-          </Link>
+          <MagneticButton strength={0.3}>
+            <Link
+              to="/buy"
+              className="btn btn-sage"
+              style={{ fontSize: '0.85rem', padding: '1.2rem 3rem' }}
+            >
+              {content.cta.buttonText}
+            </Link>
+          </MagneticButton>
           <span style={{ fontSize: '0.95rem', color: 'rgba(255,255,255,0.6)', fontWeight: 500 }}>
             $19.99 AUD · Instant PDF download
           </span>

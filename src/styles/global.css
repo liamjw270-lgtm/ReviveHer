@@ -105,17 +105,61 @@ img, video { max-width: 100%; display: block; }
 
 /* ── Hero mobile card hiding ── */
 .hero-book-card { display: none; }
-@media (min-width: 900px) {
+@media (min-width: 768px) {
   .hero-book-card { display: block; }
 }
 
 /* ── Nav mobile ── */
 .nav-hamburger { display: flex !important; }
 .nav-desktop-links { display: none !important; }
-@media (min-width: 900px) {
+@media (min-width: 768px) {
   .nav-hamburger { display: none !important; }
   .nav-desktop-links { display: flex !important; }
 }
+
+/* ── Hero two-column grid ── */
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(2rem, 4vw, 4rem);
+  align-items: center;
+}
+@media (min-width: 768px) {
+  .hero-grid { grid-template-columns: 1fr auto; }
+}
+
+/* ── FX keyframes ── */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+@keyframes marqueeRev {
+  from { transform: translateX(-50%); }
+  to   { transform: translateX(0); }
+}
+@keyframes grainShift {
+  0%   { transform: translate(0, 0); }
+  25%  { transform: translate(-2%, 3%); }
+  50%  { transform: translate(3%, -2%); }
+  75%  { transform: translate(-3%, -3%); }
+  100% { transform: translate(2%, 2%); }
+}
+@keyframes auroraDrift {
+  0%   { transform: translate(0, 0) scale(1); }
+  33%  { transform: translate(6%, -4%) scale(1.12); }
+  66%  { transform: translate(-5%, 5%) scale(0.94); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+@keyframes bookFloat {
+  from { transform: translateY(0) rotate(-1deg); }
+  to   { transform: translateY(-14px) rotate(1deg); }
+}
+@keyframes scrollPulse {
+  0%, 100% { transform: translateY(0); opacity: 0.6; }
+  50%      { transform: translateY(6px); opacity: 1; }
+}
+
+::selection { background: var(--primary); color: white; }
 
 /* ── Motion preferences ── */
 @media (prefers-reduced-motion: reduce) {

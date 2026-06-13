@@ -44,23 +44,23 @@ export const content = {
 
   timeline: [
     {
-      title: "Week 1 — Awareness",
-      text: "You begin to notice your patterns. Energy levels shift slightly as you start to understand your triggers. Small wins appear — a better morning, a calmer evening.",
+      title: "Understanding",
+      text: "You start to make sense of what's happening in your body. The guide helps you recognise your own patterns and triggers, so things feel less random and more within your control.",
       image: "/book-3d.png",
     },
     {
-      title: "Week 2 — Consistency",
-      text: "The habits start to settle. Sleep feels slightly more stable. Mood swings become a little easier to ride. You become more aware of what your body is asking for.",
+      title: "First shifts",
+      text: "As you bring in small, manageable changes, the early signs show up — a steadier morning, a calmer evening, sleep that comes a little more easily.",
       image: null,
     },
     {
-      title: "Week 3 — Stability",
-      text: "That sense of overwhelm begins to lift. Your nervous system is receiving support it may not have had in a long time. You feel a little more like yourself.",
+      title: "Finding your rhythm",
+      text: "The overwhelm begins to ease as your nervous system gets support it may have been missing. You settle into routines that fit your real life — at your own pace.",
       image: null,
     },
     {
-      title: "Week 4+ — Momentum",
-      text: "Noticeable changes in energy, stress levels and your daily rhythm. This is the beginning of a sustainable reset — not a quick fix, but something that carries forward.",
+      title: "Lasting change",
+      text: "Energy, mood and your daily rhythm keep building. This isn't a quick fix on a fixed timeline — it's a sustainable reset you carry forward, however long it takes you.",
       image: null,
     },
   ],
@@ -133,7 +133,7 @@ export const content = {
     },
     {
       q: "How quickly will I notice a difference?",
-      a: "Many women notice small shifts in energy and sleep within the first 1–2 weeks. More consistent changes tend to come by week 3–4. Everyone's body is different — this guide is designed for gradual, sustainable progress rather than overnight results.",
+      a: "Many women notice small shifts in energy and sleep within the first couple of weeks, with more consistent changes building over the weeks that follow. There's no fixed timeline — you move through the guide at your own pace, and it's designed for gradual, sustainable progress rather than overnight results.",
     },
     {
       q: "How is it delivered?",

@@ -7,6 +7,7 @@ import Nav             from './components/Nav'
 import Footer          from './components/Footer'
 import EmailSignup     from './components/EmailSignup'
 import ExitIntentPopup from './components/ExitIntentPopup'
+import { ScrollProgress, Grain } from './components/FX'
 import Home     from './pages/Home'
 import BuyPage  from './pages/BuyPage'
 import AboutPage from './pages/AboutPage'
@@ -22,6 +23,8 @@ function Layout() {
   return (
     <>
       <ScrollToTop />
+      <ScrollProgress />
+      <Grain />
       <Nav />
       <Routes>
         <Route path="/"      element={<Home />} />

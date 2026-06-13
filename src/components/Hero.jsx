@@ -5,6 +5,7 @@ import gsap from '../lib/gsap'
 import { ScrollTrigger } from '../lib/gsap'
 import { content } from '../content'
 import TrustBadges from './TrustBadges'
+import { MagneticButton, TiltCard } from './FX'
 
 export default function Hero() {
   const heroRef    = useRef(null)
@@ -17,42 +18,62 @@ export default function Hero() {
   const badgeRef   = useRef(null)
   const trustRef   = useRef(null)
   const mobileImgRef = useRef(null)
+  const scrollCueRef = useRef(null)
 
   useGSAP(() => {
+    // Char-level reveal on each headline line
     const lines = [line1Ref.current, line2Ref.current, line3Ref.current]
-
-    gsap.set(lines, { y: '110%', opacity: 0 })
-    gsap.set([subRef.current, ctaRef.current, badgeRef.current, trustRef.current], { opacity: 0, y: 20 })
-    gsap.set(imageRef.current, { opacity: 0, x: 40, scale: 0.96 })
-    gsap.set(mobileImgRef.current, { opacity: 0, y: 24, scale: 0.95 })
-
-    const tl = gsap.timeline({ delay: 0.1 })
-
-    tl.to(lines, {
-      y:        0,
-      opacity:  1,
-      duration: 1.0,
-      stagger:  0.1,
-      ease:     'power3.out',
+    const allChars = []
+    lines.forEach(line => {
+      allChars.push(...line.querySelectorAll('.hero-char'))
     })
-    .to(subRef.current,   { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' }, '-=0.5')
-    .to(mobileImgRef.current, { opacity: 1, y: 0, scale: 1, duration: 0.8, ease: 'power3.out' }, '-=0.5')
-    .to(ctaRef.current,   { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' }, '-=0.5')
-    .to(trustRef.current, { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' }, '-=0.5')
-    .to(badgeRef.current, { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' }, '-=0.55')
-    .to(imageRef.current, { opacity: 1, x: 0, scale: 1, duration: 1.1, ease: 'power3.out' }, '-=0.9')
 
-    // Subtle parallax on scroll (desktop image)
+    gsap.set(allChars, { yPercent: 120, rotateZ: 6, opacity: 0 })
+    gsap.set([subRef.current, ctaRef.current, badgeRef.current, trustRef.current, scrollCueRef.current], { opacity: 0, y: 24 })
+    gsap.set(imageRef.current, { opacity: 0, x: 60, rotateZ: 4, scale: 0.92 })
+    gsap.set(mobileImgRef.current, { opacity: 0, y: 30, scale: 0.93 })
+
+    const tl = gsap.timeline({ delay: 0.15 })
+
+    tl.to(badgeRef.current, { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' })
+      .to(allChars, {
+        yPercent: 0,
+        rotateZ:  0,
+        opacity:  1,
+        duration: 1.1,
+        stagger:  { each: 0.024, from: 'start' },
+        ease:     'power4.out',
+      }, '-=0.3')
+      .to(subRef.current,       { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' }, '-=0.7')
+      .to(mobileImgRef.current, { opacity: 1, y: 0, scale: 1, duration: 0.9, ease: 'power3.out' }, '-=0.55')
+      .to(ctaRef.current,       { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' }, '-=0.5')
+      .to(trustRef.current,     { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' }, '-=0.5')
+      .to(imageRef.current,     { opacity: 1, x: 0, rotateZ: 0, scale: 1, duration: 1.2, ease: 'power3.out' }, '-=1.0')
+      .to(scrollCueRef.current, { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' }, '-=0.4')
+
+    // Parallax: image drifts down, headline drifts up slightly, on scroll
     ScrollTrigger.create({
       trigger: heroRef.current,
       start:   'top top',
       end:     'bottom top',
       scrub:   1,
       onUpdate: self => {
-        gsap.set(imageRef.current, { y: self.progress * 40 })
+        gsap.set(imageRef.current, { y: self.progress * 60 })
+        lines.forEach((line, i) => {
+          gsap.set(line, { y: self.progress * -30 * (i + 1) * 0.4 })
+        })
       },
     })
   }, { scope: heroRef })
+
+  const renderChars = (text) =>
+    text.split('').map((c, i) => (
+      <span key={i} style={{ display: 'inline-block', overflow: 'hidden', verticalAlign: 'top' }}>
+        <span className="hero-char" style={{ display: 'inline-block', willChange: 'transform' }}>
+          {c === ' ' ? ' ' : c}
+        </span>
+      </span>
+    ))
 
   return (
     <section ref={heroRef} style={{
@@ -66,7 +87,7 @@ export default function Hero() {
     }}>
       <style>{`
         .hero-mobile-book { display: flex; justify-content: center; margin-top: 2rem; }
-        @media (min-width: 900px) { .hero-mobile-book { display: none; } }
+        @media (min-width: 768px) { .hero-mobile-book { display: none; } }
       `}</style>
 
       {/* Sunrise background image — soft overlay */}
@@ -79,25 +100,43 @@ export default function Hero() {
         opacity:            0.13,
         pointerEvents:      'none',
       }} />
-      {/* Background texture */}
-      <div style={{
-        position:        'absolute',
-        inset:           0,
-        backgroundImage: 'radial-gradient(ellipse at 70% 50%, rgba(125,158,118,0.08) 0%, transparent 60%), radial-gradient(ellipse at 20% 80%, rgba(201,150,142,0.07) 0%, transparent 50%)',
-        pointerEvents:   'none',
+
+      {/* Aurora blobs — slow drifting colour fields */}
+      <div aria-hidden style={{
+        position: 'absolute', top: '-12%', right: '-8%',
+        width: 'min(60vw, 640px)', height: 'min(60vw, 640px)',
+        borderRadius: '50%',
+        background: 'radial-gradient(circle, rgba(125,158,118,0.22) 0%, transparent 65%)',
+        filter: 'blur(40px)',
+        animation: 'auroraDrift 16s ease-in-out infinite',
+        pointerEvents: 'none',
+      }} />
+      <div aria-hidden style={{
+        position: 'absolute', bottom: '-15%', left: '-10%',
+        width: 'min(55vw, 560px)', height: 'min(55vw, 560px)',
+        borderRadius: '50%',
+        background: 'radial-gradient(circle, rgba(201,150,142,0.2) 0%, transparent 65%)',
+        filter: 'blur(40px)',
+        animation: 'auroraDrift 20s ease-in-out infinite reverse',
+        pointerEvents: 'none',
+      }} />
+      <div aria-hidden style={{
+        position: 'absolute', top: '30%', left: '35%',
+        width: 'min(40vw, 420px)', height: 'min(40vw, 420px)',
+        borderRadius: '50%',
+        background: 'radial-gradient(circle, rgba(201,178,138,0.16) 0%, transparent 65%)',
+        filter: 'blur(50px)',
+        animation: 'auroraDrift 24s ease-in-out 4s infinite',
+        pointerEvents: 'none',
       }} />
 
-      <div style={{
-        maxWidth:            1200,
-        margin:              '0 auto',
-        padding:             'clamp(2.5rem, 6vw, 5rem) clamp(1.5rem, 5vw, 3rem) clamp(4.5rem, 8vw, 5rem)',
-        width:               '100%',
-        display:             'grid',
-        gridTemplateColumns: '1fr auto',
-        gap:                 '4rem',
-        alignItems:          'center',
-        position:            'relative',
-        zIndex:              2,
+      <div className="hero-grid" style={{
+        maxWidth: 1200,
+        margin:   '0 auto',
+        padding:  'clamp(2.5rem, 6vw, 5rem) clamp(1.5rem, 5vw, 3rem) clamp(4.5rem, 8vw, 5rem)',
+        width:    '100%',
+        position: 'relative',
+        zIndex:   2,
       }}>
         {/* Text column */}
         <div>
@@ -121,42 +160,34 @@ export default function Hero() {
             Evidence-Based · Women-First
           </div>
 
-          {/* Headline */}
-          <div style={{ overflow: 'hidden', lineHeight: 1 }}>
-            <h1 style={{ fontFamily: 'var(--font-display)', lineHeight: 0.95, letterSpacing: '-0.02em' }}>
-              <div style={{ overflow: 'hidden', paddingBottom: '0.05em' }}>
-                <span ref={line1Ref} style={{
-                  display:    'block',
-                  fontSize:   'clamp(3rem, 10vw, 7.5rem)',
-                  fontWeight: 700,
-                  color:      'var(--dark)',
-                }}>
-                  {content.hero.headlineA}
-                </span>
-              </div>
-              <div style={{ overflow: 'hidden', paddingBottom: '0.05em' }}>
-                <span ref={line2Ref} style={{
-                  display:    'block',
-                  fontSize:   'clamp(3rem, 10vw, 7.5rem)',
-                  fontWeight: 400,
-                  fontStyle:  'italic',
-                  color:      'var(--primary)',
-                }}>
-                  {content.hero.headlineGhost}
-                </span>
-              </div>
-              <div style={{ overflow: 'hidden', paddingBottom: '0.05em' }}>
-                <span ref={line3Ref} style={{
-                  display:    'block',
-                  fontSize:   'clamp(3rem, 10vw, 7.5rem)',
-                  fontWeight: 700,
-                  color:      'var(--dark)',
-                }}>
-                  {content.hero.headlineB}
-                </span>
-              </div>
-            </h1>
-          </div>
+          {/* Headline — char-split reveal */}
+          <h1 style={{ fontFamily: 'var(--font-display)', lineHeight: 0.95, letterSpacing: '-0.02em' }}>
+            <div ref={line1Ref} style={{
+              fontSize:   'clamp(3rem, 10vw, 7.5rem)',
+              fontWeight: 700,
+              color:      'var(--dark)',
+              paddingBottom: '0.05em',
+            }}>
+              {renderChars(content.hero.headlineA)}
+            </div>
+            <div ref={line2Ref} style={{
+              fontSize:   'clamp(3rem, 10vw, 7.5rem)',
+              fontWeight: 400,
+              fontStyle:  'italic',
+              color:      'var(--primary)',
+              paddingBottom: '0.05em',
+            }}>
+              {renderChars(content.hero.headlineGhost)}
+            </div>
+            <div ref={line3Ref} style={{
+              fontSize:   'clamp(3rem, 10vw, 7.5rem)',
+              fontWeight: 700,
+              color:      'var(--dark)',
+              paddingBottom: '0.05em',
+            }}>
+              {renderChars(content.hero.headlineB)}
+            </div>
+          </h1>
 
           {/* Subtext */}
           <p ref={subRef} style={{
@@ -170,7 +201,7 @@ export default function Hero() {
             {content.hero.subtext}
           </p>
 
-          {/* Mobile book image — between subtext and CTA */}
+          {/* Mobile book image */}
           <div className="hero-mobile-book" ref={mobileImgRef}>
             {content.hero.productImage && (
               <img
@@ -180,6 +211,7 @@ export default function Hero() {
                   width:   'min(58vw, 240px)',
                   display: 'block',
                   filter:  'drop-shadow(0 24px 40px rgba(46,46,46,0.25))',
+                  animation: 'bookFloat 4s ease-in-out infinite alternate',
                 }}
               />
             )}
@@ -187,7 +219,6 @@ export default function Hero() {
 
           {/* CTA row */}
           <div ref={ctaRef} style={{ marginTop: '2rem' }}>
-            {/* Stars + rating line */}
             <div style={{
               display:      'flex',
               alignItems:   'center',
@@ -201,13 +232,15 @@ export default function Hero() {
             </div>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', flexWrap: 'wrap' }}>
-              <Link
-                to="/buy"
-                className="btn btn-sage"
-                style={{ fontSize: '0.85rem', padding: '1.15rem 2.6rem' }}
-              >
-                {content.hero.cta} →
-              </Link>
+              <MagneticButton>
+                <Link
+                  to="/buy"
+                  className="btn btn-sage"
+                  style={{ fontSize: '0.85rem', padding: '1.15rem 2.6rem' }}
+                >
+                  {content.hero.cta} →
+                </Link>
+              </MagneticButton>
               <span style={{
                 fontSize:      '1rem',
                 fontWeight:    600,
@@ -225,42 +258,69 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* Book image column — hidden on mobile */}
+        {/* Book image column — desktop, floating + tilting */}
         <div className="hero-book-card" ref={imageRef}>
-          {content.hero.productImage ? (
-            <img
-              src={content.hero.productImage}
-              alt="The Peri-Menopause Reset by ReviveHer"
-              style={{
-                width:   420,
-                display: 'block',
-                filter:  'drop-shadow(0 40px 60px rgba(46,46,46,0.22))',
-              }}
-            />
-          ) : (
-            <div style={{
-              width:         300,
-              aspectRatio:   '3/4',
-              borderRadius:  '1.5rem',
-              background:    'linear-gradient(145deg, var(--card), rgba(125,158,118,0.15))',
-              border:        '1px solid var(--border)',
-              display:       'flex',
-              flexDirection: 'column',
-              alignItems:    'center',
-              justifyContent:'center',
-              gap:           '1rem',
-              padding:       '2rem',
-              boxShadow:     '0 32px 80px rgba(46,46,46,0.12)',
-            }}>
-              <div style={{ width: 64, height: 80, background: 'var(--primary)', borderRadius: '0.5rem', opacity: 0.3 }} />
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '1rem', color: 'var(--dark)', marginBottom: '0.25rem' }}>
-                  The Peri-Menopause Reset
+          <TiltCard max={10}>
+            {content.hero.productImage ? (
+              <img
+                src={content.hero.productImage}
+                alt="The Peri-Menopause Reset by ReviveHer"
+                style={{
+                  width:   'clamp(240px, 32vw, 420px)',
+                  display: 'block',
+                  filter:  'drop-shadow(0 40px 60px rgba(46,46,46,0.22))',
+                  animation: 'bookFloat 5s ease-in-out infinite alternate',
+                }}
+              />
+            ) : (
+              <div style={{
+                width:         300,
+                aspectRatio:   '3/4',
+                borderRadius:  '1.5rem',
+                background:    'linear-gradient(145deg, var(--card), rgba(125,158,118,0.15))',
+                border:        '1px solid var(--border)',
+                display:       'flex',
+                flexDirection: 'column',
+                alignItems:    'center',
+                justifyContent:'center',
+                gap:           '1rem',
+                padding:       '2rem',
+                boxShadow:     '0 32px 80px rgba(46,46,46,0.12)',
+              }}>
+                <div style={{ width: 64, height: 80, background: 'var(--primary)', borderRadius: '0.5rem', opacity: 0.3 }} />
+                <div style={{ textAlign: 'center' }}>
+                  <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '1rem', color: 'var(--dark)', marginBottom: '0.25rem' }}>
+                    The Peri-Menopause Reset
+                  </div>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--muted)' }}>ReviveHer</div>
                 </div>
-                <div style={{ fontSize: '0.75rem', color: 'var(--muted)' }}>ReviveHer</div>
               </div>
-            </div>
-          )}
+            )}
+          </TiltCard>
+        </div>
+      </div>
+
+      {/* Scroll cue */}
+      <div ref={scrollCueRef} style={{
+        position: 'absolute',
+        bottom: 60,
+        left: '50%',
+        transform: 'translateX(-50%)',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: '0.4rem',
+        pointerEvents: 'none',
+        zIndex: 3,
+      }}>
+        <span style={{
+          fontSize: '0.6rem', letterSpacing: '0.2em', textTransform: 'uppercase',
+          color: 'var(--muted)', fontWeight: 500,
+        }}>Scroll</span>
+        <div style={{ animation: 'scrollPulse 1.6s ease-in-out infinite' }}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+            <path d="M6 9l6 6 6-6" stroke="var(--primary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
         </div>
       </div>
 

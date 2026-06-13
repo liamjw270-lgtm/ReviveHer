@@ -8,11 +8,14 @@ import Testimonials    from '../components/Testimonials'
 import FAQ             from '../components/FAQ'
 import CTA             from '../components/CTA'
 import TrustBadges     from '../components/TrustBadges'
+import Marquee         from '../components/Marquee'
+import { MagneticButton } from '../components/FX'
 
 export default function Home() {
   return (
     <main>
       <Hero />
+      <Marquee />
       <StickySection />
 
       {/* ── Mid-page CTA ── */}
@@ -44,13 +47,15 @@ export default function Home() {
           }}>
             One guide. Everything you need to understand and support your body through perimenopause.
           </p>
-          <Link
-            to="/buy"
-            className="btn btn-sage"
-            style={{ fontSize: '0.82rem', padding: '1.1rem 2.5rem', display: 'inline-flex' }}
-          >
-            Get the Guide →
-          </Link>
+          <MagneticButton>
+            <Link
+              to="/buy"
+              className="btn btn-sage"
+              style={{ fontSize: '0.82rem', padding: '1.1rem 2.5rem', display: 'inline-flex' }}
+            >
+              Get the Guide →
+            </Link>
+          </MagneticButton>
           <div style={{ marginTop: '0.9rem', fontSize: '0.92rem', color: 'rgba(255,255,255,0.55)', fontWeight: 400 }}>
             $19.99 AUD · Instant PDF download
           </div>
@@ -80,6 +85,12 @@ export default function Home() {
       </div>
 
       <Transformations />
+      <Marquee
+        dark
+        reverse
+        items={['★★★★★ "I feel like myself again"', '★★★★★ "Sleeping through the night"', '★★★★★ "Brain fog cleared"', '★★★★★ "Honestly can\'t recommend it enough"']}
+        speed={34}
+      />
       <Testimonials />
       <FAQ />
       <CTA />

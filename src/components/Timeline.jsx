@@ -30,15 +30,15 @@ export default function Timeline() {
     const items = containerRef.current.querySelectorAll('.timeline-item')
     items.forEach((item, i) => {
       gsap.fromTo(item,
-        { opacity: 0, y: 26 },
+        { opacity: 0, y: 40 },
         {
           opacity: 1,
           y:       0,
-          duration: 0.8,
-          ease:    'power3.out',
+          duration: 1.6,
+          ease:    'power2.out',
           scrollTrigger: {
             trigger: item,
-            start:   'top 80%',
+            start:   'top 85%',
             once:    true,
           },
         }
@@ -90,9 +90,19 @@ export default function Timeline() {
             letterSpacing: '-0.02em',
             lineHeight:    1.1,
           }}>
-            A gentle<br />
-            <em style={{ fontStyle: 'italic', color: 'var(--primary)' }}>week-by-week reset</em>
+            A gentle reset,<br />
+            <em style={{ fontStyle: 'italic', color: 'var(--primary)' }}>at your own pace</em>
           </h2>
+          <p style={{
+            marginTop:  '1rem',
+            fontSize:   '0.95rem',
+            color:      'var(--muted)',
+            fontWeight: 300,
+            maxWidth:   460,
+            margin:     '1rem auto 0',
+          }}>
+            Not a strict program with deadlines — a guide you move through stage by stage, in whatever time feels right for you.
+          </p>
         </div>
 
         {/* Timeline */}

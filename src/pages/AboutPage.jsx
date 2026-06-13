@@ -12,7 +12,7 @@ const values = [
 
 const milestones = [
   { stat: '4.9★',    label: 'Average reader rating' },
-  { stat: '4 weeks', label: 'Gentle week-by-week reset' },
+  { stat: 'Self-paced', label: 'A gentle, guided reset' },
   { stat: '100%',    label: 'Evidence-backed content' },
 ]
 
