@@ -261,7 +261,7 @@ export default function WhyPage() {
                   className="btn btn-sage"
                   style={{ fontSize: '0.85rem', padding: '1.1rem 2.5rem', textDecoration: 'none', display: 'inline-flex' }}
                 >
-                  Get the Guide — $19.99
+                  Get the Guide — $9.99
                 </Link>
               </motion.div>
               <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }} style={{ borderRadius: 999 }}>

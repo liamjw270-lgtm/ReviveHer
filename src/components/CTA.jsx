@@ -105,7 +105,8 @@ export default function CTA() {
             </Link>
           </MagneticButton>
           <span style={{ fontSize: '0.95rem', color: 'rgba(255,255,255,0.6)', fontWeight: 500 }}>
-            $19.99 AUD · Instant PDF download
+            <span style={{ textDecoration: 'line-through', opacity: 0.55, marginRight: '0.45rem' }}>$19.99</span>
+            <span style={{ color: 'white', fontWeight: 700 }}>$9.99</span> · 50% off · Instant PDF download
           </span>
           <TrustBadges dark compact />
         </div>

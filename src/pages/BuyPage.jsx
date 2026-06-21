@@ -75,8 +75,9 @@ function StickyBuyBar() {
         transition:    'transform 0.35s var(--ease-expo)',
       }}>
         <div>
-          <div style={{ color: 'white', fontWeight: 700, fontSize: '1.05rem', letterSpacing: '-0.02em' }}>
-            $19.99 <span style={{ fontSize: '0.7rem', fontWeight: 500, opacity: 0.6 }}>AUD</span>
+          <div style={{ color: 'white', fontWeight: 700, fontSize: '1.05rem', letterSpacing: '-0.02em', display: 'flex', alignItems: 'baseline', gap: '0.4rem' }}>
+            <span style={{ textDecoration: 'line-through', opacity: 0.5, fontWeight: 500, fontSize: '0.8rem' }}>$19.99</span>
+            $9.99
           </div>
           <div style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.62rem' }}>Instant PDF · 30-day guarantee</div>
         </div>
@@ -153,10 +154,12 @@ export default function BuyPage() {
 
             {/* Price block */}
             <div style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '1.25rem', padding: 'clamp(1.4rem, 4vw, 1.75rem) clamp(1.4rem, 4vw, 2rem)', marginBottom: '1.75rem' }}>
-              <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.75rem', marginBottom: '0.5rem' }}>
-                <span style={{ fontSize: 'clamp(2.4rem, 7vw, 3rem)', fontWeight: 700, color: 'white', letterSpacing: '-0.04em' }}>$19.99 <span style={{ fontSize: '1.3rem', fontWeight: 500, opacity: 0.7 }}>AUD</span></span>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.75rem', marginBottom: '0.5rem', flexWrap: 'wrap' }}>
+                <span style={{ fontSize: 'clamp(2.4rem, 7vw, 3rem)', fontWeight: 700, color: 'white', letterSpacing: '-0.04em' }}>$9.99</span>
+                <span style={{ fontSize: 'clamp(1.2rem, 4vw, 1.6rem)', fontWeight: 500, color: 'rgba(255,255,255,0.5)', textDecoration: 'line-through' }}>$19.99</span>
+                <span style={{ fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'white', background: 'var(--secondary)', padding: '0.35rem 0.7rem', borderRadius: 99 }}>50% off</span>
               </div>
-              <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.82rem' }}>One-time payment · Instant PDF download · All formats included</div>
+              <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.82rem' }}>Limited-time sale · One-time payment · Instant PDF download · All formats included</div>
             </div>
 
             <ShopifyBuyButton />
@@ -260,7 +263,7 @@ export default function BuyPage() {
           <FadeIn delay={0.3}>
             <div style={{ marginTop: '2rem', background: 'rgba(125,158,118,0.08)', border: '1px solid rgba(125,158,118,0.2)', borderRadius: '1rem', padding: '1.25rem 1.75rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
               <div>
-                <div style={{ color: 'white', fontWeight: 600, fontSize: '0.95rem' }}>Everything included for $19.99 AUD</div>
+                <div style={{ color: 'white', fontWeight: 600, fontSize: '0.95rem' }}>Everything included for <span style={{ textDecoration: 'line-through', opacity: 0.55, fontWeight: 500 }}>$19.99</span> $9.99</div>
                 <div style={{ color: 'var(--primary)', fontSize: '0.82rem' }}>One-time payment · Instant PDF download</div>
               </div>
               <a
@@ -268,7 +271,7 @@ export default function BuyPage() {
                 className="btn btn-sage"
                 style={{ fontSize: '0.82rem', padding: '1rem 2.5rem', textDecoration: 'none', display: 'inline-flex' }}
               >
-                Get Instant Access — $19.99
+                Get Instant Access — $9.99
               </a>
             </div>
           </FadeIn>
@@ -350,7 +353,7 @@ export default function BuyPage() {
               className="btn btn-sage"
               style={{ fontSize: '0.82rem', padding: '1rem 2.5rem', textDecoration: 'none', display: 'inline-flex' }}
             >
-              Get Instant Access — $19.99
+              Get Instant Access — $9.99
             </a>
           </FadeIn>
         </div>

@@ -4,6 +4,17 @@ export const content = {
     tagline: "Support your body through peri-menopause",
   },
 
+  // ── Pricing / sale ──────────────────────────────────────────────
+  // NOTE: the actual checkout amount is set in Shopify, not here.
+  // To truly charge the sale price, update the product price (or add a
+  // discount) in the Shopify admin. These values control display only.
+  pricing: {
+    sale:      "$9.99",
+    original:  "$19.99",
+    percentOff: 50,
+    onSale:    true,
+  },
+
   hero: {
     headlineA: "The Peri–",
     headlineGhost: "Menopause",
@@ -11,7 +22,7 @@ export const content = {
     subtext:
       "Calm your nervous system. Sleep better. Feel like yourself again — a gentle, evidence-backed guide for every woman navigating peri-menopause.",
     cta: "Get the Guide",
-    ctaNote: "$19.99 AUD · Instant PDF download",
+    ctaNote: "$9.99 · 50% off today",
     productImage: "/book-3d.png",
     floatingImages: [null, null, null, null, null, null],
   },

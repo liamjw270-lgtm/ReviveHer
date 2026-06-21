@@ -78,7 +78,7 @@ export default function Hero() {
   return (
     <section ref={heroRef} style={{
       minHeight:  '100svh',
-      paddingTop: 68,
+      paddingTop: 108,
       background: 'var(--bg)',
       display:    'flex',
       alignItems: 'center',

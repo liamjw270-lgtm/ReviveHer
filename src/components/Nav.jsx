@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import gsap from '../lib/gsap'
 import { content } from '../content'
+import { SALE_BANNER_HEIGHT } from './SaleBanner'
 
 const links = [
   { label: 'The Book',      href: '/#what-inside' },
@@ -17,6 +18,7 @@ export default function Nav() {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const { pathname } = useLocation()
+  const topOffset = pathname === '/' ? SALE_BANNER_HEIGHT : 0
 
   useEffect(() => {
     setMenuOpen(false)
@@ -48,7 +50,7 @@ export default function Nav() {
     <>
       <nav ref={navRef} style={{
         position:   'fixed',
-        top: 0, left: 0, right: 0,
+        top: topOffset, left: 0, right: 0,
         zIndex:     200,
         display:    'flex',
         alignItems: 'center',
@@ -120,7 +122,7 @@ export default function Nav() {
       {/* Mobile menu */}
       <div style={{
         position:   'fixed',
-        top:        68,
+        top:        68 + topOffset,
         left:       0,
         right:      0,
         zIndex:     199,

@@ -7,6 +7,7 @@ import Nav             from './components/Nav'
 import Footer          from './components/Footer'
 import EmailSignup     from './components/EmailSignup'
 import ExitIntentPopup from './components/ExitIntentPopup'
+import SaleBanner      from './components/SaleBanner'
 import { ScrollProgress, Grain } from './components/FX'
 import Home     from './pages/Home'
 import BuyPage  from './pages/BuyPage'
@@ -20,11 +21,14 @@ function ScrollToTop() {
 }
 
 function Layout() {
+  const { pathname } = useLocation()
+  const isHome = pathname === '/'
   return (
     <>
       <ScrollToTop />
       <ScrollProgress />
       <Grain />
+      {isHome && <SaleBanner />}
       <Nav />
       <Routes>
         <Route path="/"      element={<Home />} />
