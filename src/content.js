@@ -2,6 +2,9 @@ export const content = {
   brand: {
     name: "ReviveHer",
     tagline: "Support your body through peri-menopause",
+    // TODO: confirm this is a real, monitored inbox before publishing.
+    // The 30-day guarantee tells buyers to "email us" — this address must work.
+    email: "support@getreviveher.com",
   },
 
   // ── Pricing / sale ──────────────────────────────────────────────

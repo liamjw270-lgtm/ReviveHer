@@ -9,6 +9,7 @@ import FAQ             from '../components/FAQ'
 import CTA             from '../components/CTA'
 import TrustBadges     from '../components/TrustBadges'
 import Marquee         from '../components/Marquee'
+import EvidenceSection from '../components/EvidenceSection'
 import { MagneticButton } from '../components/FX'
 
 export default function Home() {
@@ -93,6 +94,7 @@ export default function Home() {
         speed={34}
       />
       <Testimonials />
+      <EvidenceSection />
       <FAQ />
       <CTA />
     </main>

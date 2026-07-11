@@ -90,12 +90,17 @@ export default function Footer() {
             </div>
             <div>
               <div style={{ fontSize: '0.65rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)', marginBottom: '0.8rem' }}>Legal</div>
-              {['Privacy Policy', 'Terms of Use', 'Contact'].map(l => (
-                <div key={l} style={{ marginBottom: '0.5rem' }}>
-                  <a href="#" style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.55)', transition: 'color 0.2s' }}
+              {[
+                { label: 'Contact',        to: '/contact' },
+                { label: 'Refund Policy',  to: '/refund-policy' },
+                { label: 'Privacy Policy', to: '/privacy' },
+                { label: 'Terms',          to: '/terms' },
+              ].map(l => (
+                <div key={l.label} style={{ marginBottom: '0.5rem' }}>
+                  <Link to={l.to} style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.55)', transition: 'color 0.2s' }}
                     onMouseEnter={e => e.currentTarget.style.color = 'white'}
                     onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.55)'}
-                  >{l}</a>
+                  >{l.label}</Link>
                 </div>
               ))}
             </div>

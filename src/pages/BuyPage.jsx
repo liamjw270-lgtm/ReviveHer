@@ -1,9 +1,18 @@
-import { useRef, useState, useEffect } from 'react'
-import { motion, useInView } from 'framer-motion'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { content } from '../content'
-import ShopifyBuyButton from '../components/ShopifyBuyButton'
+import BuyButton from '../components/BuyButton'
 import TrustBadges from '../components/TrustBadges'
+import EvidenceSection from '../components/EvidenceSection'
+import FreeGuideCapture from '../components/FreeGuideCapture'
+import { GuaranteeBanner, GuaranteeNote } from '../components/Guarantee'
+
+// Two real early readers. Quote text is unchanged from the site's existing
+// reviews — only the names shown are Mary and Alesha (first names only).
+const reviews = [
+  { name: 'Mary',   quote: content.testimonials[0].quote },
+  { name: 'Alesha', quote: content.testimonials[1].quote },
+]
 
 const included = [
   { icon: '📖', title: 'Comprehensive Ebook', desc: 'A beautifully designed guide covering every aspect of peri-menopause — readable on any device.' },
@@ -15,9 +24,9 @@ const included = [
 ]
 
 const bonuses = [
-  { icon: '📋', title: 'Meal Planner', desc: 'A fillable weekly meal planner built around peri-menopausal nutrition. Plan your whole week in minutes.', value: '$15' },
+  { icon: '📋', title: 'Meal Planner', desc: 'A fillable meal planner built around peri-menopausal nutrition. Plan your meals in minutes.', value: '$15' },
   { icon: '🍽️', title: 'Recipes', desc: 'A curated collection of hormone-supporting recipes — simple, satisfying and anti-inflammatory.', value: '$19' },
-  { icon: '💪', title: 'Workout Plan', desc: 'A structured weekly movement plan tailored for peri-menopause — no gym required, just your body.', value: '$17' },
+  { icon: '💪', title: 'Workout Plan', desc: 'A structured movement plan tailored for peri-menopause — no gym required, just your body.', value: '$17' },
   { icon: '📊', title: 'Daily Trackers', desc: 'Fillable PDF trackers for symptoms, habits, sleep and mood. Spot your patterns and see your progress.', value: '$14' },
 ]
 
@@ -28,26 +37,15 @@ const trustPoints = [
   '30-day money back guarantee — no questions asked',
 ]
 
-function FadeIn({ children, delay = 0, y = 20 }) {
-  const ref = useRef(null)
-  const inView = useInView(ref, { once: true, margin: '-60px' })
-  return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.65, delay, ease: [0.22, 1, 0.36, 1] }}
-    >
-      {children}
-    </motion.div>
-  )
-}
-
-/** Sticky bottom buy bar — mobile only, appears after scrolling past hero */
+/** Sticky bottom buy bar — mobile only, appears after scrolling past hero.
+ *
+ * Note: all entrance animations are removed on the buy page — every element is
+ * fully visible on load with no opacity transition, so nothing depends on JS
+ * running (critical for slow Facebook in-app browsers). */
 function StickyBuyBar() {
   const [show, setShow] = useState(false)
   useEffect(() => {
-    const onScroll = () => setShow(window.scrollY > 560)
+    const onScroll = () => setShow(window.scrollY > 200)
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
@@ -66,28 +64,21 @@ function StickyBuyBar() {
         zIndex:        150,
         alignItems:    'center',
         justifyContent:'space-between',
-        gap:           '1rem',
-        padding:       '0.8rem 1.25rem calc(0.8rem + env(safe-area-inset-bottom))',
+        gap:           '0.85rem',
+        padding:       '0.7rem 1rem calc(0.7rem + env(safe-area-inset-bottom))',
         background:    'rgba(30,36,32,0.97)',
-        backdropFilter:'blur(12px)',
         borderTop:     '1px solid rgba(255,255,255,0.1)',
         transform:     show ? 'translateY(0)' : 'translateY(110%)',
-        transition:    'transform 0.35s var(--ease-expo)',
+        transition:    'transform 0.3s ease',
       }}>
-        <div>
-          <div style={{ color: 'white', fontWeight: 700, fontSize: '1.05rem', letterSpacing: '-0.02em', display: 'flex', alignItems: 'baseline', gap: '0.4rem' }}>
+        <div style={{ lineHeight: 1.15 }}>
+          <div style={{ color: 'white', fontWeight: 700, fontSize: '1.05rem', display: 'flex', alignItems: 'baseline', gap: '0.4rem' }}>
             <span style={{ textDecoration: 'line-through', opacity: 0.5, fontWeight: 500, fontSize: '0.8rem' }}>$19.99</span>
             $9.99
           </div>
-          <div style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.62rem' }}>Instant PDF · 30-day guarantee</div>
+          <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.62rem' }}>Instant download · 30-day money-back guarantee</div>
         </div>
-        <a
-          href="#buy-now"
-          className="btn btn-sage"
-          style={{ fontSize: '0.74rem', padding: '0.85rem 1.6rem', textDecoration: 'none', flexShrink: 0 }}
-        >
-          Get the Guide
-        </a>
+        <BuyButton label="Get Instant Access" style={{ fontSize: '0.72rem', padding: '0.8rem 1.4rem', flexShrink: 0 }} />
       </div>
     </>
   )
@@ -96,134 +87,153 @@ function StickyBuyBar() {
 export default function BuyPage() {
   return (
     <main style={{ paddingTop: 68 }}>
+      <style>{`
+        /* Mobile: keep the hero compact so cover + headline + price + button
+           + guarantee all fit above the fold at 390px. */
+        @media (max-width: 759px) {
+          .buy-hero          { padding: 1.25rem 1.25rem 2rem !important; }
+          .buy-hero-grid     { gap: 0.9rem !important; text-align: center; }
+          .buy-hero-cover    { max-width: 118px !important; margin: 0 auto; }
+          .buy-hero-desc     { display: none; }
+          .buy-hero-eyebrow  { margin-bottom: 0.4rem !important; }
+          .buy-hero-title    { font-size: 1.7rem !important; margin-bottom: 0.5rem !important; }
+          .buy-hero-stars    { justify-content: center; margin-bottom: 0.75rem !important; }
+          .buy-hero-price    { padding: 0.9rem 1rem !important; margin-bottom: 0.9rem !important; }
+          .buy-hero-badges,
+          .buy-hero-note     { display: none !important; }
+        }
+      `}</style>
+
       <StickyBuyBar />
 
       {/* ── Hero ── */}
-      <section id="buy-now" style={{ background: 'var(--dark-bg)', padding: 'clamp(3.5rem, 8vw, 6rem) clamp(1.5rem, 5vw, 3rem) clamp(3.5rem, 8vw, 5rem)', position: 'relative', overflow: 'hidden' }}>
-        <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', fontSize: 'clamp(8rem,20vw,20rem)', fontWeight: 700, color: 'rgba(255,255,255,0.03)', whiteSpace: 'nowrap', pointerEvents: 'none', letterSpacing: '-0.04em', lineHeight: 1 }}>Reset</div>
-        <div style={{ maxWidth: 980, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 'clamp(2.5rem, 6vw, 4rem)', alignItems: 'center', position: 'relative', zIndex: 2 }}>
+      {/* Instant trust ribbon — first thing visible on the buy page */}
+      <div style={{ background: 'rgba(125,158,118,0.14)', borderBottom: '1px solid rgba(125,158,118,0.25)', padding: '0.6rem 1rem' }}>
+        <div style={{ maxWidth: 980, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 'clamp(0.75rem, 3vw, 1.75rem)', flexWrap: 'wrap' }}>
+          {[
+            '🔒 Secure checkout',
+            '🛡️ 30-day money-back',
+            '⚡ Instant download',
+            '💳 One-time payment',
+          ].map((t, i) => (
+            <span key={i} style={{ fontSize: 'clamp(0.68rem, 2.5vw, 0.78rem)', fontWeight: 600, color: 'var(--primary)', letterSpacing: '0.01em', whiteSpace: 'nowrap' }}>{t}</span>
+          ))}
+        </div>
+      </div>
 
-          {/* Book image */}
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-            style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
-          >
-            {content.hero.productImage ? (
-              <img
-                src={content.hero.productImage}
-                alt="The Peri-Menopause Reset by ReviveHer"
-                style={{
-                  width:    '100%',
-                  maxWidth: 'min(60vw, 320px)',
-                  display:  'block',
-                  filter:   'drop-shadow(0 30px 50px rgba(0,0,0,0.45))',
-                }}
-              />
-            ) : (
-              <div style={{ width: '100%', maxWidth: 320, aspectRatio: '3/4', borderRadius: '1.5rem', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '1.25rem', padding: '2.5rem' }}>
-                <div style={{ textAlign: 'center' }}>
-                  <div style={{ color: 'white', fontWeight: 700, fontSize: '1.15rem', lineHeight: 1.3, letterSpacing: '-0.02em' }}>The Peri-Menopause Reset</div>
-                  <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.8rem', marginTop: '0.4rem' }}>ReviveHer</div>
-                </div>
-              </div>
-            )}
-          </motion.div>
+      <section id="buy-now" className="buy-hero" style={{ background: 'var(--dark-bg)', padding: 'clamp(2rem, 6vw, 5rem) clamp(1.5rem, 5vw, 3rem) clamp(3rem, 8vw, 5rem)', position: 'relative', overflow: 'hidden' }}>
+        <div className="buy-hero-grid" style={{ maxWidth: 980, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 'clamp(1.5rem, 5vw, 4rem)', alignItems: 'center', position: 'relative', zIndex: 2 }}>
+
+          {/* Book image (above the fold — eager, high priority) */}
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <img
+              className="buy-hero-cover"
+              src={content.hero.productImage}
+              alt="The Peri-Menopause Reset by ReviveHer"
+              width="320" height="427"
+              loading="eager"
+              fetchpriority="high"
+              decoding="async"
+              style={{ width: '100%', maxWidth: 'min(55vw, 300px)', height: 'auto', display: 'block', filter: 'drop-shadow(0 30px 50px rgba(0,0,0,0.45))' }}
+            />
+          </div>
 
           {/* Text + price */}
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.9, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-          >
-            <span style={{ fontSize: '0.7rem', fontWeight: 500, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--secondary)', display: 'block', marginBottom: '0.75rem' }}>Digital Ebook + 4 Free Bonuses</span>
-            <h1 style={{ fontSize: 'clamp(2rem, 4vw, 3.5rem)', fontWeight: 700, color: 'white', letterSpacing: '-0.03em', lineHeight: 1.1, marginBottom: '0.9rem' }}>
+          <div>
+            <span className="buy-hero-eyebrow" style={{ fontSize: '0.7rem', fontWeight: 500, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--secondary)', display: 'block', marginBottom: '0.75rem' }}>Digital Ebook + 4 Free Bonuses</span>
+            <h1 className="buy-hero-title" style={{ fontSize: 'clamp(2rem, 4vw, 3.5rem)', fontWeight: 700, color: 'white', letterSpacing: '-0.03em', lineHeight: 1.1, marginBottom: '0.9rem' }}>
               The Peri-Menopause Reset
             </h1>
 
-            {/* Stars */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1.25rem' }}>
+            <div className="buy-hero-stars" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '1.1rem' }}>
               <span style={{ color: '#f4b942', fontSize: '1rem', letterSpacing: '0.08em' }}>★★★★★</span>
-              <span style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.78rem' }}>Rated 4.9 by readers</span>
+              <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.78rem', fontWeight: 500 }}>4.9/5 from readers</span>
+              <span style={{ color: 'rgba(255,255,255,0.25)' }}>·</span>
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem', fontSize: '0.72rem', fontWeight: 600, color: 'var(--primary)', background: 'rgba(125,158,118,0.15)', border: '1px solid rgba(125,158,118,0.3)', borderRadius: 99, padding: '0.2rem 0.6rem' }}>🔬 Evidence-based</span>
             </div>
 
-            <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.98rem', lineHeight: 1.7, fontWeight: 300, marginBottom: '1.75rem' }}>
+            <p className="buy-hero-desc" style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.98rem', lineHeight: 1.7, fontWeight: 300, marginBottom: '1.75rem' }}>
               A calm, evidence-backed guide to understanding your body, reducing symptoms and feeling like yourself again — plus four practical bonuses included free.
             </p>
 
             {/* Price block */}
-            <div style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '1.25rem', padding: 'clamp(1.4rem, 4vw, 1.75rem) clamp(1.4rem, 4vw, 2rem)', marginBottom: '1.75rem' }}>
-              <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.75rem', marginBottom: '0.5rem', flexWrap: 'wrap' }}>
+            <div className="buy-hero-price" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '1.25rem', padding: 'clamp(1.4rem, 4vw, 1.75rem) clamp(1.4rem, 4vw, 2rem)', marginBottom: '1.25rem' }}>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.75rem', marginBottom: '0.4rem', flexWrap: 'wrap', justifyContent: 'inherit' }}>
                 <span style={{ fontSize: 'clamp(2.4rem, 7vw, 3rem)', fontWeight: 700, color: 'white', letterSpacing: '-0.04em' }}>$9.99</span>
                 <span style={{ fontSize: 'clamp(1.2rem, 4vw, 1.6rem)', fontWeight: 500, color: 'rgba(255,255,255,0.5)', textDecoration: 'line-through' }}>$19.99</span>
                 <span style={{ fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'white', background: 'var(--secondary)', padding: '0.35rem 0.7rem', borderRadius: 99 }}>50% off</span>
               </div>
-              <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.82rem' }}>Limited-time sale · One-time payment · Instant PDF download · All formats included</div>
+              <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.8rem' }}>Limited-time sale · One-time payment · Instant PDF download</div>
             </div>
 
-            <ShopifyBuyButton />
+            {/* One-click checkout */}
+            <BuyButton block style={{ fontSize: '0.9rem', padding: '1.15rem 2rem' }} />
 
-            {/* Guarantee line */}
-            <div style={{
-              display:        'flex',
-              alignItems:     'center',
-              justifyContent: 'center',
-              gap:            '0.5rem',
-              marginTop:      '0.9rem',
-              padding:        '0.7rem 1rem',
-              background:     'rgba(125,158,118,0.1)',
-              border:         '1px solid rgba(125,158,118,0.2)',
-              borderRadius:   '0.6rem',
-            }}>
-              <span style={{ fontSize: '1rem' }}>🛡️</span>
-              <span style={{ fontSize: '0.84rem', color: 'rgba(255,255,255,0.8)', fontWeight: 500 }}>
-                30-day money back guarantee — no questions asked
-              </span>
+            {/* Secure-checkout reassurance directly under the button */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem', marginTop: '0.6rem', fontSize: '0.72rem', color: 'rgba(255,255,255,0.5)', fontWeight: 500 }}>
+              <span aria-hidden>🔒</span> Secure checkout via Shopify · SSL encrypted · No card details stored
             </div>
 
-            <div style={{ marginTop: '0.9rem' }}>
+            {/* Full-width guarantee banner — directly under the buy button */}
+            <GuaranteeBanner />
+
+            <div className="buy-hero-badges" style={{ marginTop: '0.9rem' }}>
               <TrustBadges dark compact />
             </div>
 
             {/* Medical disclaimer */}
-            <div style={{
-              marginTop:    '1.75rem',
-              padding:      '1rem 1.25rem',
-              background:   'rgba(255,255,255,0.04)',
-              border:       '1px solid rgba(255,255,255,0.08)',
-              borderRadius: '0.75rem',
-              fontSize:     '0.72rem',
-              color:        'rgba(255,255,255,0.28)',
-              lineHeight:   1.65,
-              textAlign:    'center',
+            <div className="buy-hero-note" style={{
+              marginTop: '1.75rem', padding: '1rem 1.25rem',
+              background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)',
+              borderRadius: '0.75rem', fontSize: '0.72rem', color: 'rgba(255,255,255,0.28)',
+              lineHeight: 1.65, textAlign: 'center',
             }}>
               <strong style={{ color: 'rgba(255,255,255,0.4)', fontWeight: 600 }}>Disclaimer:</strong> This guide is for general informational and educational purposes only. It is not intended as medical advice and does not replace the guidance of a qualified healthcare professional. If your symptoms are severe, persistent or causing concern, please consult your doctor or a registered health practitioner.
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
+
+      {/* ── Trust bar — bold, unmissable proof strip right under the hero ── */}
+      <section style={{ background: 'var(--primary)', padding: '1.1rem clamp(1rem, 4vw, 2rem)' }}>
+        <div className="buy-trustbar" style={{ maxWidth: 980, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.9rem 1rem' }}>
+          <style>{`@media (min-width: 700px){ .buy-trustbar { grid-template-columns: repeat(4, 1fr) !important; } }`}</style>
+          {[
+            { icon: '★★★★★', label: '4.9/5 rated', sub: 'Loved by readers' },
+            { icon: '🔬', label: 'Evidence-based', sub: 'Research-backed' },
+            { icon: '🛡️', label: '30-day guarantee', sub: 'Money back, no questions' },
+            { icon: '⚡', label: 'Instant download', sub: 'Secure checkout' },
+          ].map((t, i) => (
+            <div key={i} className="buy-trustbar-item" style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', justifyContent: 'center' }}>
+              <span style={{ fontSize: t.icon.startsWith('★') ? '0.72rem' : '1.15rem', color: t.icon.startsWith('★') ? '#f4d97a' : 'white', letterSpacing: t.icon.startsWith('★') ? '0.05em' : 0, flexShrink: 0 }}>{t.icon}</span>
+              <div style={{ lineHeight: 1.2 }}>
+                <div style={{ color: 'white', fontWeight: 700, fontSize: '0.82rem' }}>{t.label}</div>
+                <div style={{ color: 'rgba(255,255,255,0.75)', fontSize: '0.68rem' }}>{t.sub}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── The science / proof — surfaced early so trust is obvious fast ── */}
+      <EvidenceSection dark />
 
       {/* ── What's Included ── */}
       <section style={{ background: 'var(--bg)', padding: 'clamp(4.5rem, 9vw, 7rem) clamp(1.5rem, 5vw, 3rem)' }}>
         <div style={{ maxWidth: 980, margin: '0 auto' }}>
-          <FadeIn>
-            <div style={{ textAlign: 'center', marginBottom: 'clamp(2.75rem, 6vw, 4rem)' }}>
-              <span className="eyebrow">Everything Inside</span>
-              <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 700, letterSpacing: '-0.03em', color: 'var(--dark)', lineHeight: 1.1 }}>
-                One guide.<br />Everything you need.
-              </h2>
-            </div>
-          </FadeIn>
+          <div style={{ textAlign: 'center', marginBottom: 'clamp(2.75rem, 6vw, 4rem)' }}>
+            <span className="eyebrow">Everything Inside</span>
+            <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 700, letterSpacing: '-0.03em', color: 'var(--dark)', lineHeight: 1.1 }}>
+              One guide.<br />Everything you need.
+            </h2>
+          </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(270px, 1fr))', gap: '1.25rem' }}>
             {included.map((item, i) => (
-              <FadeIn key={i} delay={i * 0.07}>
-                <div style={{ background: 'var(--card)', borderRadius: '1.25rem', padding: '1.75rem', border: '1px solid var(--border)', height: '100%' }}>
-                  <div style={{ fontSize: '1.75rem', marginBottom: '0.75rem' }}>{item.icon}</div>
-                  <div style={{ fontWeight: 600, fontSize: '1rem', color: 'var(--dark)', marginBottom: '0.4rem' }}>{item.title}</div>
-                  <div style={{ fontSize: '0.88rem', color: 'var(--muted)', lineHeight: 1.6, fontWeight: 300 }}>{item.desc}</div>
-                </div>
-              </FadeIn>
+              <div key={i} style={{ background: 'var(--card)', borderRadius: '1.25rem', padding: '1.75rem', border: '1px solid var(--border)', height: '100%' }}>
+                <div style={{ fontSize: '1.75rem', marginBottom: '0.75rem' }}>{item.icon}</div>
+                <div style={{ fontWeight: 600, fontSize: '1rem', color: 'var(--dark)', marginBottom: '0.4rem' }}>{item.title}</div>
+                <div style={{ fontSize: '0.88rem', color: 'var(--muted)', lineHeight: 1.6, fontWeight: 300 }}>{item.desc}</div>
+              </div>
             ))}
           </div>
         </div>
@@ -232,156 +242,207 @@ export default function BuyPage() {
       {/* ── Bonuses ── */}
       <section style={{ background: 'var(--dark-bg)', padding: 'clamp(4.5rem, 9vw, 7rem) clamp(1.5rem, 5vw, 3rem)' }}>
         <div style={{ maxWidth: 820, margin: '0 auto' }}>
-          <FadeIn>
-            <div style={{ textAlign: 'center', marginBottom: 'clamp(2.75rem, 6vw, 4rem)' }}>
-              <span style={{ fontSize: '0.7rem', fontWeight: 500, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--secondary)', display: 'block', marginBottom: '0.75rem' }}>Free With Your Purchase</span>
-              <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 700, letterSpacing: '-0.03em', color: 'white', lineHeight: 1.1 }}>
-                Four bonuses,<br />zero extra cost
-              </h2>
-            </div>
-          </FadeIn>
+          <div style={{ textAlign: 'center', marginBottom: 'clamp(2.75rem, 6vw, 4rem)' }}>
+            <span style={{ fontSize: '0.7rem', fontWeight: 500, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--secondary)', display: 'block', marginBottom: '0.75rem' }}>Free With Your Purchase</span>
+            <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 700, letterSpacing: '-0.03em', color: 'white', lineHeight: 1.1 }}>
+              Four bonuses,<br />zero extra cost
+            </h2>
+          </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
             {bonuses.map((b, i) => (
-              <FadeIn key={i} delay={i * 0.1}>
-                <div style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '1.25rem', padding: 'clamp(1.4rem, 4vw, 1.75rem) clamp(1.4rem, 4vw, 2rem)', display: 'flex', alignItems: 'center', gap: 'clamp(1.25rem, 3vw, 2rem)', flexWrap: 'wrap' }}>
-                  <div style={{ fontSize: '1.75rem', flexShrink: 0 }}>{b.icon}</div>
-                  <div style={{ flex: 1, minWidth: 200 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.4rem' }}>
-                      <span style={{ fontWeight: 700, color: 'white', fontSize: '1rem' }}>{b.title}</span>
-                      <span style={{ fontSize: '0.7rem', background: 'rgba(125,158,118,0.2)', color: 'var(--primary)', padding: '0.2rem 0.6rem', borderRadius: 999, fontWeight: 500 }}>FREE</span>
-                    </div>
-                    <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.88rem', lineHeight: 1.6, fontWeight: 300 }}>{b.desc}</p>
+              <div key={i} style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '1.25rem', padding: 'clamp(1.4rem, 4vw, 1.75rem) clamp(1.4rem, 4vw, 2rem)', display: 'flex', alignItems: 'center', gap: 'clamp(1.25rem, 3vw, 2rem)', flexWrap: 'wrap' }}>
+                <div style={{ fontSize: '1.75rem', flexShrink: 0 }}>{b.icon}</div>
+                <div style={{ flex: 1, minWidth: 200 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.4rem' }}>
+                    <span style={{ fontWeight: 700, color: 'white', fontSize: '1rem' }}>{b.title}</span>
+                    <span style={{ fontSize: '0.7rem', background: 'rgba(125,158,118,0.2)', color: 'var(--primary)', padding: '0.2rem 0.6rem', borderRadius: 999, fontWeight: 500 }}>FREE</span>
                   </div>
-                  <div style={{ textAlign: 'right', flexShrink: 0 }}>
-                    <div style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.25)', textDecoration: 'line-through', marginBottom: '0.1rem' }}>Value {b.value}</div>
-                    <div style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--primary)' }}>Free</div>
-                  </div>
+                  <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.88rem', lineHeight: 1.6, fontWeight: 300 }}>{b.desc}</p>
                 </div>
-              </FadeIn>
-            ))}
-          </div>
-          <FadeIn delay={0.3}>
-            <div style={{ marginTop: '2rem', background: 'rgba(125,158,118,0.08)', border: '1px solid rgba(125,158,118,0.2)', borderRadius: '1rem', padding: '1.25rem 1.75rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
-              <div>
-                <div style={{ color: 'white', fontWeight: 600, fontSize: '0.95rem' }}>Everything included for <span style={{ textDecoration: 'line-through', opacity: 0.55, fontWeight: 500 }}>$19.99</span> $9.99</div>
-                <div style={{ color: 'var(--primary)', fontSize: '0.82rem' }}>One-time payment · Instant PDF download</div>
+                <div style={{ textAlign: 'right', flexShrink: 0 }}>
+                  <div style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.25)', textDecoration: 'line-through', marginBottom: '0.1rem' }}>Value {b.value}</div>
+                  <div style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--primary)' }}>Free</div>
+                </div>
               </div>
-              <a
-                href="#buy-now"
-                className="btn btn-sage"
-                style={{ fontSize: '0.82rem', padding: '1rem 2.5rem', textDecoration: 'none', display: 'inline-flex' }}
-              >
-                Get Instant Access — $9.99
-              </a>
+            ))}
+          </div>
+          <div style={{ marginTop: '2rem', background: 'rgba(125,158,118,0.08)', border: '1px solid rgba(125,158,118,0.2)', borderRadius: '1rem', padding: '1.25rem 1.75rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
+            <div>
+              <div style={{ color: 'white', fontWeight: 600, fontSize: '0.95rem' }}>Everything included for <span style={{ textDecoration: 'line-through', opacity: 0.55, fontWeight: 500 }}>$19.99</span> $9.99</div>
+              <div style={{ color: 'var(--primary)', fontSize: '0.82rem' }}>One-time payment · Instant PDF download</div>
             </div>
-          </FadeIn>
+            <BuyButton style={{ fontSize: '0.82rem', padding: '1rem 2.5rem' }} />
+          </div>
+          <div style={{ textAlign: 'center' }}>
+            <GuaranteeNote dark />
+          </div>
         </div>
       </section>
 
-      {/* ── Testimonials strip ── */}
-      <section style={{ background: 'var(--bg)', padding: 'clamp(4.5rem, 9vw, 6rem) clamp(1.5rem, 5vw, 3rem)' }}>
-        <div style={{ maxWidth: 980, margin: '0 auto' }}>
-          <FadeIn>
-            <h2 style={{ fontSize: 'clamp(1.8rem, 3.5vw, 2.8rem)', fontWeight: 700, letterSpacing: '-0.03em', textAlign: 'center', color: 'var(--dark)', marginBottom: '3rem', lineHeight: 1.1 }}>
-              What women are saying
-            </h2>
-          </FadeIn>
-          <style>{`
-            @media (max-width: 600px) {
-              .buy-testimonials-grid { grid-template-columns: 1fr !important; }
-            }
-          `}</style>
-          <div className="buy-testimonials-grid" style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(2, 1fr)',
-            gap: '1.25rem',
-          }}>
-            {content.testimonials.map((t, i) => (
-              <FadeIn key={i} delay={i * 0.08}>
-                <div style={{ background: 'var(--card)', borderRadius: '1.25rem', padding: '1.75rem', border: '1px solid var(--border)', height: '100%', display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
-                  <div style={{ color: '#f4b942', fontSize: '1rem', letterSpacing: '0.05em', lineHeight: 1 }}>
-                    ★★★★★
-                  </div>
-                  <p style={{ fontSize: '0.92rem', lineHeight: 1.7, color: 'var(--dark)', fontWeight: 300, fontStyle: 'italic', flex: 1, margin: 0 }}>&ldquo;{t.quote}&rdquo;</p>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.7rem', paddingTop: '0.4rem', borderTop: '1px solid var(--border)' }}>
-                    <div style={{
-                      width: 34, height: 34, borderRadius: '50%',
-                      background: i % 2 === 0 ? 'rgba(125,158,118,0.18)' : 'rgba(201,150,142,0.18)',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '0.85rem',
-                      color: i % 2 === 0 ? 'var(--primary)' : 'var(--secondary)', flexShrink: 0,
-                    }}>
-                      {t.name.charAt(0)}
-                    </div>
-                    <div>
-                      <div style={{ fontWeight: 600, fontSize: '0.85rem', color: 'var(--dark)' }}>{t.name}</div>
-                      <div style={{ fontSize: '0.72rem', color: 'var(--muted)' }}>{t.detail} · Verified reader</div>
-                    </div>
-                  </div>
-                </div>
-              </FadeIn>
+      {/* ── Early reader feedback — two large pull-quotes ── */}
+      <section style={{ background: 'var(--bg)', padding: 'clamp(4.5rem, 9vw, 6.5rem) clamp(1.5rem, 5vw, 3rem)' }}>
+        <div style={{ maxWidth: 820, margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginBottom: 'clamp(2.5rem, 6vw, 3.5rem)' }}>
+            <span className="eyebrow">Early Reader Feedback</span>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
+              <span style={{ color: '#f4b942', fontSize: '1.05rem', letterSpacing: '0.1em' }}>★★★★★</span>
+              <span style={{ color: 'var(--muted)', fontSize: '0.85rem', fontWeight: 500 }}>4.9/5 average</span>
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(2.5rem, 6vw, 3.5rem)' }}>
+            {reviews.map((r, i) => (
+              <figure key={i} style={{ margin: 0, textAlign: 'center', maxWidth: 720, marginLeft: 'auto', marginRight: 'auto' }}>
+                <blockquote style={{
+                  margin: '0 0 1rem',
+                  fontFamily: 'var(--font-display)',
+                  fontSize: 'clamp(1.4rem, 4.5vw, 2.1rem)',
+                  fontWeight: 400, fontStyle: 'italic',
+                  lineHeight: 1.35, letterSpacing: '-0.01em',
+                  color: 'var(--dark)',
+                }}>
+                  <span style={{ color: 'var(--primary)', fontWeight: 700 }}>&ldquo;</span>
+                  {r.quote}
+                  <span style={{ color: 'var(--primary)', fontWeight: 700 }}>&rdquo;</span>
+                </blockquote>
+                <figcaption style={{ fontSize: '0.95rem', fontWeight: 600, color: 'var(--primary)', letterSpacing: '0.02em' }}>
+                  — {r.name}
+                </figcaption>
+              </figure>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── Trust strip ── */}
+      {/* ── About ReviveHer — brand-background trust (no personal name needed) ── */}
+      <section style={{ background: 'var(--dark-bg)', padding: 'clamp(3.75rem, 8vw, 5.5rem) clamp(1.5rem, 5vw, 3rem)' }}>
+        <div style={{ maxWidth: 820, margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginBottom: 'clamp(2rem, 5vw, 3rem)' }}>
+            {/* Brand mark */}
+            <div style={{ width: 60, height: 60, borderRadius: '50%', background: 'rgba(125,158,118,0.15)', border: '1px solid rgba(125,158,118,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.25rem' }}>
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+                <path d="M12 2L13.5 8.5L20 7L15.5 11.5L20 17L13.5 15.5L12 22L10.5 15.5L4 17L8.5 11.5L4 7L10.5 8.5L12 2Z" fill="var(--primary)" />
+              </svg>
+            </div>
+            <span style={{ display: 'block', fontSize: '0.68rem', fontWeight: 600, letterSpacing: '0.18em', textTransform: 'uppercase', color: 'var(--primary)', marginBottom: '0.85rem' }}>
+              About ReviveHer
+            </span>
+            <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.7rem, 4vw, 2.5rem)', fontWeight: 700, color: 'white', letterSpacing: '-0.02em', lineHeight: 1.15, marginBottom: '1rem' }}>
+              A small, independent team —<br />on your side
+            </h2>
+            <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.98rem', fontWeight: 300, lineHeight: 1.75, color: 'rgba(255,255,255,0.6)', maxWidth: 560, margin: '0 auto' }}>
+              ReviveHer is an independent publisher of calm, evidence-based wellbeing guides
+              for women. The Peri-Menopause Reset draws on publicly available research and was
+              refined with feedback from early readers. We're not a faceless marketplace —
+              every order is backed by our 30-day guarantee, and a real person answers your emails.
+            </p>
+          </div>
+
+          {/* Brand trust cards */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem' }}>
+            {[
+              { icon: '🔒', title: 'Secure checkout', desc: 'Payments are processed by Shopify — we never see or store your card details.' },
+              { icon: '💬', title: 'Real human support', desc: 'Email us any time and a real person replies, usually within 1–2 business days.' },
+              { icon: '🛡️', title: '30-day guarantee', desc: 'Not happy? Email us within 30 days for a full refund — no questions asked.' },
+              { icon: '🔁', title: 'Yours forever', desc: 'A one-time payment. No subscription, no upsells, no recurring charges.' },
+            ].map((c, i) => (
+              <div key={i} style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '1.1rem', padding: '1.5rem 1.4rem', height: '100%' }}>
+                <div style={{ fontSize: '1.5rem', marginBottom: '0.6rem' }}>{c.icon}</div>
+                <div style={{ fontWeight: 700, fontSize: '0.95rem', color: 'white', marginBottom: '0.35rem' }}>{c.title}</div>
+                <div style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.55)', lineHeight: 1.6, fontWeight: 300 }}>{c.desc}</div>
+              </div>
+            ))}
+          </div>
+
+          <p style={{ textAlign: 'center', marginTop: '1.5rem', fontSize: '0.78rem', color: 'rgba(255,255,255,0.4)' }}>
+            Questions before you buy? Email{' '}
+            <a href={`mailto:${content.brand.email}`} style={{ color: 'var(--primary)', fontWeight: 600 }}>{content.brand.email}</a>
+          </p>
+        </div>
+      </section>
+
+      {/* ── Risk reversal — the risk is on us, not you ── */}
       <section style={{ background: 'var(--card)', padding: 'clamp(4rem, 8vw, 5rem) clamp(1.5rem, 5vw, 3rem)', borderTop: '1px solid var(--border)' }}>
         <div style={{ maxWidth: 720, margin: '0 auto', textAlign: 'center' }}>
-          <FadeIn>
-            <div style={{ width: 72, height: 72, borderRadius: '50%', background: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 2rem' }}>
-              <ShieldIcon />
-            </div>
-            <h2 style={{ fontSize: 'clamp(1.8rem, 3.5vw, 2.8rem)', fontWeight: 700, letterSpacing: '-0.03em', color: 'var(--dark)', lineHeight: 1.1, marginBottom: '1rem' }}>
-              Try it risk-free<br />for 30 days
-            </h2>
-            <p style={{ color: 'var(--muted)', fontSize: '1rem', lineHeight: 1.7, fontWeight: 300, marginBottom: '2rem' }}>
-              The moment you purchase, you'll receive immediate access to The Peri-Menopause Reset and all four bonuses. And if it's not right for you, just email us within 30 days for a full refund — no questions asked.
-            </p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', textAlign: 'left', maxWidth: 420, margin: '0 auto 2.5rem' }}>
-              {trustPoints.map((p, i) => (
-                <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
-                  <div style={{ width: 20, height: 20, borderRadius: '50%', background: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: '0.1rem' }}>
-                    <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                  </div>
-                  <span style={{ fontSize: '0.9rem', color: 'var(--dark)', fontWeight: 300, lineHeight: 1.5 }}>{p}</span>
+          <div style={{ width: 92, height: 92, borderRadius: '50%', background: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 2rem', boxShadow: '0 12px 32px rgba(125,158,118,0.35)' }}>
+            <ShieldIcon />
+          </div>
+          <span className="eyebrow">The Risk Is On Us</span>
+          <h2 style={{ fontSize: 'clamp(1.9rem, 4vw, 3rem)', fontWeight: 700, letterSpacing: '-0.03em', color: 'var(--dark)', lineHeight: 1.1, marginBottom: '1rem' }}>
+            The risk is on us,<br />not you
+          </h2>
+          <p style={{ color: 'var(--muted)', fontSize: '1.05rem', lineHeight: 1.7, fontWeight: 300, marginBottom: '2rem', maxWidth: 540, marginLeft: 'auto', marginRight: 'auto' }}>
+            Read the entire guide and use it. If it doesn't genuinely help you, it costs you
+            nothing — email us within 30 days and we'll refund every cent, no questions asked.
+            You even keep the bonuses.
+          </p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', textAlign: 'left', maxWidth: 420, margin: '0 auto 2.5rem' }}>
+            {trustPoints.map((p, i) => (
+              <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
+                <div style={{ width: 20, height: 20, borderRadius: '50%', background: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: '0.1rem' }}>
+                  <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
                 </div>
-              ))}
-            </div>
-            <a
-              href="#buy-now"
-              className="btn btn-sage"
-              style={{ fontSize: '0.82rem', padding: '1rem 2.5rem', textDecoration: 'none', display: 'inline-flex' }}
-            >
-              Get Instant Access — $9.99
-            </a>
-          </FadeIn>
+                <span style={{ fontSize: '0.9rem', color: 'var(--dark)', fontWeight: 300, lineHeight: 1.5 }}>{p}</span>
+              </div>
+            ))}
+          </div>
+          <BuyButton style={{ fontSize: '0.82rem', padding: '1rem 2.5rem' }} />
+          <div><GuaranteeNote /></div>
         </div>
       </section>
 
       {/* ── FAQ mini ── */}
-      <section style={{ background: 'var(--bg)', padding: 'clamp(4rem, 8vw, 6rem) clamp(1.5rem, 5vw, 3rem) clamp(6rem, 10vw, 6rem)' }}>
+      <section style={{ background: 'var(--bg)', padding: 'clamp(4rem, 8vw, 6rem) clamp(1.5rem, 5vw, 3rem)' }}>
         <div style={{ maxWidth: 680, margin: '0 auto', textAlign: 'center' }}>
-          <FadeIn>
-            <h2 style={{ fontSize: 'clamp(1.6rem, 3vw, 2.4rem)', fontWeight: 700, letterSpacing: '-0.03em', color: 'var(--dark)', marginBottom: '2.5rem' }}>Quick answers</h2>
-          </FadeIn>
+          <h2 style={{ fontSize: 'clamp(1.6rem, 3vw, 2.4rem)', fontWeight: 700, letterSpacing: '-0.03em', color: 'var(--dark)', marginBottom: '2.5rem' }}>Quick answers</h2>
           {content.faq.slice(0, 3).map((item, i) => (
-            <FadeIn key={i} delay={i * 0.08}>
-              <div style={{ borderTop: '1px solid var(--border)', padding: '1.25rem 0', textAlign: 'left' }}>
-                <div style={{ fontWeight: 600, color: 'var(--dark)', fontSize: '0.95rem', marginBottom: '0.5rem' }}>{item.q}</div>
-                <div style={{ color: 'var(--muted)', fontSize: '0.88rem', lineHeight: 1.65, fontWeight: 300 }}>{item.a}</div>
-              </div>
-            </FadeIn>
-          ))}
-          <FadeIn delay={0.25}>
-            <div style={{ marginTop: '1.5rem', borderTop: '1px solid var(--border)', paddingTop: '1.5rem', textAlign: 'left' }}>
-              <Link to="/#faq" style={{ color: 'var(--primary)', fontSize: '0.85rem', fontWeight: 500, textDecoration: 'none' }}>
-                View all questions →
-              </Link>
+            <div key={i} style={{ borderTop: '1px solid var(--border)', padding: '1.25rem 0', textAlign: 'left' }}>
+              <div style={{ fontWeight: 600, color: 'var(--dark)', fontSize: '0.95rem', marginBottom: '0.5rem' }}>{item.q}</div>
+              <div style={{ color: 'var(--muted)', fontSize: '0.88rem', lineHeight: 1.65, fontWeight: 300 }}>{item.a}</div>
             </div>
-          </FadeIn>
+          ))}
+          <div style={{ marginTop: '1.5rem', borderTop: '1px solid var(--border)', paddingTop: '1.5rem', textAlign: 'left' }}>
+            <Link to="/#faq" style={{ color: 'var(--primary)', fontSize: '0.85rem', fontWeight: 500, textDecoration: 'none' }}>
+              View all questions →
+            </Link>
+          </div>
         </div>
       </section>
+
+      {/* ── No tricks — transparency directly disarms scam-wary visitors ── */}
+      <section style={{ background: 'var(--dark-bg)', padding: 'clamp(4rem, 8vw, 6rem) clamp(1.5rem, 5vw, 3rem)' }}>
+        <div style={{ maxWidth: 620, margin: '0 auto' }}>
+          <div style={{
+            background: 'rgba(255,255,255,0.04)',
+            border: '1px solid rgba(125,158,118,0.35)',
+            borderRadius: '1.5rem',
+            padding: 'clamp(1.75rem, 5vw, 2.75rem)',
+            textAlign: 'center',
+          }}>
+            <div style={{ fontSize: '1.75rem', marginBottom: '0.75rem' }}>✅</div>
+            <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.6rem, 4vw, 2.4rem)', fontWeight: 700, color: 'white', letterSpacing: '-0.02em', lineHeight: 1.1, marginBottom: '1.5rem' }}>
+              No tricks. No surprises.
+            </h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.9rem', textAlign: 'left', maxWidth: 460, margin: '0 auto' }}>
+              {[
+                'One-time payment of $9.99 — no subscription, ever',
+                'No upsells at checkout',
+                'No “free trial” that secretly bills you',
+                'Instant download — yours to keep forever',
+                '30-day refund, no questions asked',
+              ].map((line, i) => (
+                <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
+                  <span style={{ color: 'var(--primary)', fontWeight: 700, fontSize: '1rem', flexShrink: 0, marginTop: '0.05rem' }}>✓</span>
+                  <span style={{ fontSize: '0.98rem', color: 'rgba(255,255,255,0.85)', fontWeight: 400, lineHeight: 1.5 }}>{line}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Not ready yet? — free guide email capture ── */}
+      <FreeGuideCapture />
 
     </main>
   )

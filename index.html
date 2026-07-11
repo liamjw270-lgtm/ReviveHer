@@ -7,7 +7,23 @@
     <meta name="description" content="Calm your nervous system. Sleep better. Feel like yourself again — a gentle, evidence-backed guide for every woman navigating peri-menopause." />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet" />
+    <!-- Speed up the one-click checkout call -->
+    <link rel="preconnect" href="https://zcz4an-kd.myshopify.com" />
+
+    <!-- Preload the hero cover (largest above-the-fold image) for faster LCP -->
+    <link rel="preload" as="image" href="/book-3d.png" fetchpriority="high" />
+
+    <!-- Fonts: preload the stylesheet non-blocking, with a no-JS fallback.
+         display=swap means text paints immediately in a fallback face. -->
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap"
+      onload="this.onload=null;this.rel='stylesheet'"
+    />
+    <noscript>
+      <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet" />
+    </noscript>
 
     <!-- Meta Pixel Code -->
     <script>

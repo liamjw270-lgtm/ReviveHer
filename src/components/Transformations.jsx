@@ -45,7 +45,7 @@ function StatCard({ item, delay }) {
       {
         opacity:  1,
         y:        0,
-        duration: 0.8,
+        duration: 0.3,
         delay,
         ease:     'power3.out',
         scrollTrigger: {

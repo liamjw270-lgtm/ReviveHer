@@ -144,7 +144,7 @@ export default function StickySection() {
         <div ref={leftRef} className="sticky-left">
           <div className="sticky-image-wrap">
             {content.sticky.image ? (
-              <img src={content.sticky.image} alt="The Peri-Menopause Reset by ReviveHer" />
+              <img src={content.sticky.image} alt="The Peri-Menopause Reset by ReviveHer" loading="lazy" decoding="async" />
             ) : (
               <div style={{ textAlign: 'center', opacity: 0.35, padding: '2rem' }}>
                 <div style={{ fontSize: '3rem', marginBottom: '0.5rem' }}>📖</div>

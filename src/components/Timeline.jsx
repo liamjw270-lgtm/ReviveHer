@@ -34,7 +34,7 @@ export default function Timeline() {
         {
           opacity: 1,
           y:       0,
-          duration: 1.6,
+          duration: 0.3,
           ease:    'power2.out',
           scrollTrigger: {
             trigger: item,

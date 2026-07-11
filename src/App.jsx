@@ -13,6 +13,7 @@ import Home     from './pages/Home'
 import BuyPage  from './pages/BuyPage'
 import AboutPage from './pages/AboutPage'
 import WhyPage  from './pages/WhyPage'
+import { ContactPage, RefundPolicyPage, PrivacyPage, TermsPage } from './pages/LegalPages'
 
 function ScrollToTop() {
   const { pathname } = useLocation()
@@ -23,11 +24,14 @@ function ScrollToTop() {
 function Layout() {
   const { pathname } = useLocation()
   const isHome = pathname === '/'
+  const isBuy  = pathname === '/buy'
   return (
     <>
       <ScrollToTop />
-      <ScrollProgress />
-      <Grain />
+      {/* Decorative scroll bar + film grain add JS/animation cost — skip them
+          on the buy page so it paints as fast as possible for ad traffic. */}
+      {!isBuy && <ScrollProgress />}
+      {!isBuy && <Grain />}
       {isHome && <SaleBanner />}
       <Nav />
       <Routes>
@@ -35,8 +39,15 @@ function Layout() {
         <Route path="/buy"   element={<BuyPage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/why"   element={<WhyPage />} />
+        <Route path="/contact"       element={<ContactPage />} />
+        <Route path="/refund-policy" element={<RefundPolicyPage />} />
+        <Route path="/privacy"       element={<PrivacyPage />} />
+        <Route path="/terms"         element={<TermsPage />} />
       </Routes>
-      <EmailSignup />
+      {/* /buy has its own native "Not ready yet?" capture (FreeGuideCapture),
+          so skip the global Kit-embed signup there — avoids a duplicate form
+          and the extra external script on the conversion page. */}
+      {!isBuy && <EmailSignup />}
       <Footer />
       <ExitIntentPopup />
     </>

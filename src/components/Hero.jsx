@@ -33,23 +33,24 @@ export default function Hero() {
     gsap.set(imageRef.current, { opacity: 0, x: 60, rotateZ: 4, scale: 0.92 })
     gsap.set(mobileImgRef.current, { opacity: 0, y: 30, scale: 0.93 })
 
-    const tl = gsap.timeline({ delay: 0.15 })
+    // Durations capped at 0.3s for snappy mobile performance.
+    const tl = gsap.timeline({ delay: 0.1 })
 
-    tl.to(badgeRef.current, { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' })
+    tl.to(badgeRef.current, { opacity: 1, y: 0, duration: 0.3, ease: 'power3.out' })
       .to(allChars, {
         yPercent: 0,
         rotateZ:  0,
         opacity:  1,
-        duration: 1.1,
-        stagger:  { each: 0.024, from: 'start' },
-        ease:     'power4.out',
-      }, '-=0.3')
-      .to(subRef.current,       { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' }, '-=0.7')
-      .to(mobileImgRef.current, { opacity: 1, y: 0, scale: 1, duration: 0.9, ease: 'power3.out' }, '-=0.55')
-      .to(ctaRef.current,       { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' }, '-=0.5')
-      .to(trustRef.current,     { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' }, '-=0.5')
-      .to(imageRef.current,     { opacity: 1, x: 0, rotateZ: 0, scale: 1, duration: 1.2, ease: 'power3.out' }, '-=1.0')
-      .to(scrollCueRef.current, { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' }, '-=0.4')
+        duration: 0.3,
+        stagger:  { each: 0.012, from: 'start' },
+        ease:     'power3.out',
+      }, '-=0.2')
+      .to(subRef.current,       { opacity: 1, y: 0, duration: 0.3, ease: 'power3.out' }, '-=0.2')
+      .to(mobileImgRef.current, { opacity: 1, y: 0, scale: 1, duration: 0.3, ease: 'power3.out' }, '-=0.2')
+      .to(ctaRef.current,       { opacity: 1, y: 0, duration: 0.3, ease: 'power3.out' }, '-=0.2')
+      .to(trustRef.current,     { opacity: 1, y: 0, duration: 0.3, ease: 'power3.out' }, '-=0.2')
+      .to(imageRef.current,     { opacity: 1, x: 0, rotateZ: 0, scale: 1, duration: 0.3, ease: 'power3.out' }, '-=0.25')
+      .to(scrollCueRef.current, { opacity: 1, y: 0, duration: 0.3, ease: 'power3.out' }, '-=0.15')
 
     // Parallax: image drifts down, headline drifts up slightly, on scroll
     ScrollTrigger.create({

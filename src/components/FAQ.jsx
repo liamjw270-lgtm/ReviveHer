@@ -91,8 +91,8 @@ export default function FAQ() {
     gsap.from(sectionRef.current.querySelectorAll('.faq-fade'), {
       opacity:  0,
       y:        24,
-      duration: 0.7,
-      stagger:  0.08,
+      duration: 0.3,
+      stagger:  0.06,
       ease:     'power3.out',
       scrollTrigger: {
         trigger: sectionRef.current,

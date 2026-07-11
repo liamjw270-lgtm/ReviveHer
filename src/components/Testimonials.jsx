@@ -40,7 +40,7 @@ export default function Testimonials() {
   // Header reveal
   useGSAP(() => {
     gsap.from(sectionRef.current.querySelectorAll('.ts-fade'), {
-      opacity: 0, y: 26, duration: 0.8, stagger: 0.08, ease: 'power3.out',
+      opacity: 0, y: 26, duration: 0.3, stagger: 0.06, ease: 'power3.out',
       scrollTrigger: { trigger: sectionRef.current, start: 'top 75%', once: true },
     })
   }, { scope: sectionRef })

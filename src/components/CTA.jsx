@@ -23,9 +23,9 @@ export default function CTA() {
       },
     })
 
-    tl.to(headRef.current, { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out' })
-      .to(subRef.current,  { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' }, '-=0.6')
-      .to(btnRef.current,  { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' }, '-=0.5')
+    tl.to(headRef.current, { opacity: 1, y: 0, duration: 0.3, ease: 'power3.out' })
+      .to(subRef.current,  { opacity: 1, y: 0, duration: 0.3, ease: 'power3.out' }, '-=0.2')
+      .to(btnRef.current,  { opacity: 1, y: 0, duration: 0.3, ease: 'power3.out' }, '-=0.2')
   }, { scope: sectionRef })
 
   return (
