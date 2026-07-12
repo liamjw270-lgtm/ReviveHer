@@ -1,12 +1,17 @@
 /**
- * BuyButton — a plain anchor that takes the user straight to Shopify checkout
- * in one tap. No cart drawer, no quantity stepper, no shipping text.
+ * BuyButton — takes the user straight to the Shopify checkout in one tap.
+ * No cart drawer, no cart page, no quantity stepper.
  *
- * It is a real <a> with a working href from first paint (see checkout.js), so
- * it needs no JS to be clickable — it just upgrades to the direct checkout URL
- * once the cart is ready. Fires the Meta Pixel InitiateCheckout event on click.
+ * The real one-click destination is the cart's `checkoutUrl` (fetched on mount).
+ * The href falls back to a cart permalink only so the button works with zero JS
+ * — but for real clicks we ALWAYS send the user to the direct checkoutUrl:
+ *   • if it's loaded, the href already is it → normal navigation;
+ *   • if it's not loaded yet, we block the click, fetch it, then redirect —
+ *     so nobody ever lands on the intermediate cart page.
+ * Fires the Meta Pixel InitiateCheckout event on click.
  */
-import { useCheckoutUrl } from '../lib/checkout'
+import { useEffect, useRef, useState } from 'react'
+import { fetchCheckoutUrl, CART_PERMALINK } from '../lib/checkout'
 
 export default function BuyButton({
   label = 'Get Instant Access',
@@ -14,17 +19,40 @@ export default function BuyButton({
   style,
   block = false,
 }) {
-  const href = useCheckoutUrl()
+  const [checkoutUrl, setCheckoutUrl] = useState(null)
+  const navigating = useRef(false)
 
-  const onClick = () => {
+  useEffect(() => {
+    let alive = true
+    fetchCheckoutUrl().then(u => { if (alive) setCheckoutUrl(u) })
+    return () => { alive = false }
+  }, [])
+
+  const track = () => {
     if (typeof window !== 'undefined' && window.fbq) {
       window.fbq('track', 'InitiateCheckout', { value: 9.99, currency: 'AUD' })
     }
   }
 
+  const onClick = async (e) => {
+    track()
+    // Real checkout URL already in the href → let the browser navigate normally.
+    if (checkoutUrl) return
+    // Not ready yet: don't fall back to the cart page. Block, fetch, then go
+    // straight to checkout.
+    e.preventDefault()
+    if (navigating.current) return
+    navigating.current = true
+    try {
+      window.location.href = await fetchCheckoutUrl()
+    } catch {
+      navigating.current = false
+    }
+  }
+
   return (
     <a
-      href={href}
+      href={checkoutUrl || CART_PERMALINK}
       onClick={onClick}
       className={className}
       style={{ textDecoration: 'none', ...(block ? { width: '100%' } : {}), ...style }}
