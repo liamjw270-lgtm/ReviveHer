@@ -4,6 +4,7 @@
  * so subscribers land in the same list. Native form, no external JS to render.
  */
 import { useState } from 'react'
+import { fbqTrack } from '../lib/pixel'
 
 const KIT_FORM_URL = 'https://app.kit.com/forms/9508175/subscriptions'
 
@@ -22,6 +23,7 @@ export default function FreeGuideCapture() {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body:    `email_address=${encodeURIComponent(email.trim())}`,
       })
+      fbqTrack('Lead')
       setStatus('success')
     } catch {
       setStatus('error')

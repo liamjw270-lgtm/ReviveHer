@@ -1,5 +1,6 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
+import { fbqPageView } from './lib/pixel'
 import { Analytics } from '@vercel/analytics/react'
 import './styles/global.css'
 
@@ -17,7 +18,14 @@ import { ContactPage, RefundPolicyPage, PrivacyPage, TermsPage } from './pages/L
 
 function ScrollToTop() {
   const { pathname } = useLocation()
-  useEffect(() => { window.scrollTo(0, 0) }, [pathname])
+  const firstLoad = useRef(true)
+  useEffect(() => {
+    window.scrollTo(0, 0)
+    // index.html already fires the initial PageView; only fire it for
+    // subsequent client-side (SPA) route changes to avoid a double count.
+    if (firstLoad.current) { firstLoad.current = false; return }
+    fbqPageView()
+  }, [pathname])
   return null
 }
 

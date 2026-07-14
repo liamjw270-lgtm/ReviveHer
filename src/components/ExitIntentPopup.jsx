@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useLocation } from 'react-router-dom'
+import { fbqTrack } from '../lib/pixel'
 
 const KEY_WELCOME = 'reviveher-welcome-shown'
 const KEY_EXIT    = 'reviveher-exit-shown'
@@ -62,6 +63,7 @@ export default function ExitIntentPopup() {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body:    `email_address=${encodeURIComponent(email.trim())}`,
       })
+      fbqTrack('Lead')
       setFormStatus('success')
     } catch {
       setFormStatus('error')

@@ -12,6 +12,7 @@
  */
 import { useEffect, useRef, useState } from 'react'
 import { fetchCheckoutUrl, CART_PERMALINK } from '../lib/checkout'
+import { fbqTrack } from '../lib/pixel'
 
 export default function BuyButton({
   label = 'Get Instant Access',
@@ -28,14 +29,9 @@ export default function BuyButton({
     return () => { alive = false }
   }, [])
 
-  const track = () => {
-    if (typeof window !== 'undefined' && window.fbq) {
-      window.fbq('track', 'InitiateCheckout', { value: 9.99, currency: 'AUD' })
-    }
-  }
-
   const onClick = async (e) => {
-    track()
+    // Fire InitiateCheckout before the checkout redirect.
+    fbqTrack('InitiateCheckout', { value: 9.99, currency: 'AUD' })
     // Real checkout URL already in the href → let the browser navigate normally.
     if (checkoutUrl) return
     // Not ready yet: don't fall back to the cart page. Block, fetch, then go
