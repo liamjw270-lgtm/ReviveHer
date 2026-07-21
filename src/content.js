@@ -7,15 +7,12 @@ export const content = {
     email: "support@getreviveher.com",
   },
 
-  // ── Pricing / sale ──────────────────────────────────────────────
-  // NOTE: the actual checkout amount is set in Shopify, not here.
-  // To truly charge the sale price, update the product price (or add a
-  // discount) in the Shopify admin. These values control display only.
+  // ── Pricing ─────────────────────────────────────────────────────
+  // NOTE: the actual checkout amount is set in Shopify, not here — keep the
+  // Shopify product price at $19.99 so it matches what's shown on the site.
   pricing: {
-    sale:      "$9.99",
-    original:  "$19.99",
-    percentOff: 50,
-    onSale:    true,
+    price:      "$19.99",
+    bonusValue: "$65", // combined value of the 4 bonus tools
   },
 
   hero: {
@@ -25,7 +22,7 @@ export const content = {
     subtext:
       "Calm your nervous system. Sleep better. Feel like yourself again — a gentle, evidence-backed guide for every woman navigating peri-menopause.",
     cta: "Get the Guide",
-    ctaNote: "$9.99 · 50% off today",
+    ctaNote: "$19.99 · Instant PDF download",
     productImage: "/book-3d.png",
     floatingImages: [null, null, null, null, null, null],
   },

@@ -10,9 +10,9 @@ import { content } from '../content'
 export const SALE_BANNER_HEIGHT = 40
 
 const MESSAGES = [
-  `🎉 ${content.pricing.percentOff}% OFF SALE · just ${content.pricing.sale} (was ${content.pricing.original})`,
-  `⏳ Half price today — don't miss the sale`,
-  `✨ Now just ${content.pricing.sale} · 30-day money-back guarantee`,
+  `📘 The Peri-Menopause Reset + 4 bonuses — now only ${content.pricing.price}`,
+  `✨ Over ${content.pricing.bonusValue} of guides & tools, yours for ${content.pricing.price}`,
+  `⚡ Instant download · 30-day money-back guarantee`,
 ]
 
 export default function SaleBanner() {

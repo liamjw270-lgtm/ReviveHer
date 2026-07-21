@@ -169,7 +169,7 @@ export default function AboutPage() {
                 className="btn btn-sage"
                 style={{ fontSize: '0.82rem', padding: '1rem 2.5rem', textDecoration: 'none', display: 'inline-flex' }}
               >
-                Get the Guide — $9.99
+                Get the Guide — $19.99
               </Link>
             </motion.div>
             <TrustBadges dark compact style={{ marginTop: '1.5rem' }} />

@@ -17,7 +17,7 @@ const POINTS = [
 ]
 
 const STATS = [
-  { n: '$9.99',   l: 'One-time — no subscription' },
+  { n: '$19.99',  l: 'One-time — no subscription' },
   { n: '30 days', l: 'Money-back guarantee' },
   { n: '4.9★',    l: 'Loved by readers' },
 ]

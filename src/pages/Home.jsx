@@ -58,8 +58,7 @@ export default function Home() {
             </Link>
           </MagneticButton>
           <div style={{ marginTop: '0.9rem', fontSize: '0.92rem', color: 'rgba(255,255,255,0.55)', fontWeight: 400 }}>
-            <span style={{ textDecoration: 'line-through', opacity: 0.6, marginRight: '0.45rem' }}>$19.99</span>
-            <span style={{ color: 'white', fontWeight: 700 }}>$9.99</span> · 50% off · Instant PDF download
+            <span style={{ color: 'white', fontWeight: 700 }}>$19.99</span> · One-time payment · Instant PDF download
           </div>
           <TrustBadges dark compact style={{ marginTop: '1.25rem' }} />
         </div>

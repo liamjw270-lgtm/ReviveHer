@@ -31,7 +31,7 @@ export default function BuyButton({
 
   const onClick = async (e) => {
     // Fire InitiateCheckout before the checkout redirect.
-    fbqTrack('InitiateCheckout', { value: 9.99, currency: 'AUD' })
+    fbqTrack('InitiateCheckout', { value: 19.99, currency: 'AUD' })
     // Real checkout URL already in the href → let the browser navigate normally.
     if (checkoutUrl) return
     // Not ready yet: don't fall back to the cart page. Block, fetch, then go
