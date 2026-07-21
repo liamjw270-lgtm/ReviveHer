@@ -15,10 +15,12 @@ import { fetchCheckoutUrl, CART_PERMALINK } from '../lib/checkout'
 import { fbqTrack } from '../lib/pixel'
 
 export default function BuyButton({
-  label = 'Get Instant Access',
+  label = 'Get Instant Access — $19.99',
   className = 'btn btn-sage',
   style,
   block = false,
+  note = true,   // small reassurance line under the button
+  dark = false,  // note colour for dark backgrounds
 }) {
   const [checkoutUrl, setCheckoutUrl] = useState(null)
   const navigating = useRef(false)
@@ -46,7 +48,7 @@ export default function BuyButton({
     }
   }
 
-  return (
+  const anchor = (
     <a
       href={checkoutUrl || CART_PERMALINK}
       onClick={onClick}
@@ -55,5 +57,21 @@ export default function BuyButton({
     >
       {label}
     </a>
+  )
+
+  if (!note) return anchor
+
+  return (
+    <div style={{ display: block ? 'block' : 'inline-block', width: block ? '100%' : undefined, textAlign: 'center' }}>
+      {anchor}
+      <div style={{
+        marginTop: '0.5rem',
+        fontSize:  '0.72rem',
+        fontWeight: 500,
+        color: dark ? 'rgba(255,255,255,0.55)' : 'var(--muted)',
+      }}>
+        🔒 Secure checkout · 30-day money-back guarantee
+      </div>
+    </div>
   )
 }

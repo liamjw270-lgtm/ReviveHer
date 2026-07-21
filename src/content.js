@@ -11,11 +11,13 @@ export const content = {
   // NOTE: the actual checkout amount is set in Shopify, not here — keep the
   // Shopify product price at $19.99 so it matches what's shown on the site.
   pricing: {
-    price:      "$19.99",
-    bonusValue: "$65", // combined value of the 4 bonus tools
+    price:  "$19.99",
+    anchor: "$39.99", // struck-through anchor price shown next to the price
   },
 
   hero: {
+    // Ad-matching opening line — sits directly above the headline.
+    openingLine: "Nobody told you it could start at 40.",
     headlineA: "The Peri–",
     headlineGhost: "Menopause",
     headlineB: "Reset",

@@ -161,6 +161,19 @@ export default function Hero() {
             Evidence-Based · Women-First
           </div>
 
+          {/* Ad-matching opening line — sits directly above the headline */}
+          <p style={{
+            fontFamily:    'var(--font-display)',
+            fontStyle:     'italic',
+            fontSize:      'clamp(1.1rem, 3.2vw, 1.6rem)',
+            fontWeight:    400,
+            color:         'var(--primary)',
+            lineHeight:    1.3,
+            marginBottom:  '0.9rem',
+          }}>
+            {content.hero.openingLine}
+          </p>
+
           {/* Headline — char-split reveal */}
           <h1 style={{ fontFamily: 'var(--font-display)', lineHeight: 0.95, letterSpacing: '-0.02em' }}>
             <div ref={line1Ref} style={{

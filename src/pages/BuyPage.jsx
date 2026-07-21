@@ -5,7 +5,7 @@ import BuyButton from '../components/BuyButton'
 import TrustBadges from '../components/TrustBadges'
 import EvidenceSection from '../components/EvidenceSection'
 import FreeGuideCapture from '../components/FreeGuideCapture'
-import { GuaranteeBanner, GuaranteeNote } from '../components/Guarantee'
+import { GuaranteeBanner } from '../components/Guarantee'
 
 // Two real early readers. Quote text is unchanged from the site's existing
 // reviews — only the names shown are Mary and Alesha (first names only).
@@ -24,10 +24,13 @@ const included = [
 ]
 
 const bonuses = [
-  { icon: '📋', title: 'Meal Planner', desc: 'A fillable meal planner built around peri-menopausal nutrition. Plan your meals in minutes.', value: '$15' },
-  { icon: '🍽️', title: 'Recipes', desc: 'A curated collection of hormone-supporting recipes — simple, satisfying and anti-inflammatory.', value: '$19' },
-  { icon: '💪', title: 'Workout Plan', desc: 'A structured movement plan tailored for peri-menopause — no gym required, just your body.', value: '$17' },
-  { icon: '📊', title: 'Daily Trackers', desc: 'Fillable PDF trackers for symptoms, habits, sleep and mood. Spot your patterns and see your progress.', value: '$14' },
+  { icon: '📝', title: 'Reset Worksheets' },
+  { icon: '🩺', title: 'Doctor Visit Summary' },
+  { icon: '💬', title: 'The Partner Explainer' },
+  { icon: '📋', title: "At the Doctor's" },
+  { icon: '🧊', title: 'The Fridge Sheet' },
+  { icon: '🍽️', title: 'Meal Planner & Recipes' },
+  { icon: '💪', title: 'Movement Plan' },
 ]
 
 const trustPoints = [
@@ -73,11 +76,12 @@ function StickyBuyBar() {
       }}>
         <div style={{ lineHeight: 1.15 }}>
           <div style={{ color: 'white', fontWeight: 700, fontSize: '1.05rem', display: 'flex', alignItems: 'baseline', gap: '0.4rem' }}>
+            <span style={{ textDecoration: 'line-through', opacity: 0.5, fontWeight: 500, fontSize: '0.8rem' }}>$39.99</span>
             $19.99
           </div>
           <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.62rem' }}>Instant download · 30-day money-back guarantee</div>
         </div>
-        <BuyButton label="Get Instant Access" style={{ fontSize: '0.72rem', padding: '0.8rem 1.4rem', flexShrink: 0 }} />
+        <BuyButton label="Get Instant Access" note={false} style={{ fontSize: '0.72rem', padding: '0.8rem 1.4rem', flexShrink: 0 }} />
       </div>
     </>
   )
@@ -139,7 +143,13 @@ export default function BuyPage() {
 
           {/* Text + price */}
           <div>
-            <span className="buy-hero-eyebrow" style={{ fontSize: '0.7rem', fontWeight: 500, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--secondary)', display: 'block', marginBottom: '0.75rem' }}>Digital Ebook + 4 Free Bonuses</span>
+            <span className="buy-hero-eyebrow" style={{ fontSize: '0.7rem', fontWeight: 500, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--secondary)', display: 'block', marginBottom: '0.75rem' }}>Digital Ebook + 7 Free Bonuses</span>
+
+            {/* Ad-matching opening line — directly above the headline */}
+            <p style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', fontSize: 'clamp(1rem, 3.2vw, 1.35rem)', fontWeight: 400, color: 'var(--primary)', lineHeight: 1.3, marginBottom: '0.6rem' }}>
+              {content.hero.openingLine}
+            </p>
+
             <h1 className="buy-hero-title" style={{ fontSize: 'clamp(2rem, 4vw, 3.5rem)', fontWeight: 700, color: 'white', letterSpacing: '-0.03em', lineHeight: 1.1, marginBottom: '0.9rem' }}>
               The Peri-Menopause Reset
             </h1>
@@ -152,25 +162,21 @@ export default function BuyPage() {
             </div>
 
             <p className="buy-hero-desc" style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.98rem', lineHeight: 1.7, fontWeight: 300, marginBottom: '1.75rem' }}>
-              A calm, evidence-backed guide to understanding your body, reducing symptoms and feeling like yourself again — plus four practical bonuses included free.
+              A calm, evidence-backed guide to understanding your body, reducing symptoms and feeling like yourself again — plus seven practical bonuses included free.
             </p>
 
             {/* Price block */}
             <div className="buy-hero-price" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '1.25rem', padding: 'clamp(1.4rem, 4vw, 1.75rem) clamp(1.4rem, 4vw, 2rem)', marginBottom: '1.25rem' }}>
               <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.75rem', marginBottom: '0.4rem', flexWrap: 'wrap', justifyContent: 'inherit' }}>
                 <span style={{ fontSize: 'clamp(2.4rem, 7vw, 3rem)', fontWeight: 700, color: 'white', letterSpacing: '-0.04em' }}>$19.99</span>
-                <span style={{ fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'white', background: 'var(--secondary)', padding: '0.35rem 0.7rem', borderRadius: 99 }}>Over $65 value</span>
+                <span style={{ fontSize: 'clamp(1.2rem, 4vw, 1.6rem)', fontWeight: 500, color: 'rgba(255,255,255,0.5)', textDecoration: 'line-through' }}>$39.99</span>
+                <span style={{ fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'white', background: 'var(--secondary)', padding: '0.35rem 0.7rem', borderRadius: 99 }}>50% off</span>
               </div>
-              <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.8rem' }}>The full guide + 4 bonus tools — over $65 of value. One-time payment · Instant PDF download.</div>
+              <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.8rem' }}>The full guide + 7 bonus tools. One-time payment · Instant PDF download.</div>
             </div>
 
             {/* One-click checkout */}
-            <BuyButton block style={{ fontSize: '0.9rem', padding: '1.15rem 2rem' }} />
-
-            {/* Secure-checkout reassurance directly under the button */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem', marginTop: '0.6rem', fontSize: '0.72rem', color: 'rgba(255,255,255,0.5)', fontWeight: 500 }}>
-              <span aria-hidden>🔒</span> Secure checkout via Shopify · SSL encrypted · No card details stored
-            </div>
+            <BuyButton block dark style={{ fontSize: '0.9rem', padding: '1.15rem 2rem' }} />
 
             {/* Full-width guarantee banner — directly under the buy button */}
             <GuaranteeBanner />
@@ -213,6 +219,22 @@ export default function BuyPage() {
         </div>
       </section>
 
+      {/* ── What makes this different — specifics, near the top ── */}
+      <section style={{ background: 'var(--bg)', padding: 'clamp(2.5rem, 6vw, 3.5rem) clamp(1.5rem, 5vw, 3rem)', borderBottom: '1px solid var(--border)' }}>
+        <div style={{ maxWidth: 980, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 'clamp(1.25rem, 3vw, 2rem)' }}>
+          {[
+            { icon: '📚', text: 'Grounded in published research — 26 sources cited throughout' },
+            { icon: '🩺', text: 'Points you to the same information sheets clinicians use' },
+            { icon: '🗒️', text: "A full chapter on getting real help from your doctor's appointment" },
+          ].map((t, i) => (
+            <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
+              <span style={{ fontSize: '1.35rem', flexShrink: 0, lineHeight: 1.2 }}>{t.icon}</span>
+              <span style={{ fontSize: '0.92rem', color: 'var(--dark)', fontWeight: 500, lineHeight: 1.5 }}>{t.text}</span>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* ── The science / proof — surfaced early so trust is obvious fast ── */}
       <EvidenceSection dark />
 
@@ -243,36 +265,26 @@ export default function BuyPage() {
           <div style={{ textAlign: 'center', marginBottom: 'clamp(2.75rem, 6vw, 4rem)' }}>
             <span style={{ fontSize: '0.7rem', fontWeight: 500, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--secondary)', display: 'block', marginBottom: '0.75rem' }}>Free With Your Purchase</span>
             <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 700, letterSpacing: '-0.03em', color: 'white', lineHeight: 1.1 }}>
-              Four bonuses,<br />zero extra cost
+              Your 7 free bonuses
             </h2>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(230px, 1fr))', gap: '0.9rem' }}>
             {bonuses.map((b, i) => (
-              <div key={i} style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '1.25rem', padding: 'clamp(1.4rem, 4vw, 1.75rem) clamp(1.4rem, 4vw, 2rem)', display: 'flex', alignItems: 'center', gap: 'clamp(1.25rem, 3vw, 2rem)', flexWrap: 'wrap' }}>
-                <div style={{ fontSize: '1.75rem', flexShrink: 0 }}>{b.icon}</div>
-                <div style={{ flex: 1, minWidth: 200 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.4rem' }}>
-                    <span style={{ fontWeight: 700, color: 'white', fontSize: '1rem' }}>{b.title}</span>
-                    <span style={{ fontSize: '0.7rem', background: 'rgba(125,158,118,0.2)', color: 'var(--primary)', padding: '0.2rem 0.6rem', borderRadius: 999, fontWeight: 500 }}>FREE</span>
-                  </div>
-                  <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.88rem', lineHeight: 1.6, fontWeight: 300 }}>{b.desc}</p>
-                </div>
-                <div style={{ textAlign: 'right', flexShrink: 0 }}>
-                  <div style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.25)', textDecoration: 'line-through', marginBottom: '0.1rem' }}>Value {b.value}</div>
-                  <div style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--primary)' }}>Free</div>
-                </div>
+              <div key={i} style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '1rem', padding: '1.1rem 1.25rem', display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
+                <div style={{ fontSize: '1.5rem', flexShrink: 0 }}>{b.icon}</div>
+                <span style={{ fontWeight: 600, color: 'white', fontSize: '0.95rem', flex: 1 }}>{b.title}</span>
+                <span style={{ fontSize: '0.65rem', background: 'rgba(125,158,118,0.2)', color: 'var(--primary)', padding: '0.2rem 0.55rem', borderRadius: 999, fontWeight: 600, flexShrink: 0 }}>FREE</span>
               </div>
             ))}
           </div>
           <div style={{ marginTop: '2rem', background: 'rgba(125,158,118,0.08)', border: '1px solid rgba(125,158,118,0.2)', borderRadius: '1rem', padding: '1.25rem 1.75rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
             <div>
-              <div style={{ color: 'white', fontWeight: 600, fontSize: '0.95rem' }}>Everything included for $19.99 — over $65 of value</div>
+              <div style={{ color: 'white', fontWeight: 600, fontSize: '0.95rem' }}>
+                Everything included for <span style={{ textDecoration: 'line-through', opacity: 0.55, fontWeight: 500 }}>$39.99</span> $19.99
+              </div>
               <div style={{ color: 'var(--primary)', fontSize: '0.82rem' }}>One-time payment · Instant PDF download</div>
             </div>
-            <BuyButton style={{ fontSize: '0.82rem', padding: '1rem 2.5rem' }} />
-          </div>
-          <div style={{ textAlign: 'center' }}>
-            <GuaranteeNote dark />
+            <BuyButton dark style={{ fontSize: '0.82rem', padding: '1rem 2.5rem' }} />
           </div>
         </div>
       </section>
@@ -385,7 +397,6 @@ export default function BuyPage() {
             ))}
           </div>
           <BuyButton style={{ fontSize: '0.82rem', padding: '1rem 2.5rem' }} />
-          <div><GuaranteeNote /></div>
         </div>
       </section>
 
