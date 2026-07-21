@@ -75,8 +75,11 @@ function StickyBuyBar() {
         transition:    'transform 0.3s ease',
       }}>
         <div style={{ lineHeight: 1.15 }}>
-          <div style={{ color: 'white', fontWeight: 700, fontSize: '1.05rem', display: 'flex', alignItems: 'baseline', gap: '0.4rem' }}>
+          <div style={{ color: 'white', fontWeight: 700, fontSize: '1.05rem', display: 'flex', alignItems: 'baseline', gap: '0.35rem' }}>
             $19.99
+            <span style={{ color: 'rgba(255,255,255,0.5)', fontWeight: 500, fontSize: '0.62rem' }}>
+              Compare at <span style={{ textDecoration: 'line-through' }}>$39.99</span>
+            </span>
           </div>
           <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.62rem' }}>Instant download · 30-day money-back guarantee</div>
         </div>
@@ -168,7 +171,13 @@ export default function BuyPage() {
             <div className="buy-hero-price" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '1.25rem', padding: 'clamp(1.4rem, 4vw, 1.75rem) clamp(1.4rem, 4vw, 2rem)', marginBottom: '1.25rem' }}>
               <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.75rem', marginBottom: '0.4rem', flexWrap: 'wrap', justifyContent: 'inherit' }}>
                 <span style={{ fontSize: 'clamp(2.4rem, 7vw, 3rem)', fontWeight: 700, color: 'white', letterSpacing: '-0.04em' }}>$19.99</span>
-                <span style={{ fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'white', background: 'var(--secondary)', padding: '0.35rem 0.7rem', borderRadius: 99 }}>Over $100 of value</span>
+                {/* Anchor price — labelled "Compare at" because the guide was
+                    never sold at this figure (a bare struck price would read
+                    as a former price). */}
+                <span style={{ display: 'inline-flex', alignItems: 'baseline', gap: '0.3rem', color: 'rgba(255,255,255,0.5)' }}>
+                  <span style={{ fontSize: '0.7rem', fontWeight: 500 }}>Compare at</span>
+                  <span style={{ fontSize: 'clamp(1.2rem, 4vw, 1.6rem)', fontWeight: 500, textDecoration: 'line-through' }}>$39.99</span>
+                </span>
               </div>
               <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.8rem' }}>The full guide + 7 bonus tools — over $100 worth of information. One-time payment · Instant PDF download.</div>
             </div>

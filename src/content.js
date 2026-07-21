@@ -12,8 +12,11 @@ export const content = {
   // Shopify product price at $19.99 so it matches what's shown on the site.
   pricing: {
     price: "$19.99",
-    // Value framing only — NOT a "was" price. We never sold at a higher price,
-    // so no struck-through / "% off" claims (they'd be false was/now pricing).
+    // NOT a former selling price — the product was never sold at this figure.
+    // Always render it labelled "Compare at" (never a bare struck-through
+    // number and never "was $X" / "% off", which would be a false was/now
+    // price claim).
+    compareAt: "$39.99",
     valueEstimate: "$100",
   },
 
