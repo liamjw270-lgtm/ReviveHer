@@ -76,7 +76,6 @@ function StickyBuyBar() {
       }}>
         <div style={{ lineHeight: 1.15 }}>
           <div style={{ color: 'white', fontWeight: 700, fontSize: '1.05rem', display: 'flex', alignItems: 'baseline', gap: '0.4rem' }}>
-            <span style={{ textDecoration: 'line-through', opacity: 0.5, fontWeight: 500, fontSize: '0.8rem' }}>$39.99</span>
             $19.99
           </div>
           <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.62rem' }}>Instant download · 30-day money-back guarantee</div>
@@ -169,10 +168,9 @@ export default function BuyPage() {
             <div className="buy-hero-price" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '1.25rem', padding: 'clamp(1.4rem, 4vw, 1.75rem) clamp(1.4rem, 4vw, 2rem)', marginBottom: '1.25rem' }}>
               <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.75rem', marginBottom: '0.4rem', flexWrap: 'wrap', justifyContent: 'inherit' }}>
                 <span style={{ fontSize: 'clamp(2.4rem, 7vw, 3rem)', fontWeight: 700, color: 'white', letterSpacing: '-0.04em' }}>$19.99</span>
-                <span style={{ fontSize: 'clamp(1.2rem, 4vw, 1.6rem)', fontWeight: 500, color: 'rgba(255,255,255,0.5)', textDecoration: 'line-through' }}>$39.99</span>
-                <span style={{ fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'white', background: 'var(--secondary)', padding: '0.35rem 0.7rem', borderRadius: 99 }}>50% off</span>
+                <span style={{ fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'white', background: 'var(--secondary)', padding: '0.35rem 0.7rem', borderRadius: 99 }}>Over $100 of value</span>
               </div>
-              <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.8rem' }}>The full guide + 7 bonus tools. One-time payment · Instant PDF download.</div>
+              <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.8rem' }}>The full guide + 7 bonus tools — over $100 worth of information. One-time payment · Instant PDF download.</div>
             </div>
 
             {/* One-click checkout */}
@@ -280,7 +278,7 @@ export default function BuyPage() {
           <div style={{ marginTop: '2rem', background: 'rgba(125,158,118,0.08)', border: '1px solid rgba(125,158,118,0.2)', borderRadius: '1rem', padding: '1.25rem 1.75rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
             <div>
               <div style={{ color: 'white', fontWeight: 600, fontSize: '0.95rem' }}>
-                Everything included for <span style={{ textDecoration: 'line-through', opacity: 0.55, fontWeight: 500 }}>$39.99</span> $19.99
+                Everything included for $19.99 — over $100 of value
               </div>
               <div style={{ color: 'var(--primary)', fontSize: '0.82rem' }}>One-time payment · Instant PDF download</div>
             </div>

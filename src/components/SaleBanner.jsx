@@ -11,7 +11,7 @@ export const SALE_BANNER_HEIGHT = 40
 
 const MESSAGES = [
   `📘 The Peri-Menopause Reset + 7 bonuses — now only ${content.pricing.price}`,
-  `✨ 50% off — was ${content.pricing.anchor}, now ${content.pricing.price}`,
+  `✨ Over ${content.pricing.valueEstimate} of guides & tools — yours for ${content.pricing.price}`,
   `⚡ Instant download · 30-day money-back guarantee`,
 ]
 

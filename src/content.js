@@ -11,8 +11,10 @@ export const content = {
   // NOTE: the actual checkout amount is set in Shopify, not here — keep the
   // Shopify product price at $19.99 so it matches what's shown on the site.
   pricing: {
-    price:  "$19.99",
-    anchor: "$39.99", // struck-through anchor price shown next to the price
+    price: "$19.99",
+    // Value framing only — NOT a "was" price. We never sold at a higher price,
+    // so no struck-through / "% off" claims (they'd be false was/now pricing).
+    valueEstimate: "$100",
   },
 
   hero: {
