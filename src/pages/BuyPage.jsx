@@ -24,13 +24,31 @@ const included = [
 ]
 
 const bonuses = [
-  { icon: '📝', title: 'Reset Worksheets' },
-  { icon: '🩺', title: 'Doctor Visit Summary' },
-  { icon: '💬', title: 'The Partner Explainer' },
-  { icon: '📋', title: "At the Doctor's" },
-  { icon: '🧊', title: 'The Fridge Sheet' },
-  { icon: '🍽️', title: 'Meal Planner & Recipes' },
-  { icon: '💪', title: 'Movement Plan' },
+  {
+    icon:  '📝',
+    title: 'The Reset Worksheets',
+    desc:  "Printable symptom, habit and sleep trackers, a meal builder and a weekly reflection page. Track what's happening, spot your patterns, and see what's actually working.",
+  },
+  {
+    icon:  '🩺',
+    title: 'Doctor Visit Summary',
+    desc:  'A one-page fill-in sheet that turns weeks of tracking into a clear summary — so a short GP appointment actually gets you somewhere.',
+  },
+  {
+    icon:  '💬',
+    title: 'The Partner Explainer',
+    desc:  "A short, warm guide to hand to your partner or family, so the people around you finally understand what you're going through — and how to help.",
+  },
+  {
+    icon:  '📋',
+    title: "At the Doctor's",
+    desc:  'Exactly what to say to be taken seriously, including scripts for when you feel dismissed and the questions worth asking about your options.',
+  },
+  {
+    icon:  '🧊',
+    title: 'The Fridge Sheet',
+    desc:  'A one-page quick reference: symptom on the left, your first move on the right. Print it, stick it up — no thinking required in the moment.',
+  },
 ]
 
 const trustPoints = [
@@ -145,7 +163,7 @@ export default function BuyPage() {
 
           {/* Text + price */}
           <div>
-            <span className="buy-hero-eyebrow" style={{ fontSize: '0.7rem', fontWeight: 500, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--secondary)', display: 'block', marginBottom: '0.75rem' }}>Digital Ebook + 7 Free Bonuses</span>
+            <span className="buy-hero-eyebrow" style={{ fontSize: '0.7rem', fontWeight: 500, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--secondary)', display: 'block', marginBottom: '0.75rem' }}>Digital Ebook + 5 Free Bonuses</span>
 
             {/* Ad-matching opening line — directly above the headline */}
             <p style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', fontSize: 'clamp(1rem, 3.2vw, 1.35rem)', fontWeight: 400, color: 'var(--primary)', lineHeight: 1.3, marginBottom: '0.6rem' }}>
@@ -164,7 +182,7 @@ export default function BuyPage() {
             </div>
 
             <p className="buy-hero-desc" style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.98rem', lineHeight: 1.7, fontWeight: 300, marginBottom: '1.75rem' }}>
-              A calm, evidence-backed guide to understanding your body, reducing symptoms and feeling like yourself again — plus seven practical bonuses included free.
+              A calm, evidence-backed guide to understanding your body, reducing symptoms and feeling like yourself again — plus five practical bonuses included free.
             </p>
 
             {/* Price block */}
@@ -179,7 +197,7 @@ export default function BuyPage() {
                   <span style={{ fontSize: 'clamp(1.2rem, 4vw, 1.6rem)', fontWeight: 500, textDecoration: 'line-through' }}>$39.99</span>
                 </span>
               </div>
-              <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.8rem' }}>The full guide + 7 bonus tools — over $100 worth of information. One-time payment · Instant PDF download.</div>
+              <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.8rem' }}>The full guide + 5 bonus tools — over $100 worth of information. One-time payment · Instant PDF download.</div>
             </div>
 
             {/* One-click checkout */}
@@ -272,22 +290,31 @@ export default function BuyPage() {
           <div style={{ textAlign: 'center', marginBottom: 'clamp(2.75rem, 6vw, 4rem)' }}>
             <span style={{ fontSize: '0.7rem', fontWeight: 500, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--secondary)', display: 'block', marginBottom: '0.75rem' }}>Free With Your Purchase</span>
             <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 700, letterSpacing: '-0.03em', color: 'white', lineHeight: 1.1 }}>
-              Your 7 free bonuses
+              5 free bonuses, included
             </h2>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(230px, 1fr))', gap: '0.9rem' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             {bonuses.map((b, i) => (
-              <div key={i} style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '1rem', padding: '1.1rem 1.25rem', display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
-                <div style={{ fontSize: '1.5rem', flexShrink: 0 }}>{b.icon}</div>
-                <span style={{ fontWeight: 600, color: 'white', fontSize: '0.95rem', flex: 1 }}>{b.title}</span>
-                <span style={{ fontSize: '0.65rem', background: 'rgba(125,158,118,0.2)', color: 'var(--primary)', padding: '0.2rem 0.55rem', borderRadius: 999, fontWeight: 600, flexShrink: 0 }}>FREE</span>
+              <div key={i} style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '1.25rem', padding: 'clamp(1.25rem, 4vw, 1.6rem)', display: 'flex', alignItems: 'flex-start', gap: 'clamp(0.85rem, 3vw, 1.25rem)' }}>
+                <div style={{ fontSize: '1.6rem', flexShrink: 0, lineHeight: 1.2 }}>{b.icon}</div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap', marginBottom: '0.4rem' }}>
+                    <span style={{ fontWeight: 700, color: 'white', fontSize: '1rem' }}>{b.title}</span>
+                    <span style={{ fontSize: '0.65rem', background: 'rgba(125,158,118,0.2)', color: 'var(--primary)', padding: '0.2rem 0.55rem', borderRadius: 999, fontWeight: 600 }}>FREE</span>
+                  </div>
+                  <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.88rem', lineHeight: 1.65, fontWeight: 300, margin: 0 }}>{b.desc}</p>
+                </div>
               </div>
             ))}
           </div>
           <div style={{ marginTop: '2rem', background: 'rgba(125,158,118,0.08)', border: '1px solid rgba(125,158,118,0.2)', borderRadius: '1rem', padding: '1.25rem 1.75rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
             <div>
               <div style={{ color: 'white', fontWeight: 600, fontSize: '0.95rem' }}>
-                Everything included for $19.99 — over $100 of value
+                All 5 included free with your guide —{' '}
+                <span style={{ fontWeight: 500, opacity: 0.7, fontSize: '0.85rem' }}>
+                  Compare at <span style={{ textDecoration: 'line-through' }}>$39.99</span>
+                </span>{' '}
+                $19.99
               </div>
               <div style={{ color: 'var(--primary)', fontSize: '0.82rem' }}>One-time payment · Instant PDF download</div>
             </div>
