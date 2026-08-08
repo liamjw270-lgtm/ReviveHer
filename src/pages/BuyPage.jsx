@@ -375,7 +375,7 @@ export default function BuyPage() {
           {/* Brand trust cards */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem' }}>
             {[
-              { icon: '🔒', title: 'Secure checkout', desc: 'Payments are processed by Shopify — we never see or store your card details.' },
+              { icon: '🔒', title: 'Secure checkout', desc: 'Payments are processed securely by Payhip — we never see or store your card details.' },
               { icon: '💬', title: 'Real human support', desc: 'Email us any time and a real person replies, usually within 1–2 business days.' },
               { icon: '🛡️', title: '30-day guarantee', desc: 'Not happy? Email us within 30 days for a full refund — no questions asked.' },
               { icon: '🔁', title: 'Yours forever', desc: 'A one-time payment. No subscription, no upsells, no recurring charges.' },

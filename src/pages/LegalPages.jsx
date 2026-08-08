@@ -74,7 +74,7 @@ export function PrivacyPage() {
         payment processor.
       </p>
       <p style={p}>
-        Payments are processed securely by Shopify; we never see or store your full card
+        Payments are processed securely by Payhip; we never see or store your full card
         details. Email sign-ups are managed by our email provider (Kit) and are used only to
         send you the resources you requested and occasional related tips.
       </p>

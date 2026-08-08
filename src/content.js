@@ -8,10 +8,12 @@ export const content = {
   },
 
   // ── Pricing ─────────────────────────────────────────────────────
-  // NOTE: the actual checkout amount is set in Shopify, not here — keep the
-  // Shopify product price at $19.99 so it matches what's shown on the site.
+  // Checkout runs on Payhip. This is a direct-to-checkout link — it lands the
+  // buyer straight on the Payhip payment page. Keep the Payhip product price
+  // at $19.99 so it matches what's shown on the site.
   pricing: {
-    price: "$19.99",
+    price:       "$19.99",
+    checkoutUrl: "https://payhip.com/buy?link=yvCtA",
     // NOT a former selling price — the product was never sold at this figure.
     // Always render it labelled "Compare at" (never a bare struck-through
     // number and never "was $X" / "% off", which would be a false was/now
@@ -173,6 +175,5 @@ export const content = {
       "A calm, practical guide designed for where you are right now. Instant PDF download. Read on any device.",
     buttonText: "Get The Peri-Menopause Reset",
     guarantee: "30-day money back guarantee · Instant PDF download · Yours forever",
-    shopifyUrl: "#",
   },
 }
